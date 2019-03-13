@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF" monitorInterval="1800">
+    <properties>
+        <property name="LOG_HOME">${portal.log.dir}</property>
+        <property name="FILE_NAME">portal</property>
+    </properties>
+
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+
+        <RollingFile name="running-log" fileName="${LOG_HOME}/${FILE_NAME}.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd}-%i.log.gz"
+                     immediateFlush="true">
+            <PatternLayout
+                    pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="20" />
+        </RollingFile>
+        <Syslog name="service-log" host="${log.server.ip}" port="${service.log.port}" protocol="UDP"/>
+        <Syslog name="audit-log" host="${log.server.ip}" port="${audit.log.port}" protocol="UDP"/>
+    </Appenders>
+
+    <Loggers>
+
+        <!-- <Logger name="com.cssweb.test.app" level="trace" additivity="true">
+            <AppenderRef ref="running-log" /> </Logger> -->
+
+        <Logger name="org.pac4j" level="debug"/>
+        <Logger name="com.seaboxdata" level="debug"/>
+        <Logger name="com.quick" level="debug"/>
+
+        <Logger name="com.quick.portal.security.authority.metric.MetricPrivilegeController" level="info">
+            <AppenderRef ref="audit-log"/>
+        </Logger>
+        <Logger name="com.quick.portal.sysPrivilege.SysPrivilegeController" level="info">
+            <AppenderRef ref="audit-log"/>
+        </Logger>
+        <Logger name="com.quick.portal.userRole.RoleController" level="info">
+            <AppenderRef ref="audit-log"/>
+        </Logger>
+        <Logger name="com.quick.portal.sysUser.SysUserController" level="info">
+            <AppenderRef ref="audit-log"/>
+        </Logger>
+        <Logger name="com.quick.portal.web.login.WebLoginController" level="info">
+            <AppenderRef ref="service-log"/>
+        </Logger>
+
+        <Root level="info">
+            <!-- 这里是输入到文件，很重要-->
+            <AppenderRef ref="running-log" />
+            <!-- 这里是输入到控制台-->
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>

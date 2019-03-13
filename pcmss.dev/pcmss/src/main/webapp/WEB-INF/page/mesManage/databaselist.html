@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <#include "/WEB-INF/include/reslist.html" />
+    <style>
+        select::-ms-expand{
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content wrapper-content-x animated fadeInRight">
+        <div class="col-sm-12">
+            <div class="ibox ibox-x ">
+                <div class="ibox-content ibox-content-ad" style="margin-left:30px;margin-top:40px;height:500px;width:1025px;">
+                    <form id="pubform" onkeydown="if(event.keyCode==13){return false;}" name="pubform" method="post"  enctype="multipart/form-data" >
+                        <div class="row" style="padding-top:30px">
+                            <div class=" form-group" style="padding-left:50px;width:451px;float: left;margin-bottom:5px;">
+                                <label class="col-xs-3 lable_top" style="width:100px;padding-right:12px;"><span class="span_require"></span>资料大类</label>
+                                <div class="col-xs-9" style="padding-left: 0px;width:324px;">
+                                    <select type="button" name="sup_msg_type_id" class="input-group form-control form-control-green  select_change" id="sup_msg_type_id" style="width:100%;height:41px;" onchange="supDatumTy()">
+                                        <option value="">请选择资料大类</option>
+                                        <option value="1">政策文件</option>
+                                        <option value="2">政府公文</option>
+                                        <option value="3">大数据分析报告</option>
+                                    </select></div>
+                            </div>
+                            <div class="form-group" style="width:460px;float: left;padding-left:40px;margin-bottom:5px;margin-left:20px;" >
+                                <label class="col-xs-3 lable_top" style="width:100px;padding-right:12px;"><span class="span_require"></span>资料小类</label>
+                                <div class="col-xs-9" style="padding-left: 0px;width:82%;"><select style="width:93%;height:41px;" class="form-control  select_change" id="msg_type_id" name="msg_type_id" onchange="subClass()"></select></div>
+                            </div>
+                            <div class="form-group" style="padding-left:50px;width:995px;height:50px;margin-bottom:2px;">
+                                <label class="col-xs-3 lable_top" style="width:100px;padding-right:27px;padding-top:10px;"><span class="span_require"></span>关键词</label>
+                                <div class="col-xs-9" style="padding-top:10px;width:90%;padding-left:0px;"><input style="width:95%;left: auto;height:41px;" placeholder="输入的关键词以空格隔开，如：参数1 参数2....." class="form-control " id="keywords" name="keywords"  /></div>
+                            </div>
+
+                            <div class="form-group" style="padding-left: 5px;width:925px;margin-top:60px;margin-bottom:0px;">
+                                <span class="input-group-btn" style="width:1.5%;" > <button class="pull-right btn btn-primary "  type="button" onclick="query();"> 查询</button></span>
+                                <span class="input-group-btn" ><button class="pull-right btn btn-primary " type="button" onclick="addDataBase();">新增</button> </span>
+                            </div>
+                            </div>
+                    </form>
+                    <div style="margin:5px;margin-top: 0px;">
+                        <table id="list" class="table-striped" style="table-layout:fixed;margin-top:0px;"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="${G.host}/res/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="${G.host}/res/js/content.min.js?v=1.0.0"></script>
+<script src="${G.host}/res/js/plugins/layer/layer.min.js"></script>
+<script src="${G.host}/res/js/plugins/staps/jquery.steps.min.js"></script>
+<script src="${G.host}/res/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="${G.host}/res/js/plugins/validate/messages_zh.min.js"></script>
+<script src="${G.host}/res/plugin/jquery.form.js"></script>
+<script>
+    var pageNum = 10;
+    var pageSize = 1;
+    var queryParm = '';
+    function config() {
+        var RFlag=$.request.queryString["RFlag"];
+        quick.serverUrl = "${G.serverUrl}";
+        quick.objName = "${G.objName}";
+        quick.idField = "${G.idField}";
+        quick.listUrl = quick.serverUrl + "/list";
+        $("#list").bootstrapTable("destroy");
+        _gridPool["list"]= new BGrid("#list");
+        _gridPool["list"].config(
+            {
+            url:quick.serverUrl+"/getDataBase?i="+Math.random(),
+            idField:quick.idField,
+            sortName:quick.idField,
+            cache:false,
+            height:$(document.body).height(),
+            toolbar:"#pubform",
+            clickToSelect:true,
+            columns:[
+                {field:'serialNum',title:'资料编号',width:'10%',align:'center'},
+                {field:'msg_title',title:'资料标题',width:'20%',align:'center',
+                    formatter:function (value,row) {
+                        var temp ='<a href='+quick.serverUrl+'/downloadFile?msg_content='+encodeURI(row.msg_content)+'>'+row.msg_title+'</a>';
+                        return temp;
+                    }},
+                {field:'pub_time',title:'入库日期',width:'25%',align:'center'},
+                {field:'appr_time',title:'更新日期',width:'25%',align:'center'},
+                {field:'msg_content',visible:false},
+                {field:'msg_id',visible:false},
+                {field: 'CZ',  title: '操作',width: '20%', align: 'center', formatter:function(value,row,index){
+                    return "<button type='button' class='btn_el' onclick='viewData(\""+row.msg_id+"\")'>编辑</button>"+
+                  "<button type='button' class='btn_el' onclick='delData(\""+row.msg_id+"\",\""+row.msg_content+"\")'>删除</button>";
+                }}
+                ],onPageChange:function(number, size){
+                pageNum=number;
+                pageSize=size;
+            },onPostBody:function(data){
+                if(queryParm=='' &&　(data == null || data.length == 0)){
+                    $(".no-records-found td").html('您还没有添加相关信息，请点击<a onclick="addDataBase();" href="javascript:void(0);">添加</a>');
+                }
+            }
+
+        });
+        if(RFlag==1){
+            requery();
+        }else{
+            _gd["list"].init();
+        }
+    }
+
+     window.onload=function () {
+      jQuery.validator.addMethod("keyword",function (value,element) {
+          var key = /^[a-zA-Z0-9\s?\u4e00-\u9fa5]*$/;
+          return this.optional(element) || (key.test(value));
+      },"请按照指定格式输入关键词！");
+         $("#pubform").validate({
+             errorPlacement: function(error, element) {
+                 element.parent().append(error);
+             },
+             rules: {
+                 keywords: {
+                     keyword:true
+                 } ,
+             }
+         });
+     }
+    //下拉框联动
+
+    function supDatumTy(){
+        var supdata = $("#sup_msg_type_id").val();
+        var sudata = $("#msg_type_id").val();
+        if(supdata==""||supdata==null){
+            $("#sup_msg_type_id").empty();
+            $("#sup_msg_type_id").append("<option selected hidden value=''>请选择资料大类</option><option value= ''>资料大类</option>");
+            $("#sup_msg_type_id").append("<option value='1'>政府文件</option>");
+            $("#sup_msg_type_id").append("<option value='2'>政府公文</option>");
+            $("#sup_msg_type_id").append("<option value='3'>大数据平台报告</option>");
+            $("#msg_type_id").empty();
+            SelectDataType();
+        }
+        if(supdata!=null && supdata !="" && sudata == ""){
+            $("#msg_type_id").empty();
+            $.ajax({
+                type:"post",
+                url:quick.serverUrl+"/getDataTy",
+                async:false,
+                dataType:"json",
+                data:{
+                    supmtid: supdata
+                },
+                success:function (data) {
+                    $("#msg_type_id").append("<option selected hidden value=''>资料小类</option><option value= ''>资料小类</option>");
+                    for(var i=0;i<data.length;i++){
+                        var item = data[i];
+                        $("#msg_type_id").append("<option value="+item.msg_type_id+"> "+item.msg_type_name+"</option>")
+                    }
+                }
+            });
+        }
+    }
+
+    function subClass() {
+        var supdata = $("#sup_msg_type_id").val();
+        var subdata = $("#msg_type_id").val();
+        if(subdata=="" && supdata==""){
+            $("#sup_msg_type_id").empty();
+            $("#sup_msg_type_id").append("<option selected hidden value=''>资料大类</option><option value= ''>资料大类</option>");
+            $("#sup_msg_type_id").append("<option value='1'>政府文件</option>");
+            $("#sup_msg_type_id").append("<option value='2'>政府公文</option>");
+            $("#sup_msg_type_id").append("<option value='3'>大数据平台报告</option>");
+        }
+        if(subdata!=""&& subdata!=null&&supdata==""){
+            $("#sup_msg_type_id").empty();
+            $.ajax({
+                type:"post",
+                url:quick.serverUrl+"/getDataTy",
+                async:false,
+                dataType:"json",
+                data:{
+                    submtid: subdata
+                },
+                success:function (data) {
+                    $("#sup_msg_type_id").append("<option selected hidden value=''>资料大类</option><option value= ''>资料大类</option>");
+                    for(var i=0;i<data.length;i++){
+                        var item = data[i];
+                        $("#sup_msg_type_id").append("<option value="+item.sup_msg_type_id+"> "+item.supTyName+"</option>");
+                    }
+                }
+            });
+
+        }
+    }
+
+    function  SelectDataType() {
+        $.ajax({
+            type:"get",
+            url:"getDataTy",
+            async:false,
+            dataType:"json",
+            success:function (data) {
+                $("#msg_type_id").append("<option selected hidden value=''>资料小类</option><option value= ''>资料小类</option>");
+                for(var i=0;i<data.length;i++){
+                    var item = data[i];
+                    $("#msg_type_id").append("<option value="+item.msg_type_id+"> "+item.msg_type_name+"</option>")
+                }
+            }
+        });
+    }
+    SelectDataType();
+
+  //新增资料
+    function addDataBase() {
+        window.location.href=quick.serverUrl+"/addDatum";
+    }
+    
+    //查看
+    function viewData(id) {
+        window.location.href=quick.serverUrl+"/datumEdit?msg_id="+id;
+    }
+
+    //删除
+    function delData(id,content) {
+        layer.confirm(
+            "确认将删除吗？<br/>删除后，所有关联数据将一并删除，且删除后不可恢复",
+            {icon: 3, title: "删除记录", skin: 'layer-ext-moon'},
+            function () {
+                $.ajax( {
+                    type:"post",
+                    url:quick.serverUrl+"/delDatum",
+                    dataType:"json",
+                    data:{
+                        msg_id:id,
+                        msg_content:content
+                    },
+                    success :function (data) {
+                        if (data == 1) {
+                            layer.msg('删除记录成功', {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+                            window.location.href = quick.serverUrl+"/databaselist";
+                        } else {
+                            layer.msg('删除记录失败', {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+
+                        }
+                    },
+                    error:function (err) {
+                        layer.msg('结果异常', {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+                    }
+                })
+            })
+    }
+
+    //查询
+    function query() {
+        var supdata = $("#sup_msg_type_id").val();
+        var sudata = $("#msg_type_id").val();
+        if(supdata == "" && sudata !="" && sudata!=null){
+            layer.msg('请选择资料大类', {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+            return false;
+        }
+        _gd["list"].refresh();
+        queryParm=getParm();
+    }
+
+    //获取查询框数据
+    function getParm(){
+        var s = '&I'+$("#formSearch").serialize().replace(/&/g, "&I");
+        return s;
+    }
+    function getDetailParm(){
+        var s= queryParm + "&IpageNum="+pageNum+"&IpageSize="+pageSize;
+        return s;
+    }
+
+
+
+</script>
+
+</html>

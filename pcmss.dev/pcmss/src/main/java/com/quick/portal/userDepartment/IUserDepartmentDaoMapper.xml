@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quick.portal.userDepartment.IUserDepartmentDao">
+	
+    <!--查询条件-->
+	<sql id="where">
+		1=1
+		<if test="dep_id != null"><![CDATA[
+	       and dep_id = #{dep_id}
+	    ]]></if>
+		<if test="dep_name != null and dep_name != '' and dep_name != 'null'"><![CDATA[
+	       and dep_name like CONCAT('%',#{dep_name},'%')
+	    ]]></if>
+
+		<if test="dep_global_id != null"><![CDATA[
+	       and dep_global_id = #{dep_global_id}
+	    ]]></if>
+
+		<if test="sup_dep_global_id != null"><![CDATA[
+	       and sup_dep_global_id = #{sup_dep_global_id}
+	    ]]></if>
+
+		<if test="dep_level != null"><![CDATA[
+	       and dep_level = #{dep_level}
+	    ]]></if>
+		<if test="dep_state != null"><![CDATA[
+	       and dep_state = #{dep_state}
+	    ]]></if>
+        <if test="_sql_where != null and _sql_where != ''"> <![CDATA[
+            and ${_sql_where}
+        ]]> </if>
+	</sql>
+    
+    <!-- 新增user_department -->
+	<insert id="insert" parameterType="com.quick.portal.userDepartment.UserDepartmentDO">
+		insert into user_department (
+    		  dep_global_id,
+    		  sup_dep_global_id,
+    		  dep_name,
+    		  dep_level,
+    		  dep_state,
+    		  cre_time,
+    		  upd_time
+		)values(
+			 #{dep_global_id},
+			 #{sup_dep_global_id},
+			 #{dep_name},
+			 #{dep_level},
+			 #{dep_state},
+			 now(),
+			 now()
+			)
+	</insert>
+		
+	<!-- 修改user_department -->
+	<update id="update" parameterType="com.quick.portal.userDepartment.UserDepartmentDO">
+		update user_department 
+		   set dep_global_id=#{dep_global_id}
+			  ,sup_dep_global_id=#{sup_dep_global_id}
+			  ,dep_name=#{dep_name}
+			  ,dep_level=#{dep_level}
+			  ,dep_state=#{dep_state}
+			  ,cre_time=now()
+			  ,upd_time=now()
+		 where dep_id = #{dep_id}
+	</update>
+    
+	<!-- 删除 -->
+	<delete id="delete" parameterType="String">
+		delete from user_department where dep_id = #{dep_id}
+	</delete>
+    
+    <!--查询-->
+	<select id="select" parameterType="map" resultType="map">
+		select d.*,s.super_dep_name from user_department d
+		  left join (select dep_global_id id, dep_name super_dep_name from user_department) s on d.sup_dep_global_id=s.id
+		<where>
+			<include refid="where" />
+		</where>
+		<choose>
+			<when test="_sql_order != null and _sql_order != ''">
+				order by d.dep_global_id,d.dep_state desc,${_sql_order}
+			</when>
+			<otherwise>
+				order by d.dep_global_id, d.dep_state desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 查询总记录数 -->
+	<select id="count" parameterType="map" resultType="int">
+		select count(*) from user_department
+		<where>
+			<include refid="where" />
+		</where>
+	</select>
+	
+    
+</mapper>

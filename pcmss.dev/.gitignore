@@ -1,0 +1,12 @@
+.classpath
+.project
+.settings/
+target/
+bin/
+.idea
+*.iml
+pcmss/src/main/resources/properties/config.properties
+pcmss/src/main/resources/properties/jdbc.properties
+pcmss/src/main/resources/profile/dev/properties/config.properties
+pcmss/src/main/resources/profile/dev/properties/jdbc.properties
+

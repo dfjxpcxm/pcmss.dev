@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	  <#include "/WEB-INF/include/reslist.html" />
+  </head>
+   <script>
+       var pageNum=1;
+       var pageSize=10;
+       var queryParm = '';
+       var flag=true;
+       var pageFlag=0;
+	   var _appid = -1;
+	//初始化表格
+	function  config(){
+	   var RFlag=$.request.queryString["RFlag"];
+	   quick.serverUrl = "${G.serverUrl}";
+	   quick.editUrl = "${G.host}/application/bizedit";
+	   quick.objName = "${G.objName}";
+	   quick.idField = "${G.idField}";
+
+	   $("#list").bootstrapTable("destroy");
+	   _gd["list"]=new BGrid("#list");
+	   _gd["list"].config({
+		   url:quick.serverUrl+"/getBizList?i=" + Math.random(),
+		   idField: quick.idField,
+		   sortName: quick.idField,
+		   cache:false,
+		   height: $(document.body).height()-50,
+		   toolbar:"#formSearch",
+		   columns: [
+			   {  checkbox: true },
+			   { field: 'app_name',  title: '应用系统名称' ,width: 95 },
+			   { field: 'pub_date',  title: '发布时间' ,width: 50 },
+			   { field: 'dep_name', title: '部门', width: 80  },
+			   { field: 'cz',  title: '操作',width: 70, align:'center', formatter:function(value,row,index){
+				   return "<button type='button' class='btn_el' onclick='edit(\""+row.app_id+"\",\""+row.app_name+"\")'>编辑</button>| "
+						   +"<button type='button' class='btn_el' onclick='del(\""+row.app_id+"\",\""+row.app_name+"\")'>删除</button>";
+				   ;
+			   }}
+		   ],onCheck:function(row,$e) {
+			   queryPage(row.app_id, row.app_name);
+		   },onUncheck:function(row,$e) {
+			   _appid = '';
+			   $("#plist").bootstrapTable("destroy");
+		   },onPageChange:function(number, size){
+				$("#IDS_PAGESIZE").val(size);
+				$("#IDS_PAGENUM").val(number);
+				pageNum=number;
+				pageSize=size;
+		   },onPostBody:function(data){
+			   if(queryParm=='' &&　(data == null || data.length == 0)){
+				   $(".no-records-found td").html('您还没有添加相关信息，请点击<a onclick="add();" href="javascript:void(0);">添加</a>');
+				   return;
+			   }
+			   if(data[0])
+				   $("#list").bootstrapTable('check',0);
+		   }
+	   });
+
+	   if(RFlag==1){
+		   requery();
+	   }else{
+		   _gd["list"].init();
+	   }
+	}
+
+    //删除记录
+    function del(node,name){
+       layer.confirm(
+		   "确认将删除【"+name+"】吗？<br/>删除后，所有关联数据将一并删除，且删除后不可恢复",
+		   {icon:3,title:"删除记录",skin: 'layer-ext-moon'},
+		   function(){
+			   $.ajax({
+				   type: "post",
+				   url: quick.serverUrl + '/delete?app_id=' + node,
+				   dataType: "json",
+				   data:{ID:node},
+				   success: function(data){
+					   layer.msg('删除记录成功', {icon:1,time: 1000,skin: 'layer-ext-moon'});
+                       _gd["list"].refresh();
+				   },
+				   error:function(err){
+					   layer.msg("结果异常",{icon:1,time: 1000,skin: 'layer-ext-moon'});
+				   }
+			   });
+		   }
+       );
+    }
+    
+	//查看详细信息
+	function edit(id){
+	    window.location.href=quick.editUrl + "?app_id="+id + getDetailParm();
+	}
+	function add(){
+		menuGoto(quick.editUrl);
+	}
+    function gopage(id){
+		location.href="${G.host}/page/list?app_id="+id;
+	}
+    //将url查询信息传至详细信息页面,返回时调用
+	function goDetail(obj){
+		var id = $(obj).attr("id");
+		navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
+		window.location.href=quick.editUrl + "?mode=browse&app_id="+id + getDetailParm();
+	}
+    function query(){
+       _gd['list'].refresh();
+       queryParm=getParm();
+    }
+    //获取返回时传回的数据
+    function requery(){
+       var pn = Number($.request.queryString["IpageNum"]) || 1;
+       var ps =  $.request.queryString["IpageSize"] || 10;
+       
+       _gd["list"].config({
+           pageSize: ps
+           ,onLoadSuccess:function(){
+               if(pageFlag>0){
+                   return;
+               }
+               $('#list').bootstrapTable('selectPage', pn);
+               pageFlag++;
+           }
+       });
+       _gd["list"].init();
+    }
+    //获取查询框数据
+	function getParm(){
+		var s = '&I'+$("#formSearch").serialize().replace(/&/g, "&I");
+		return s;
+	}
+	function getDetailParm(){
+		var s= queryParm + "&IpageNum="+pageNum+"&IpageSize="+pageSize;
+		return s;
+	}
+    function pub(){
+		var db = $("#list").bootstrapTable("getSelections");
+		if(db == null || db.length == 0){
+			layer.msg("请选择要发布的应用");
+			return;
+		}
+		var id = db[0].app_id;
+		$.post('${G.serverUrl}/update?app_id='+id, function(ds){
+			if(ds && ds.code == 1){
+				layer.alert(ds.msg);
+				query();
+			}else{
+				layer.alert("发布失败");
+			}
+		});
+	}
+	function queryPage(app_id, app_name){
+		_appid = app_id, app_name = '['+app_name+']' || '';
+		$("#plist").bootstrapTable("destroy");
+		_gd["plist"]=new BGrid("#plist");
+		_gd["plist"].config({
+			url:"${G.host}/page/getList?app_id="+app_id+"&i=" + Math.random(),
+			idField: 'page_id',
+			sortName: 'page_id',
+			toolbar:"#formSearch1",
+			cache:false,
+			pagination:false,
+			height: $(document.body).height()-50,
+			columns: [
+				{ field: 'page_name',  title: '页面'+app_name ,width: '55%' },
+				{ field: 'CZ',  title: '操作',width: '45%', align:'center', formatter:function(value,row,index){
+					return "<button type='button' class='btn_el' onclick='edit_page(\""+row.page_id+"\",\""+row.page_name+"\")'>编辑</button>| "
+							+"<button type='button' class='btn_el' onclick='del_page(\""+row.page_id+"\",\""+row.page_name+"\")'>删除</button>";
+				}}
+			],onPostBody:function(data){
+				if(queryParm=='' &&　(data == null || data.length == 0)){
+					$(".no-records-found td").html('您还没有添加相关信息，请点击<a onclick="add_page(_appid);" href="javascript:void(0);">添加</a>');
+				}
+			}
+		});
+
+		_gd["plist"].init();
+	}
+	function add_page(id){
+		if(id == ''){
+			layer.msg("您还未选择具体应用，请先点击相关应用");
+			return;
+		}
+		menuGoto('${G.host}/page/edit?app_id='+id);
+	}
+	function edit_page(id,name){
+		window.location.href="${G.host}/page/edit?page_id="+id+"&app_id="+_appid + getDetailParm();
+	}
+	function del_page(node,name){
+		layer.confirm(
+				"确认将删除页面【"+name+"】吗？<br/>删除后，所有关联数据将一并删除，且删除后不可恢复",
+				{icon:3,title:"删除记录",skin: 'layer-ext-moon'},
+				function(){
+					$.ajax({
+						type: "post",
+						url: '${G.host}/page/delete?page_id=' + node,
+						dataType: "json",
+						data:{ID:node},
+						success: function(data){
+							layer.msg('删除记录成功', {icon:1,time: 1000,skin: 'layer-ext-moon'});
+							_gd["list"].refresh();
+						},
+						error:function(err){
+							layer.msg("结果异常",{icon:1,time: 1000,skin: 'layer-ext-moon'});
+						}
+					});
+				}
+		);
+	}
+	function go_page(obj){
+	   var id = $(obj).attr("id");
+		menuGoto('${G.host}/page/edit?app_id='+_appid+"&page_id="+id);
+	}
+  </script>
+  <body class="gray-bg">
+  <div class="wrapper wrapper-content wrapper-content-x animated fadeInRight">
+	  <div class="row">
+		  <div class="col-sm-12">
+			  <div class="ibox ibox-x">
+				  <div class="ibox-content ibox-content-x">
+					  <div class="panel-mar">
+						  <form id="formSearch" class="form-inline">
+                                  <div class="form-group" style="padding: 0px;width:180px;">
+                                      <input id="app_name" name="app_name" class="input-sm form-control" type="text" placeholder="输入应用系统名称" /> 
+								  </div>
+								  <button class="btn btn-primary " type="button" onclick="query();"> 查询</button>
+								  <div class="form-group" style="width:100px;float:right;">
+									  <button type="button" class="btn btn-primary" onclick="location.href=quick.editUrl;"> 新增应用</button>
+								  </div>
+								  <div class="form-group" style="width:100px;float:right;">
+									  <button type="button" class="btn btn-primary" onclick="pub();"> 发布应用</button>
+								  </div>
+							  </form>
+					  </div>
+					  <div style ="float:left;width:60%;">
+						  <table id="list" class="table-striped" style="table-layout:fixed"></table>
+					  </div>
+					  <div id="d2" style="float:right;width:37%;">
+						  <div id="formSearch1" class="form-inline" style="height:36px;">
+							  <div class="form-group" style="width:100px;float:right;">
+								  <button type="button" class="btn btn-primary" onclick="add_page(_appid);"> 新增页面</button>
+							  </div>
+						  </div>
+						  <table id="plist" class="table-striped" style="table-layout:fixed"></table>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+		  <input type="hidden"  id="IDS_PAGENUM" name="IDS_PAGENUM">
+		  <input type="hidden"  id="IDS_PAGESIZE" name="IDS_PAGENUM">
+	  </div>
+  </div>
+  </body>
+</html>

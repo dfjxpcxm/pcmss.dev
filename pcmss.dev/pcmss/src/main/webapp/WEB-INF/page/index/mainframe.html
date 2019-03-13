@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="renderer" content="webkit">
+<title>门户主页</title>
+<meta name="keywords" content="门户主题">
+<link href="${G.host}/res/css/bootstrap.min.css?v=3.3.6"
+	rel="stylesheet">
+<link href="${G.host}/res/css/font-awesome.min.css?v=4.4.0"
+	rel="stylesheet">
+<link href="${G.host}/res/css/animate.css" rel="stylesheet">
+<link href="${G.host}/res/css/style.css?v=4.1.0" rel="stylesheet">
+<style type="text/css">
+	.nav-top{height: 54px;}
+	.nav-close{background:url(res/images/logo.png) no-repeat 35px;padding:12px 10px 17px 10px}
+/*	.navbar-static-top{margin-bottom: 0; background:url(res/images/nav.png) 100% 100%;height: 54px;}*/
+    .navbar-static-top{margin-bottom: 0; background:url(res/images/nav.png);height: 54px;}
+    .roll-right.J_tabExit {
+		height: 40px;
+		padding:0px 0px 0px 22px;
+		outline: none;
+	}
+	body.fixed-sidebar .navbar-static-side{width:200px;}
+	body.full-height-layout #page-wrapper{height:calc(100% - 54px);margin:0 0 0 200px;}
+/*	nav.page-tabs{overflow:visible;}*/
+	#side-menu li>a{color:#d4d6dc;}
+	#side-menu>li>a{padding:17px 10px 17px 10px;color:#d4d6dc;font-size:14px;}
+	#side-menu>li>a>.fa{width:18px;height:18px;font-size:18px;margin-right:10px;}
+	#side-menu>li.active>a, #side-menu .nav > li > a:hover, #side-menu .nav > li > a:focus{color:#fff;}
+	/*.nav.navbar-right > li > a:hover{background:#10597c;color:#10597c;}*/
+	.navbar-top-links li a{padding:0 22px;}
+	.hidden-xs > a i{width:20px;height:20px;font-size:20px;}
+	.navbar-static-side{background:#292d37;}
+	.nav .nav-second-level .collapse{background:#1e222e;}
+	#side-menu li > a:hover, #side-menu li > a:focus,#side-menu li > a:active{background:#448aff;color:#fff;}
+	#side-menu .nav-second-level li>a{font-size:12px;}
+	.nav-second-level li a{padding:11px 15px 11px 45px;}
+
+	.nav-third-level li a{padding:11px 15px 11px 55px;}
+	.page-tabs-content{font-size:16px;}
+	nav.page-tabs{margin-left: 15px;}
+</style>
+</head>
+<body class="fixed-sidebar full-height-layout gray-bg"
+	style="overflow: hidden">
+	<div id="wrapper">
+		<div class="row border-bottom nav-top">
+			<div style="z-index: 2034; left: 0px;" class="nav-close">
+				<p style="color:#fff;font-family:'Microsoft YaHei';font-size:16px;padding-left:60px;line-height: 100%;margin-bottom: 0;">统一管理平台</p>
+				<!-- <a class="navbar-minimalize minimalize-styl-2  btn-primary"
+                       href="#"><img  src="${G.host}/res/script/home/images/hanbao.png"> </a> -->
+			</div>
+
+			<nav class="navbar navbar-static-top" roleDO="navigation">
+				<div class="navbar-header"></div>
+				<ul class="nav navbar-top-links navbar-right">
+					<li class="hidden-xs"><a href="javascript:void(0);"
+											 onclick="javascript:location.href='home/main';"
+																		class="roll-nav roll-right J_tabExit"><i
+							class="fa fa-tasks" style="font-weight: normal;"></i> 返回领导驾驶舱</a></li>
+
+					<li class="hidden-xs"><a><!--<i class="fa fa-user"></i>-->
+							<strong class="font-bold" style="font-weight: normal;">用户：${L.user_real_name}</strong></a>
+
+					</li>
+					<li class="hidden-xs" style="margin-right:62px;"><a href="javascript:void(0);"
+											 onclick="javascript:logout();return false;"
+											 class="roll-nav roll-right J_tabExit"><i
+							class="fa fa fa-sign-out" style="font-weight: normal;"></i>退出</a></li>
+
+
+				</ul>
+			</nav>
+		</div>
+		<!--左侧导航开始-->
+		<nav style="left:0px;height:calc(100% - 54px);" class="navbar-default navbar-static-side" roleDO="navigation">
+		<!-- 	<div class="nav-close">
+				<a href="#"><img align="left"
+					src="${G.host}/res/script/home/images/logo4.png" title="系统首页"></a>
+			</div> -->
+			<div class="sidebar-collapse"
+				style="position: relative; width: auto; height: 100%; margin-top: 11px;font-size:14px;">
+				<ul class="nav" id="side-menu">
+					<li class="nav-header" id="mynode" style="display: none;"></li>
+				</ul>
+			</div>
+		</nav>
+		<!--左侧导航结束-->
+		<!--右侧部分开始-->
+		<div id="page-wrapper" class="gray-bg dashbard-1">
+			<div class="row content-tabs">
+				<button class="roll-nav  J_tabLeft" style="display: none;">
+					<i class="fa fa-backward"></i>
+				</button>
+				<nav class="page-tabs J_menuTabs">
+					<nav class="page-tabs J_menuTabs">
+						<div class="page-tabs-content">
+							<a href="javascript:;" class="active J_menuTab" data-id="i2">首页</a>
+						</div>
+					</nav>
+					<button class="roll-nav roll-right J_tabRight" style="border-left: solid 1px #eee;display: none;">
+						<i class="fa fa-forward"></i>
+					</button>
+					<div class="btn-group roll-nav roll-right">
+						<button class="dropdown J_tabClose" data-toggle="dropdown">
+							关闭<span class="caret"></span>
+						</button>
+						<ul roleDO="menu" class="dropdown-menu dropdown-menu-right">
+							<li class="J_tabShowActive"><a>定位当前选项卡</a></li>
+							<li class="J_tabCloseAll"><a>关闭全部选项卡</a></li>
+							<li class="J_tabCloseOther"><a>关闭其他选项卡</a></li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+
+			<div class="row J_mainContent" id="content-main">
+				<iframe class="J_iframe" name="iframe0" style="scrolling: no"
+					width="100%" height="100%" src="${G.host}/goIframe" frameborder="0"
+					data-id="i2" seamless></iframe>
+			</div>
+			<!--<div class="footer" style="height:30px;line-height: 30px;">
+				<div
+					style="text-align: center; font-size: 14px; color: #333333; font-family: Microsoft YaHei;"> 北京泰豪智能工程有限公司</div>
+			</div>-->
+		</div>
+		<!--右侧部分结束-->
+
+	</div>
+	<!-- 全局js -->
+	<script src="${G.host}/res/js/jquery.min.js?v=2.1.4"></script>
+	<script src="${G.host}/res/js/bootstrap.min.js?v=3.3.6"></script>
+	<script src="${G.host}/res/js/jquery.metisMenu.js"></script>
+	<script src="${G.host}/res/js/jquery.slimscroll.min.js"></script>
+	<script src="${G.host}/res/js/layer.min.js"></script>
+	<!-- 自定义js -->
+	<script src="${G.host}/res/js/hplus.js?v=4.1.0"></script>
+	<script src="${G.host}/res/js/contabs.js"></script>
+	<!-- 第三方插件 -->
+	<script src="${G.host}/res/js/pace.min.js"></script>
+	<script src="${G.host}/res/layer/layer.js"></script>
+</body>
+</html>
+<script>
+	var dt = '${data}';
+    dt = JSON.parse(dt);
+
+	if (dt == false) {
+		layer.msg('该用户没有查询菜单权限,请联系管理员！异常信息:"'+dt+'"', {
+			icon : 1,
+			time : 5000,
+			skin : 'layer-ext-seaning'
+		});
+	}
+	drawMenu("#mynode", dt);
+	function drawMenu(id, dt) {
+		var html = [];
+		drawLi(html, dt);
+		$(id).after(html.join(''));
+		function drawLi(arr, dt) {
+			for (var i = 0; i < dt.length; i++) {
+				if (dt[i].depth == 1) {
+					arr.push(' <li>');
+					if (dt[i].children == null || dt[i].children.length == 0) {
+						arr.push('	<a class="J_menuItem" tabindex='+dt[i].menuId+' href="'+dt[i].menuUrl+'" ><i class="'+dt[i].menuIconUrl+'"></i> <span class="nav-label">',
+									dt[i].menuCnName, '</span>',
+									'</a> </li>');
+					}else{
+						arr.push('	<a href="#"><i class="'+dt[i].menuIconUrl+'"></i> <span class="nav-label" >',
+							dt[i].menuCnName, '</span>',
+							' <span class="fa arrow"></span></a>');
+						
+						arr.push('<ul class="nav nav-second-level" style="font-size:14px;color:#ffffff;">');
+						drawLi(arr, dt[i].children);
+						arr.push('</ul></li>');
+					}
+
+
+				} else if (dt[i].depth > 1 && dt[i].children.length > 0) {
+					arr.push(' <li><a href="#"> ', dt[i].menuCnName,
+							'<span class="fa arrow"></span></a>',
+							'	<ul class="nav nav-third-level" style="font-size:14px;color:#ffffff">');
+					drawLi(arr, dt[i].children);
+					arr.push('	</ul>', '</li>');
+
+				} else if (dt[i].depth > 1 && dt[i].children.length == 0) {
+					arr.push('<li><a class="J_menuItem" tabindex='+dt[i].menuId+' href="'+dt[i].menuUrl+'">',
+									dt[i].menuCnName, '</a></li>');
+
+				}
+			}
+		}
+	}
+
+	function logout() {
+		layer.confirm("您好,确定退出吗?", {
+			btnAlign : 'c'
+		}, function() {
+			window.location.href = "home/logout";
+		});
+	}
+	
+	function goMain() {
+		window.location.href = "home/main";
+		
+	}
+</script>
+
+

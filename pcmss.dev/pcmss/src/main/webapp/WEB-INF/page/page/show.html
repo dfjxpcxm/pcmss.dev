@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<#include "/WEB-INF/include/resedit.html" />
+	<title>预览</title>
+    <link href="${G.host}/res/script/home/gridstack.min.css" rel="stylesheet" type="text/css" />
+	<link href="${G.host}/upload/pageTemplate/t1/style.css" rel="stylesheet" type="text/css" />
+	<link href="${G.host}/res/js/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" type="text/css" />
+    <script src="${G.host}/res/js/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="${G.host}/res/script/home/lodash.min.js" type="text/javascript"></script>
+    <script src="${G.host}/res/script/home/knockout.min.js" type="text/javascript"></script>
+    <script src="${G.host}/res/script/home/gridstack.min.js" type="text/javascript"></script>
+    <script src="${G.host}/res/js/echarts/echarts.js"></script>
+	<script src="${G.host}/res/js/indexCharts/indexChart.js"></script>
+	<script src="${G.host}/res/js/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="${G.host}/res/js/perfect-scrollbar/js/perfect-scrollbar.min.js" charset="utf-8"></script>
+</head>
+<script>
+
+var name = "";
+</script>
+<body class="qbody">
+<div class="wrapper wrapper-content animated fadeInRight qpage">
+	<div class="row">
+		<div class="col-sm-12"  style="height:25px">
+    		<div id = "date_div" style = "color:#999999;display: none;">
+				<input id="submit-form" type="button"  value="查询" onclick="getByTime();"  style="float: right;margin-right: 50px;background-color: #2ca4b0;border:1px solid #2ca4b0;height:24px;color:#fff">
+			   	 <input class="input_date time1" id="enddate" name="enddate" type="text" onclick="WdatePicker({skin:'whyGreen',dateFmt: 'yyyy'})" readonly="readonly" style="background-color: transparent;float: right;margin-right: 20px;width:85px;border: 1px solid #d2d2d2;text-align: center;display: none"/>
+			   	 <input class="input_date time2" id="enddate" name="enddate" type="text" onclick="WdatePicker({skin:'whyGreen',dateFmt: 'yyyyMM'})" readonly="readonly" style="background-color: transparent;float: right;margin-right: 20px;width:85px;border: 1px solid #d2d2d2;text-align: center;display: none"/>
+			     <label style="float: right;margin-right: 10px;">结束时间</label>
+			     <input class="input_date time1" id="statedate" name="statedate" type="text" onclick="WdatePicker({skin:'whyGreen',dateFmt: 'yyyy'})" readonly="readonly" style="background-color: transparent;float: right;margin-right:20px;width:85px;border: 1px solid #d2d2d2;text-align: center;display: none"/>
+			     <input class="input_date time2" id="statedate" name="statedate" type="text" onclick="WdatePicker({skin:'whyGreen',dateFmt: 'yyyyMM'})" readonly="readonly" style="background-color: transparent;float: right;margin-right:20px;width:85px;border: 1px solid #d2d2d2;text-align: center;display: none"/>
+			     <label style="float: right;margin-right: 10px;">开始时间</label>
+	    	</div>
+        </div>
+        <div class="col-sm-12">
+            <div class="container-fluid qmain">
+                <div id="box" class="grid-stack qbox" data-bind="component: {name: 'dashboard-grid', params: $data}"></div>
+            </div>
+        </div>
+	</div>
+</div>
+
+</body>
+<script>
+	var tData = [];
+	var co = [];
+    var _tmpls={},_layout = [],_ca,_metUrl='${MEASURES_URL}';
+    function config() {
+        quick.serverUrl = "${G.serverUrl}";
+        quick.objName = "${G.objName}";
+        quick.idField = "${G.idField}";
+        quick.listUrl = quick.serverUrl + "/list";
+        
+    }
+    function getMetricData(metricList){
+    	$.ajax({
+           url:_metUrl,
+            data:{meaId:metricList,to:2017,from:1990},
+            type:'get',
+            success:function(res){
+            	if (res.code>0) {
+            		tData = res.data.measure;
+                	add(res.data.measure,name,co,_layout,'1990','2017','');
+                	sendLog(52,"业务监测应用指标预览功能");
+				}else{
+				      layer.alert('error:'+res.msg);
+				      return false;
+				  }
+            }
+        });
+    }
+	window.onload = function() {
+        /*加载数据*/
+        var mode = $.request.queryString["mode"];
+        var sysid=$.request.queryString["page_id"];
+        var rid= $.request.queryString["app_id"];
+        if(localStorage.pageLayout != null)
+                _layout = JSON.parse(localStorage.pageLayout);
+        co = JSON.parse(localStorage.pageShow);
+        for(var i = 0; i < _layout.length;i++){
+        	_layout[i].sid = 's'+_layout[i].no;
+        }
+		initLayout();
+		var metricList = '';
+		var met = [];
+		for (var j = 0; j < co.length; j++) {
+			met.push(co[j].metric_id);
+		}
+		met = onlyData(met);
+		for (var k = 0; k < met.length; k++) {
+			if (j ==met.length-1) {
+				metricList= metricList+met[k];
+			}else{
+				metricList= metricList+met[k]+',';
+			} 
+		}
+		getMetricData(metricList);
+	}
+	// add(data1,name,co,_layout); 
+    function initPlugin(){
+        ko.components.register('dashboard-grid', {
+            viewModel: {
+                createViewModel: function (controller, componentInfo) {
+                    var ViewModel = function (controller, componentInfo) {
+                        var grid = null;
+
+                        this.widgets = controller.widgets;
+
+                        this.afterAddWidget = function (items) {
+                            if (grid == null) {
+                                grid = $(componentInfo.element).find('.grid-stack').gridstack({
+                                    cell_height:40,
+                                    vertical_margin:10,
+                                    auto: false
+                                }).data('gridstack');
+                            }
+
+                            var item = _.find(items, function (i) { return i.nodeType == 1 });
+                            grid.add_widget(item);
+
+							add(data1,name,co,_layout,'1990','2017','');
+                            ko.utils.domNodeDisposal.addDisposeCallback(item, function () {
+                                grid.remove_widget(item);
+                            });
+                        };
+                    };
+
+                    return new ViewModel(controller, componentInfo);
+                }
+            },
+            template:
+                    [
+                        '<div class="grid-stack" data-bind="foreach: {data: widgets, afterRender: afterAddWidget}">',
+                        '   <div class="grid-stack-item" data-bind="attr: {\'id\': $data.sid,\'data-gs-x\': $data.x, \'data-gs-y\': $data.y, \'data-gs-width\': $data.width, \'data-gs-height\': $data.height, \'data-gs-auto-position\': $data.auto_position}">',
+                        '       <div class="grid-stack-item-content"></div>',
+                        '   </div>',
+                        '</div> '
+                    ].join('')
+        });
+        window.Controller = function (widgets) {
+            var self = this;
+
+            this.widgets = ko.observableArray(widgets);
+
+            this.add_new_widget = function () {
+                var cc = controller.widgets().length || 1;
+                this.widgets.push({
+                    x: 0,
+                    y: 0,
+                    width: 4,
+                    height: 2,
+                    id:0,
+                    no:(cc+1),
+                    auto_position: true
+                });
+            };
+
+            this.delete_widget = function (item) {
+                self.widgets.remove(item);
+            };
+        };
+
+        var controller = new Controller(_layout);
+        ko.applyBindings(controller);
+        _ca = controller.widgets;
+    }
+    function initLayout(){
+		var str = [];
+		for(var i = 0; i < _layout.length; i++){
+			var n = _layout[i];
+			 var s =  _layout[i].no;
+			str.push('<div class="grid-stack-item" data-gs-x="',n.x,'" data-gs-y="',n.y,'" data-gs-width="',n.width,'" data-gs-height="',n.height,'" data-gs-auto-position="true">');
+				str.push('<div class="grid-stack-item-content qsection" id = "qsection_s'+s+'" ondblclick ="lcd('+s+');"><div id="', n.sid,'" class="_qbody"></div></div>');
+			str.push('</div>');
+		}
+		$("#box").html(str.join(''));
+
+		var ch = getCH();
+		$('.grid-stack').gridstack({
+			cellHeight:ch,
+			staticGrid:true
+		});
+		function getCH(){
+			var h = 4;
+			$("#box").find(".grid-stack-item").each(function(){
+				var xh = parseInt(this.dataset.gsY) + parseInt(this.dataset.gsHeight);
+				if(xh > h)
+					h = xh;
+			});
+			if(h>12) h = 12;
+			return $(window).height() /h*0.93 - 20;
+		}
+		$('.qsection').css('overflow','hidden');
+    	$('.ps__thumb-y').css('display','none');
+    }
+
+    function find_sec(no){
+        var arr = _ca();
+        for(var i = 0; i< arr.length; i++){
+            if(arr[i].no == no)
+                return arr[i];
+        }
+        return null;
+    }
+    
+    var id_s = '';
+    var sid = '';
+    function lcd(q){
+    	var id = "#qsection_s"+q;
+    	var f = false;
+    	for (var i = 0; i < co.length; i++) {
+			if (q == co[i].section_id&&(co[i].time_dim == 'nonth'||co[i].time_dim == 'year,nonth')) {
+				f = true;
+			}
+		}
+    	$('.input_date').css('display','none');
+    	if (id_s!='') {
+    		if (id_s == id) {
+    			id_s = ''
+    				$(id).css('border-color','#fff');
+    				$("#date_div").css('display','none');
+			}else {
+				$(id_s).css('border-color','#fff');
+				id_s = id;
+				$(id).css('border-color','#09a5ab');
+				$("#date_div").css('display','');
+				if (f == true) {
+					$('.time2').css('display','');
+            		$('#statedate').val('199001');
+                	$('#enddate').val('201712');
+				}else {
+					$('.time1').css('display','');
+            		$('#statedate').val('1990');
+                	$('#enddate').val('2017');
+				}
+			}
+		}else {
+			id_s = id;
+			$(id).css('border-color','#09a5ab');
+			$("#date_div").css('display','');
+			if (f == true) {
+				$('.time2').css('display','');
+				$('#statedate').val('199001');
+            	$('#enddate').val('201712');
+			}else {
+				$('.time1').css('display','');
+				$('#statedate').val('1990');
+            	$('#enddate').val('2017');
+			}
+		}
+    	sid = "s"+q;
+    }
+  function getByTime(){
+	if (sid != '') {
+    	add(tData,name,co,_layout,$('#statedate').val(),$('#enddate').val(),sid);
+    	$('#statedate').val($('#statedate').val());
+    	$('#enddate').val($('#enddate').val());
+	}else {
+		alert('请先双击选中栏目！');
+	}
+  }
+  
+  function sendLog(id,mn){
+	  $.ajax({
+		  type: "post",
+		  url:  'sendLog?T='+Math.random(),
+		  data:{menuId:id,menuNm:mn},
+		  success: function(data){
+		  }
+	  });
+  }
+
+</script>
+</html>

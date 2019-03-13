@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <#include "/WEB-INF/include/resedit.html" />
+    <style>
+        .param{
+            width:100%;
+            height: 900px;
+            /*border:1px solid #e5e6e7;*/
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-sm-10">
+                <div class="col-sm-12">
+                    <label id="pagename" class="col-xs-8" style="text-align:center;font-size: 22px;color:blue;margin-left: 180px"></label>
+                </div>
+            </div>
+            <!--<div class="col-sm-2">-->
+                <!--<div class="pull-right ibox-toolbars hidefield" style="margin-right:100px;margin-top:2px;">-->
+                    <!--<button type="button" class="btn btn-primary" onclick="downAttachement();">下载附件</button>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="col-sm-2">
+                <div class="pull-right ibox-toolbars hidefield" style="margin-right: -1px;margin-top: 2px;">
+                    <button type="button" id ="btn_cancel" class="btn btn-primary" style="display:block;" onclick="cancel();">返回</button>
+                </div>
+            </div>
+
+
+            <div class="ibox">
+                <div class="ibox-content ibox-content-ad" style="margin-top: 25px;">
+                    <form id="form" name="form" method="post"  class="wizard-big addForm" enctype="multipart/form-data" accept="image/jpg, image/png">
+                        <div class="row">
+                            <div class="col-xs-9 param"><textarea  class="param " id="msg_content" name="msg_content" style="border:1px solid #e5e6e7"></textarea></div>
+                        </div>
+                    </form>
+                    <input id="msg_attachment" name="msg_attachment" type="hidden"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+    function config() {
+        quick.serverUrl = "${G.serverUrl}";
+        quick.objName = "${G.objName}";
+        quick.idField = "${G.idField}";
+        quick.listUrl = quick.serverUrl + "/list";
+    }
+
+    function setFormData(obj) {
+        if (!obj) {
+            obj = request.getAll();
+        } else if (typeof (obj) == "string") {
+            obj = eval("(" + obj + ")");
+        }
+        for(var name in obj){
+            var value = obj[name]=== null ? '': obj[name];
+            var node = document.getElementsByName(name);
+            if(node == null || node.length ==0){
+                _selector = $("#"+name);
+            }else {
+                _selector = $(node)
+            }
+
+            if(_selector == null || _selector.length == 0){
+                continue;
+            }
+            var ty = _selector[0].nodeName.toLowerCase();
+            if(ty == "textarea"){
+                _selector.text(value);
+            }
+        }
+
+    }
+    window.onload = function() {
+        /*加载数据*/
+        var mode = $.request.queryString["mode"];
+        var sysid = $.request.queryString["msg_id"];
+        var fg = $.request.queryString["fg"];
+        if(fg =="i"){
+        	document.getElementById("btn_cancel").style.display="none"; 
+        }
+        if (sysid) {
+            $('#pagename').html("内容详细");
+            $("input,textarea").attr("placeholder", "");
+            $(".hidefield").show();
+            $.post(quick.serverUrl + '/getMsgDetail?msg_id=' + sysid + "&i=" + Math.random(), function (data) {
+                if(data.flag == "0"){
+                	  layer.msg(data.msg,{icon:1,time: 2000,skin: 'layer-ext-moon'}); 
+    				  return ;
+                }
+                setFormData(data);
+                if (mode == "browse") {
+                    viewRead();
+                }
+            });
+        }
+    };
+    function cancel(){
+//        var url = quick.serverUrl+"/mesappr";
+//        window.location.href = url;
+        window.history.back();
+    }
+    function downAttachement() {
+        var a = $("#msg_attachment").val()
+        window.location.href = quick.serverUrl+"/downloadFile?msg_content="+a ;
+    }
+</script>
+</html>
