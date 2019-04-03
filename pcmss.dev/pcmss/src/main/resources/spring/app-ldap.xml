@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	
+	<bean id="ldapSource"
+		class="org.springframework.ldap.core.support.LdapContextSource">
+		<property name="url" value="ldap://192.168.52.137:389" />
+		<property name="password" value="ldap123" />
+		
+		<property name="base" value="dc=pcdomain,dc=com"/>
+		<property name="userDn" value="cn=Manager,dc=pcdomain,dc=com" />
+		<!--
+		<property name="base" value="dc=pcdomain,dc=com" />
+		<property name="url" value="ldap://192.168.54.152:34083" />
+		<property name="url" value="ldap://192.168.54.169:389" />
+		<property name="password" value="19820914" />
+		-->
+
+	<!--	<property name="url" value="ldap://localhost:389" />
+		<property name="base" value="ou=citizen,dc=tcs,dc=com" />
+		<property name="userDn" value="cn=Manager,ou=citizen,dc=tcs,dc=com" />
+		<property name="password" value="secret" />
+		<property name="referral" value="follow"></property>-->
+	</bean>
+
+	 <bean id="ldapTemplate"   
+        class="org.springframework.ldap.core.LdapTemplate">   
+        <constructor-arg ref="ldapSource" />   
+    </bean>  
+    
+	 <bean id="userLdapMngDao" class="com.quick.portal.ldapmng.UserLdapMngDaoImpl">
+        <property name="ldapTemplate">   
+            <ref bean="ldapTemplate" />   
+        </property>
+    </bean>
+
+	<bean id="orgLdapMngDao" class="com.quick.portal.ldapmng.OrgLdapMngDaoImpl">
+		<property name="ldapTemplate">
+			<ref bean="ldapTemplate" />
+		</property>
+	</bean>
+</beans>
+
+
+
+
+

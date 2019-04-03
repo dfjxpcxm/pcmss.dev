@@ -20,8 +20,12 @@ package com.quick.portal.userDepartment;
 
 import com.quick.core.base.ISysBaseDao;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * user_department数据访问接口
  */
 public interface IUserDepartmentDao<UserDepartmentDO> extends ISysBaseDao<UserDepartmentDO> {
+    List<Map<String, Object>> getOrgInfoByIds(int orgid);
 }

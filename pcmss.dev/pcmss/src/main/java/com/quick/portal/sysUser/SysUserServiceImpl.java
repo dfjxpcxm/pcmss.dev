@@ -21,10 +21,13 @@ package com.quick.portal.sysUser;
 
 import com.quick.core.base.SysBaseService;
 import com.quick.core.base.model.DataStore;
+import com.quick.portal.ldapmng.IUserLdapMngDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,11 +55,22 @@ public class SysUserServiceImpl extends SysBaseService<SysUserDO> implements ISy
 
     private ISysUserDao<SysUserDO> dao;
 
+
+    @Resource(name = "userLdapMngDao")
+    private IUserLdapMngDao userLdapMngDao;
+
     @Override
     public DataStore save(SysUserDO sysUserDO) {
         if (sysUserDO.getUser_password() == null || sysUserDO.getUser_password().equals(""))
             sysUserDO.setUser_password("21232f297a57a5a743894a0e4a801fc3");
         sysUserDO.setRoles(String.join(",", sysUserDO.getRole_ids()));
+        Integer val = sysUserDO.getUser_id();
+
+        if(val == null || val == 0) {
+            userLdapMngDao.saveUserLdapInfo(sysUserDO);
+        }else{
+            userLdapMngDao.updateUserLdapInfo(sysUserDO);
+        }
         return super.save(sysUserDO);
     }
 
@@ -68,8 +82,15 @@ public class SysUserServiceImpl extends SysBaseService<SysUserDO> implements ISy
     @Override
     public DataStore delete(String user_id) {
         SysUserDO sysUserDO = new SysUserDO();
-
         sysUserDO.setUser_id(Integer.valueOf(user_id));
+        Map<String, Object> m = new HashMap<>();
+        m.put("user_id",sysUserDO.getUser_id());
+        List<SysUserDO> retList = dao.getUserInfo(m);
+        SysUserDO sysVO = null;
+        if(null != retList && !retList.isEmpty()){
+            sysVO = retList.get(0);
+        }
+        userLdapMngDao.removeUserLdapInfo(sysVO.getUser_name());
         dao.delete(sysUserDO);
         if (sysUserDO.getError_no() == 1)
             return ActionMsg.setOk("操作成功");
@@ -125,11 +146,31 @@ public class SysUserServiceImpl extends SysBaseService<SysUserDO> implements ISy
 
     public DataStore updatePassword(SysUserDO sysUserDO){
         int c = dao.updatePassword(sysUserDO);
-
         if (c == 1)
             return ActionMsg.setOk("密码修改成功");
         else
             return ActionMsg.setError("密码修改失败");
+    }
+
+
+
+    public DataStore syncUserLdap(String userid){
+        int uid  = Integer.valueOf(userid);
+        List<Map<String, Object>> retList = dao.getUserInfoByIds(uid);
+        if(null !=retList && !retList.isEmpty()){
+            SysUserDO sysUserDO = null;
+            for(Map<String, Object> mp:retList){
+                sysUserDO = new SysUserDO();
+                sysUserDO.setUser_real_name(mp.get("user_real_name").toString());
+                sysUserDO.setUser_name(mp.get("user_real_name").toString());
+                sysUserDO.setUser_email(mp.get("user_email").toString());
+                sysUserDO.setUser_state(Integer.valueOf(mp.get("user_state").toString()));
+                sysUserDO.setUser_password(mp.get("user_password").toString());
+                sysUserDO.setUser_tel(mp.get("user_tel").toString());
+                userLdapMngDao.saveUserLdapInfo(sysUserDO);
+            }
+        }
+        return ActionMsg.setOk("同步LDAP用户成功");
     }
 
 }

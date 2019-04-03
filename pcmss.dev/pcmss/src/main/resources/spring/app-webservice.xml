@@ -13,7 +13,7 @@
 
 	<jaxws:endpoint id="intlDataSynchronizedService"
 					implementor="com.quick.portal.security.synchrodata.internal.DataSynchronizedWsdlImpl"
-					address="${portal.webservice}/portal/intlDataSynchronizedService" />
+					address="${portal.webservice}/pcmss/intlDataSynchronizedService" />
 
 
 

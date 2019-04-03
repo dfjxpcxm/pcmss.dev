@@ -202,4 +202,12 @@ public class SysUserController extends SysBaseController<SysUserDO> {
                 userName,operatedUser,operateType,requestResult,operLog,serviceName,ip);
     }
 
+
+
+    @RequestMapping(value = "/syncUserLdap")
+    @ResponseBody
+    public DataStore syncUserLdap(String userids) {
+        DataStore ds = sysUserService.syncUserLdap(userids);
+        return ds;
+    }
 }

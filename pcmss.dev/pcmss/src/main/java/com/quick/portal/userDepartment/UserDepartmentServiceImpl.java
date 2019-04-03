@@ -18,15 +18,20 @@
  */
 package com.quick.portal.userDepartment;
 
-import com.quick.core.base.SysBaseService;
 import com.quick.core.base.ISysBaseDao;
+import com.quick.core.base.SysBaseService;
+import com.quick.core.base.model.DataStore;
+import com.quick.core.util.common.DateTime;
+import com.quick.portal.ldapmng.IOrgLdapMngDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.quick.core.base.model.DataStore;
-import com.quick.core.util.common.DateTime;
 
+import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * user_department服务实现类
@@ -47,6 +52,9 @@ public class UserDepartmentServiceImpl extends SysBaseService<UserDepartmentDO> 
     
     @Autowired
     private IUserDepartmentDao dao;
+
+    @Resource(name = "orgLdapMngDao")
+    private IOrgLdapMngDao orgLdapMngDao;
     
     @Override
     public ISysBaseDao getDao(){
@@ -71,10 +79,12 @@ public class UserDepartmentServiceImpl extends SysBaseService<UserDepartmentDO> 
 			entity.setUpd_time( now );  //修改时间
 
             c = dao.insert(entity);
+            orgLdapMngDao.saveOrgLdapInfo(entity);
         }else {
             entity.setUpd_time( now );  //修改时间
 
             c = dao.update(entity);
+            orgLdapMngDao.updateOrgLdapInfo(entity);
         }
         if(c == 0)
             return ActionMsg.setError("操作失败");
@@ -89,7 +99,37 @@ public class UserDepartmentServiceImpl extends SysBaseService<UserDepartmentDO> 
      */
     @Override
     public DataStore delete(String sysid) {
+        Map<String, Object> m = new HashMap<>();
+        m.put("dep_id",Integer.parseInt(sysid));
+        List<Map<String, Object>> retList = dao.select(m);
+        Map<String, Object> mp = null;
+        if(null != retList && !retList.isEmpty()){
+           mp =retList.get(0);
+        }
+        String depId = mp.get("dep_global_id").toString();
+        orgLdapMngDao.removeOrgLdapInfo(depId);
         dao.delete(sysid);
         return ActionMsg.setOk("操作成功");
     }
+
+
+
+    public DataStore syncOrgLdap(String orgids){
+        int oid = Integer.valueOf(orgids);
+        List<Map<String, Object>> retList = dao.getOrgInfoByIds(oid);
+        if(null !=retList && !retList.isEmpty()){
+            UserDepartmentDO depDO = null;
+            for(Map<String, Object> mp:retList){
+                depDO = new UserDepartmentDO();
+                depDO.setDep_global_id(mp.get("dep_global_id").toString());
+                depDO.setDep_name(mp.get("dep_name").toString());
+                depDO.setDep_state(Integer.valueOf(mp.get("dep_state").toString()));
+                depDO.setSup_dep_global_id(mp.get("sup_dep_global_id").toString());
+                orgLdapMngDao.saveOrgLdapInfo(depDO);
+            }
+        }
+        return ActionMsg.setOk("同步LDAP用户成功");
+    }
+
+
 }

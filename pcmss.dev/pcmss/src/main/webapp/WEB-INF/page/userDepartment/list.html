@@ -16,10 +16,15 @@
                                 <input id="dep_name" name="dep_name" class="input-sm form-control" type="text"
                                        placeholder="输入部门名称"/>
                             </div>
-                            <span class="input-group-btn" style="display:inline-block;"><button class="btn btn-primary "
+                            <span class="input-group-btn" style="display:inline-block;left: auto;width:120px;"><button class="btn btn-primary "
                                                                                                 type="button"
                                                                                                 onclick="query();"> 查询</button> </span>
-                            <div class="form-group" style="width:100px;float:right;">
+                            <div class="form-group" style="left: auto;width:120px;">
+                                <span class="input-group-btn" style="display:inline-block;"><button
+                                        class="btn btn-primary " type="button"
+                                        onclick="sync();"> 同步机构</button></span>
+                            </div>
+                            <div class="form-group" style="left: auto;width:180px;">
                                 <button type="button" class="btn btn-primary" onclick="location.href='edit';"> 新增部门
                                 </button>
                             </div>
@@ -188,6 +193,42 @@
     function getDetailParm() {
         var s = queryParm + "&IpageNum=" + pageNum + "&IpageSize=" + pageSize;
         return s;
+    }
+
+    function sync(){
+        var orgs = [];
+        $("input:checkbox[name='btSelectItem']:checked").each(function () { // 遍历name=test的多选框
+            orgs.push($(this).val());
+        });
+
+        if (orgs.length === 0) {
+            layer.msg("请至少选择一个机构", {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+            return;
+        }
+
+        var infoBefore = "确认将【 " + orgs.length + " 】个机构同步到LDAP吗？<br/>同步后，机构将可正常显示！";
+        var infoAfter = "同步机构到LDAP成功！";
+        var title = "同步机构到LDAP";
+
+        layer.confirm(
+            infoBefore,
+            {icon: 3, title: title, skin: 'layer-ext-moon'},
+            function () {
+                $.ajax({
+                    type: "post",
+                    url: quick.serverUrl + '/syncOrgLdap?orgids=' + orgs,
+                    dataType: "json",
+                    //data:{ID:node},
+                    success: function (data) {
+                        layer.msg(infoAfter, {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+                        //                       _gd["list"].refresh();
+                    },
+                    error: function (err) {
+                        layer.msg("结果异常！", {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+                    }
+                });
+            }
+        );
     }
 </script>
 </html>

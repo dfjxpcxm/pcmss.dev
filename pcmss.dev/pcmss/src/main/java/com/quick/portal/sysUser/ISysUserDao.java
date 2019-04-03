@@ -51,4 +51,7 @@ public interface ISysUserDao<SysUserDO> extends ISysBaseDao<SysUserDO> {
     List<SysUserDO> getUserInfo(Map<String, Object> m);
 
     int delete(SysUserDO sysUserDO);
+
+
+	List<Map<String,Object>> getUserInfoByIds(int userId);
 }

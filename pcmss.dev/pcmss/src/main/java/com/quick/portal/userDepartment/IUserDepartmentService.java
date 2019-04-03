@@ -19,9 +19,11 @@
 package com.quick.portal.userDepartment;
 
 import com.quick.core.base.ISysBaseService;
+import com.quick.core.base.model.DataStore;
 
 /**
  * user_department服务接口
  */
 public interface IUserDepartmentService extends ISysBaseService<UserDepartmentDO> {
+    DataStore syncOrgLdap(String orgIds);
 }

@@ -30,17 +30,22 @@
                                 </select>
                             </div>
 
-                            <div class="form-group" style="padding-left: 5px;width:180px;">
+                            <div class="form-group" style="padding-left: 5px;width:120px;">
                                 <select class="form-control form-control-green select_change" id="file_state" name="file_state">
                                 </select>
                             </div>
-                            <div class="form-group" style="left: auto;width:90px;">
+                            <div class="form-group" style="left: auto;width:80px;">
                                 <span class="input-group-btn" style="display:inline-block;"><button
                                         class="btn btn-primary " type="button" onclick="query();"> 查询</button> </span>
                             </div>
 
+                            <div class="form-group" style="left: auto;width:80px;">
+                                <span class="input-group-btn" style="display:inline-block;"><button
+                                        class="btn btn-primary " type="button"
+                                        onclick="syncUserLdap();"> 同步用户</button></span>
+                            </div>
 
-                            <div class="form-group" style="left: auto;width:90px;">
+                            <div class="form-group" style="left: auto;width:80px;">
                                 <span class="input-group-btn" style="display:inline-block;"><button
                                         class="btn btn-primary " type="button"
                                         onclick="location.href='edit';"> 新增用户</button></span>
@@ -88,6 +93,7 @@
             height: $(document.body).height() - 50,
             toolbar: "#formSearch",
             columns: [
+                {checkbox: true},
                 {field: 'user_id', title: '用户ID', width: 70, align: 'center'},
                 {field: 'user_name', title: '用户名称', width: 90, align: 'center'},
                 {field: 'role_name', title: '角色名称', width: 100, align: 'center'},
@@ -319,6 +325,42 @@
     function getDetailParm() {
         var s = queryParm + "&IpageNum=" + pageNum + "&IpageSize=" + pageSize;
         return s;
+    }
+
+    function syncUserLdap(){
+        var users = [];
+        $("input:checkbox[name='btSelectItem']:checked").each(function () { // 遍历name=test的多选框
+            users.push($(this).val());
+        });
+
+        if (users.length === 0) {
+            layer.msg("请至少选择一个用户", {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+            return;
+        }
+
+        var infoBefore = "确认将【 " + users.length + " 】个用户同步到LDAP吗？<br/>同步后，用户将可正常显示！";
+        var infoAfter = "同步用户到LDAP成功！";
+        var title = "同步用户到LDAP";
+
+        layer.confirm(
+            infoBefore,
+            {icon: 3, title: title, skin: 'layer-ext-moon'},
+            function () {
+                $.ajax({
+                    type: "post",
+                    url: quick.serverUrl + '/syncUserLdap?userids=' + users,
+                    dataType: "json",
+                    //data:{ID:node},
+                    success: function (data) {
+                        layer.msg(infoAfter, {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+ //                       _gd["list"].refresh();
+                    },
+                    error: function (err) {
+                        layer.msg("结果异常！", {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+                    }
+                });
+            }
+        );
     }
 
 </script>

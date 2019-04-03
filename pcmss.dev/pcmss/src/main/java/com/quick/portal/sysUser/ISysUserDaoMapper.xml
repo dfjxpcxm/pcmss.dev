@@ -302,6 +302,11 @@
     </select>
 
 
+	<select id="getUserInfoByIds" parameterType="int" resultType="map">
+		SELECT su.* FROM  sys_user su WHERE  su.user_id = #{user_id}
+	</select>
+
+
 	<resultMap id="userInfoMap" type="com.quick.portal.sysUser.SysUserDO">
 		<id property="user_id" column="user_id"/>
 		<result property="user_name" column="user_name"/>
