@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quick.portal.interfaceManage.interfaceAuthorization.IInterfaceAuthorizationDao">
+
+    <!--查询条件-->
+	<sql id="where">
+		1=1
+		<if test="inter_id != null"><![CDATA[
+	       and inter_id = #{inter_id}
+	    ]]></if>
+		<if test="inter_name != null and inter_name != '' and inter_name != 'null'"><![CDATA[
+	       and inter_name like CONCAT('%',#{inter_name},'%')
+	    ]]></if>
+
+
+        <if test="_sql_where != null and _sql_where != ''"> <![CDATA[
+            and ${_sql_where}
+        ]]> </if>
+	</sql>
+    
+    <!-- 新增user_department -->
+	<insert id="insert" parameterType="com.quick.portal.interfaceManage.interfaceAuthorization.InterfaceAuthorizationDO">
+		insert into interface_info (
+    		  inter_id,
+    		  inter_name,
+    		  inter_path,
+    		  inter_desc,
+    		  inter_state,
+    		  operator,
+    		  category,
+    		  cre_time,
+    		  upd_time
+		)values(
+			 #{inter_id},
+			 #{inter_name},
+			 #{inter_path},
+			 #{inter_desc},
+			 #{inter_state},
+			 #{operator},
+			 #{category},
+			 now(),
+			 now()
+			)
+	</insert>
+		
+	<!-- 修改user_department -->
+	<update id="update" parameterType="com.quick.portal.interfaceManage.interfaceAuthorization.InterfaceAuthorizationDO">
+		update interface_info
+		   set inter_id=#{inter_id}
+			  ,inter_name=#{inter_name}
+			  ,inter_path=#{inter_path}
+			  ,inter_desc=#{inter_desc}
+			  ,inter_state=#{inter_state}
+			  ,operator=#{operator}
+			  ,category=#{category}
+			  ,cre_time=now()
+			  ,upd_time=now()
+		 where inter_id = #{inter_id}
+	</update>
+    
+	<!-- 删除 -->
+	<delete id="delete" parameterType="String">
+		delete from interface_info where inter_id = #{inter_id}
+	</delete>
+    
+    <!--查询-->
+	<select id="select" parameterType="map" resultType="map">
+		select * from interface_info
+		<where>
+			<include refid="where" />
+		</where>
+	</select>
+	
+	<!-- 查询总记录数 -->
+	<select id="count" parameterType="map" resultType="int">
+		select count(*) from interface_info
+		<where>
+			<include refid="where" />
+		</where>
+	</select>
+	
+    
+</mapper>

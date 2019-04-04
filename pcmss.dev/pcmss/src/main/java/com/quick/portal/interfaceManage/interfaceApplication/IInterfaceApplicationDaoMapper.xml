@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quick.portal.interfaceManage.interfaceApplication.IInterfaceApplicationDao">
+
+    <!--查询条件-->
+	<sql id="where">
+		1=1
+		<if test="app_id != null"><![CDATA[
+	       and app_id = #{app_id}
+	    ]]></if>
+		<if test="app_usename != null and app_usename != '' and app_usename != 'null'">
+			<![CDATA[
+	       and app_usename like CONCAT('%',#{app_usename},'%')
+	    ]]></if>
+		<if test="inter_id != null and inter_id != '' and inter_id != 'null'"><![CDATA[
+	       and inter_id like CONCAT('%',#{inter_id},'%')
+	    ]]></if>
+		<if test="inter_id != null and inter_id != '' and inter_id != 'null'"><![CDATA[
+	       and interface_app_managent.inter_id like CONCAT('%',#{interface_inter.inter_id},'%')
+	    ]]></if>
+        <if test="_sql_where != null and _sql_where != ''"> <![CDATA[
+            and ${_sql_where}
+        ]]> </if>
+	</sql>
+    
+    <!-- 新增user_department -->
+	<insert id="insert" parameterType="com.quick.portal.interfaceManage.interfaceApplication.InterfaceApplicationDO">
+		insert into interface_app_managent (
+    		  app_id,
+    		  app_usename,
+    		  app_reason,
+    		  inter_id,
+    		  cre_time,
+    		  upd_time,
+
+		)values(
+			 #{app_id},
+			 #{app_usename},
+			 #{app_reason},
+			 #{inter_id},
+			 now(),
+			 now()
+			)
+	</insert>
+		
+	<!-- 修改user_department -->
+	<update id="update" parameterType="com.quick.portal.interfaceManage.interfaceApplication.InterfaceApplicationDO">
+		update interface_app_managent
+		   set app_id=#{app_id}
+			  ,app_usename=#{app_usename}
+			  ,app_reason=#{app_reason}
+			  ,inter_id=#{inter_id}
+			  ,cre_time=now()
+			  ,upd_time=now()
+		 where app_id = #{app_id}
+	</update>
+    
+	<!-- 删除 -->
+	<delete id="delete" parameterType="String">
+		delete from interface_app_managent where app_id = #{app_id}
+	</delete>
+    
+    <!--查询-->
+	<select id="select" parameterType="map" resultType="map">
+		select interface_app_managent.*,interface_info.inter_name,interface_info.inter_path,interface_info.inter_state from interface_app_managent ,interface_info
+		<where>
+			<include refid="where" />
+		</where>
+	</select>
+	
+	<!-- 查询总记录数 -->
+	<select id="count" parameterType="map" resultType="int">
+		select count(*) from interface_app_managent
+		<where>
+			<include refid="where" />
+		</where>
+	</select>
+	
+    
+</mapper>
