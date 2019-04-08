@@ -38,4 +38,13 @@ public class SynchronizedDataConstants {
 	 public static final int DEFAULT_USER_ENABLE_STAT = 1;
 
 
+	public static final String CRED_USER_TYPE = "CREDENCE_00001";
+	public static final String PWD_USER_TYPE = "CREDENCE_00002";
+
+	public static final String CRED_DEFAULT_USER = "123456";
+
+
+	public static final String CRED_DEFAULT_LOGIN_NICK_NAME = "cert_nick";
+
+
 }
