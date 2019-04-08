@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quick.portal.infoPush.userBehavior.IUserBehaviorDao">
+
+   
+    
+    <!-- 新增page -->
+	<insert id="insert" parameterType="com.quick.portal.infoPush.userBehavior.IUserBehaviorDao">
+		insert into index_info (
+    		  index_id,
+    		  index_name,
+    		  index_value,
+    		  pub_time,
+    		  appr_time
+		)values(
+			 #{index_id},
+			 #{index_name},
+			 #{index_value},
+			 #{pub_time},
+			 #{appr_time}
+		);
+		
+	</insert>
+		
+	
+    <!--查询-->
+	<select id="select" parameterType="map" resultType="map">
+		select * from index_info
+		
+	</select>
+	
+	
+
+
+    
+</mapper>
