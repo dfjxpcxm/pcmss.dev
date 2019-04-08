@@ -22,5 +22,12 @@ public interface IUserLdapMngDao{
 	 * 新增LDAP用户信息 
 	 */
 	public void removeUserLdapInfo(String userid);
+
+
+
+	/*
+	 *查询LDAP用户信息
+	 */
+	public int searchUserLdapCnt(SysUserDO person);
 	
 }

@@ -117,15 +117,22 @@ public class UserDepartmentServiceImpl extends SysBaseService<UserDepartmentDO> 
     public DataStore syncOrgLdap(String orgids){
         int oid = Integer.valueOf(orgids);
         List<Map<String, Object>> retList = dao.getOrgInfoByIds(oid);
+        int cnt = 0;
         if(null !=retList && !retList.isEmpty()){
             UserDepartmentDO depDO = null;
             for(Map<String, Object> mp:retList){
                 depDO = new UserDepartmentDO();
                 depDO.setDep_global_id(mp.get("dep_global_id").toString());
-                depDO.setDep_name(mp.get("dep_name").toString());
-                depDO.setDep_state(Integer.valueOf(mp.get("dep_state").toString()));
-                depDO.setSup_dep_global_id(mp.get("sup_dep_global_id").toString());
-                orgLdapMngDao.saveOrgLdapInfo(depDO);
+                depDO.setDep_name(mp.get("dep_name")==null?"":mp.get("dep_name").toString());
+                depDO.setDep_state(mp.get("dep_state")==null?0:Integer.valueOf(mp.get("dep_state").toString()));
+                depDO.setSup_dep_global_id(mp.get("sup_dep_global_id")==null?"":mp.get("sup_dep_global_id").toString());
+                cnt = orgLdapMngDao.searchOrgLdapCnt(depDO);
+                if(cnt == 0){
+                    orgLdapMngDao.saveOrgLdapInfo(depDO);
+                }else{
+                    orgLdapMngDao.updateOrgLdapInfo(depDO);
+                }
+
             }
         }
         return ActionMsg.setOk("同步LDAP用户成功");

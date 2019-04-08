@@ -82,7 +82,8 @@ public class LdapADHelper {
             // LDAP搜索过滤器类
             //cn=*name*模糊查询 cn=name 精确查询
 //          String searchFilter = "(objectClass="+type+")";
-            String searchFilter = "(&(objectClass="+type+")("+filter+"=*" + name + "*))";
+//            String searchFilter = "(&(objectClass="+type+")("+filter+"=*" + name + "*))";
+            String searchFilter = "(&(objectClass="+type+")("+filter+"=" + name + "))";
             // 创建搜索控制器
             SearchControls searchCtls = new SearchControls();
             //  设置搜索范围
@@ -90,7 +91,7 @@ public class LdapADHelper {
 //          String returnedAtts[] = {  "memberOf" }; // 定制返回属性
 //      searchCtls.setReturningAttributes(returnedAtts); // 设置返回属性集 不设置则返回所有属性
             // 根据设置的域节点、过滤器类和搜索控制器搜索LDAP得到结果
-            NamingEnumeration answer = ctx.search(searchBase, searchFilter,searchCtls);// Search for objects using the filter
+           NamingEnumeration answer = ctx.search(searchBase, searchFilter,searchCtls);// Search for objects using the filter
 
             // 初始化搜索结果数为0
             int totalResults = 0;// Specify the attributes to return
@@ -133,7 +134,7 @@ public class LdapADHelper {
         // 实例化
         LdapADHelper ad = new LdapADHelper();
         ad.initLdap();
-//        ad.GetADInfo("inetOrgPerson","cn","test");//查找用户
+        ad.GetADInfo("inetOrgPerson","cn","fjtest01");//查找用户
 //        ad.GetADInfo("organ","ou","福建厦门");//查找组织架构
 
 //        ad.GetADInfo("user","cn","李XX");//查找用户
@@ -174,7 +175,7 @@ public class LdapADHelper {
 
 //        ad.removeOrgLdapInfo(orgId);
 
-        ad.updateOrgLdapInfo(depVO);
+//        ad.updateOrgLdapInfo(depVO);
 
 
         ad.closeLdap();

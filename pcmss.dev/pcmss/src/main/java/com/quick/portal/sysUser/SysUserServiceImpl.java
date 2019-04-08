@@ -157,17 +157,25 @@ public class SysUserServiceImpl extends SysBaseService<SysUserDO> implements ISy
     public DataStore syncUserLdap(String userid){
         int uid  = Integer.valueOf(userid);
         List<Map<String, Object>> retList = dao.getUserInfoByIds(uid);
+        int cnt = 0 ;
         if(null !=retList && !retList.isEmpty()){
             SysUserDO sysUserDO = null;
             for(Map<String, Object> mp:retList){
                 sysUserDO = new SysUserDO();
-                sysUserDO.setUser_real_name(mp.get("user_real_name").toString());
-                sysUserDO.setUser_name(mp.get("user_real_name").toString());
-                sysUserDO.setUser_email(mp.get("user_email").toString());
+                sysUserDO.setUser_real_name(mp.get("user_real_name")==null?"":mp.get("user_real_name").toString());
+                sysUserDO.setUser_name(mp.get("user_name").toString());
+                sysUserDO.setUser_email(mp.get("user_email")==null?"":mp.get("user_email").toString());
                 sysUserDO.setUser_state(Integer.valueOf(mp.get("user_state").toString()));
                 sysUserDO.setUser_password(mp.get("user_password").toString());
-                sysUserDO.setUser_tel(mp.get("user_tel").toString());
-                userLdapMngDao.saveUserLdapInfo(sysUserDO);
+                sysUserDO.setUser_tel(mp.get("user_tel")==null?"":mp.get("user_tel").toString());
+                sysUserDO.setUser_id(Integer.valueOf(mp.get("user_id").toString()));
+                cnt = userLdapMngDao.searchUserLdapCnt(sysUserDO);
+                if(cnt == 0){
+                    userLdapMngDao.saveUserLdapInfo(sysUserDO);
+                }else{
+                    userLdapMngDao.updateUserLdapInfo(sysUserDO);
+                }
+
             }
         }
         return ActionMsg.setOk("同步LDAP用户成功");

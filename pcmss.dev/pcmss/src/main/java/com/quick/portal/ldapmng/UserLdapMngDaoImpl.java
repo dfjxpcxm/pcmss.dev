@@ -3,6 +3,9 @@ package com.quick.portal.ldapmng;
 import com.quick.portal.sysUser.SysUserDO;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.filter.AndFilter;
+import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,7 +109,6 @@ public class UserLdapMngDaoImpl implements IUserLdapMngDao {
 	/*
 	 * 修改LDAP用户信息 
 	 * (non-Javadoc)
-	 * @see com.ccbm.ldap.userldapmng.dao.IUserLdapMngDao#updateUserLdapInfo(com.ccbm.ldap.userldapmng.domain.model.Person)
 	 */
 	public void updateUserLdapInfo(SysUserDO person) {
 		if (person == null || person.getUser_name() == null
@@ -114,32 +116,30 @@ public class UserLdapMngDaoImpl implements IUserLdapMngDao {
 			return;
 		}
 		List<ModificationItem> mList = new ArrayList<ModificationItem>();
-
-		mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
-				new BasicAttribute("sn",person.getUser_real_name())));
-		
+		if(null!= person.getUser_real_name() && !"".equals(person.getUser_real_name())){
+			mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute("sn",person.getUser_real_name())));
+		}
 		mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 				new BasicAttribute("givenName",person.getUser_name())));
-		
 
-
-
-		mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
-				new BasicAttribute("mail",person.getUser_email())));
-
+		if(null!= person.getUser_email() && !"".equals(person.getUser_email())){
+			mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute("mail",person.getUser_email())));
+		}
 		mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 				new BasicAttribute("employeeType",person.getUser_state().toString())));
 		mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 				new BasicAttribute("carLicense",person.getUser_password())));
-		mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
-				new BasicAttribute("telexNumber",person.getUser_tel())));
+		if(null!= person.getUser_tel() && !"".equals(person.getUser_tel())){
+			mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute("telexNumber",person.getUser_tel())));
+		}
 		if (mList.size() > 0) {
 			ModificationItem[] mArray = new ModificationItem[mList.size()];
 			for (int i = 0; i < mList.size(); i++) {
 				mArray[i] = mList.get(i);
 			}
-			//modifyAttributes 方法是修改对象的操作，与rebind（）方法需要区别开
-//			ldapTemplate.modifyAttributes(this.getDn(person.getUserid()), mArray);
 			try{
 				ldapTemplate.modifyAttributes(this.getDn(person.getUser_name()), mArray);
 			}catch(Exception e){
@@ -150,8 +150,48 @@ public class UserLdapMngDaoImpl implements IUserLdapMngDao {
 	}
 
 
-//	public final  static String supDn = "dc=pcdomain,dc=com";
+	/*
+	 * 查询LDAP用户信息
+	 * org.springframework.ldap.filter.AndFilter ：且
+ 	 *	org.springframework.ldap.filter.OrFilter ：或者
+ 		org.springframework.ldap.filter.NotFilter ：非
+ 		org.springframework.ldap.filter.PresentFilter ：LDAP目中有存储属性的
+ 		org.springframework.ldap.filter.NotPresentFilter ：LDAP目中有无存储属性的
+ 		org.springframework.ldap.filter.EqualsFilter ：等于
+ 		org.springframework.ldap.filter.LikeFilter ：等于
+ 		org.springframework.ldap.filter.WhitespaceWildcardsFilter ： 模糊
+ 		org.springframework.ldap.filter.GreaterThanOrEqualsFilter ：大于等于
+ 		org.springframework.ldap.filter.LessThanOrEqualsFilter ： 小于等于
+	 *
+	 * (non-Javadoc)
+	 */
+	public int searchUserLdapCnt(SysUserDO person) {
+		//查询过滤条件
+		AndFilter andFilter = new AndFilter();
+		andFilter.and(new EqualsFilter("objectclass", object_class_type));
+		if (person.getUser_name() != null
+				&& person.getUser_name().length() > 0) {
+			andFilter.and(new WhitespaceWildcardsFilter("cn", person.getUser_name()));
+		}
+
+		List retList = ldapTemplate.search(DistinguishedName.EMPTY_PATH, andFilter.encode(),new UserAttributeMapper());
+		int cnt = 0 ;
+		if(null !=retList && retList.size()>0){
+			cnt = retList.size();
+		}
+		return cnt;
+	}
+
+
+
+
+
+
+	public final  static String searchBase = "dc=pcdomain,dc=com";
 
 	public final  static String supDn = "";
+
+	public final  static String object_class_type ="inetOrgPerson";
+
 
 }

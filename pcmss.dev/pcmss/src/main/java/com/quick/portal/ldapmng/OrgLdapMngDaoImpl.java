@@ -4,6 +4,9 @@ package com.quick.portal.ldapmng;
 import com.quick.portal.userDepartment.UserDepartmentDO;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.filter.AndFilter;
+import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,7 +107,6 @@ public class OrgLdapMngDaoImpl implements IOrgLdapMngDao {
 	/*
 	 * 修改LDAP用户信息 
 	 * (non-Javadoc)
-	 * @see com.ccbm.ldap.userldapmng.dao.IUserLdapMngDao#updateUserLdapInfo(com.ccbm.ldap.userldapmng.domain.model.Person)
 	 */
 	public void updateOrgLdapInfo(UserDepartmentDO person) {
 		if (person == null || person.getDep_global_id() == null
@@ -112,19 +114,22 @@ public class OrgLdapMngDaoImpl implements IOrgLdapMngDao {
 			return;
 		}
 		List<ModificationItem> mList = new ArrayList<ModificationItem>();
-
 		mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 				new BasicAttribute("businessCategory",person.getDep_global_id())));
-		mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
-				new BasicAttribute("description",person.getDep_name())));
-		mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
-				new BasicAttribute("postalAddress",person.getDep_state().toString())));
-		mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
-				new BasicAttribute("postalCode",person.getSup_dep_global_id())));
-
+		if (person.getDep_name() != null && !"".equals(person.getDep_name())) {
+			mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute("description",person.getDep_name())));
+		}
+		if (person.getDep_state() != null && !"".equals(person.getDep_state())) {
+			mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute("postalAddress",person.getDep_state().toString())));
+		}
+		if (person.getSup_dep_global_id() != null && !"".equals(person.getSup_dep_global_id())) {
+			mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute("postalCode",person.getSup_dep_global_id())));
+		}
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		String date = df.format(new Date());
-
 		mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 				new BasicAttribute("destinationIndicator",date)));
 
@@ -133,8 +138,6 @@ public class OrgLdapMngDaoImpl implements IOrgLdapMngDao {
 			for (int i = 0; i < mList.size(); i++) {
 				mArray[i] = mList.get(i);
 			}
-			//modifyAttributes 方法是修改对象的操作，与rebind（）方法需要区别开
-//			ldapTemplate.modifyAttributes(this.getDn(person.getUserid()), mArray);
 			try{
 				ldapTemplate.modifyAttributes(this.getDn(person.getDep_global_id()), mArray);
 			}catch(Exception e){
@@ -144,8 +147,28 @@ public class OrgLdapMngDaoImpl implements IOrgLdapMngDao {
 		
 	}
 
+
+	public int searchOrgLdapCnt(UserDepartmentDO person) {
+		//查询过滤条件
+		AndFilter andFilter = new AndFilter();
+		andFilter.and(new EqualsFilter("objectclass", object_class_type));
+		if (person.getDep_global_id() != null
+				&& person.getDep_global_id().length() > 0) {
+			andFilter.and(new WhitespaceWildcardsFilter("ou", person.getDep_global_id()));
+		}
+
+		List retList = ldapTemplate.search(DistinguishedName.EMPTY_PATH, andFilter.encode(),new OrgAttributeMapper());
+		int cnt = 0 ;
+		if(null !=retList && retList.size()>0){
+			cnt = retList.size();
+		}
+		return cnt;
+	}
+
 //	public final  static String supDn = "dc=pcdomain,dc=com";
 
 	public final  static String supDn = "";
+
+	public final  static String object_class_type ="organizationalUnit";
 
 }
