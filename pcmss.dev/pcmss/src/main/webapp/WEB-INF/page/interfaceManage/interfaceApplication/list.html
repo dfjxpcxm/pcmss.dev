@@ -91,7 +91,7 @@
                 {field: 'upd_time', title: '更新时间', width: 100, align: 'center'},
                 {
                     field: 'CZ', title: '操作', width: '15%', align: 'center', formatter: function (value, row, index) {
-                        return "<button type='button' class='btn_el' onclick='author(\"" + row.app_id + "\",\"" + row.app_usename + "\")'>编辑</button>| "
+                        return "<button type='button' class='btn_el' onclick='edit(\"" + row.app_id + "\",\"" + row.app_usename + "\")'>编辑</button>| "
                             + "<button type='button' class='btn_el' onclick='del(\"" + row.app_id + "\",\"" + row.app_usename + "\")'>删除</button>";
                         ;
                     }
@@ -114,89 +114,7 @@
             _gd["list"].init();
         }
     }
-    function author(node ,name){
-        layer.open({
-            type: 1,
-            title: "多人认证",
-            fix: false,
-            shadeClose: false,
-            maxmin: true,
-            zIndex: layer.zIndex,
-            area: ['350px', '300px'],
-            content:  '请输入账号密码<br/>'+
 
-                        '账号1：<input  type="text"  class="input-sm form-control" id="user1"/><br/>'+
-                        '密码 ：<input  type="password" class="input-sm form-control" id="user1Pass"/><br/>'+
-                        '账号2：<input  type="text"  class="input-sm form-control" id="user2"/><br/>'+
-                        '密码 ：<input  type="password" class="input-sm form-control" id="user2Pass"/><br/>'+
-                        '账号3：<input  type="text" class="input-sm form-control" id="user3"/><br/>'+
-                        '密码 ：<input type="password" class="input-sm form-control" id="user3Pass"/>', // 自己定义一个输入框
-            btn:['保存','取消'],
-            yes:function(){
-                var user1 = $("#user1").val();
-                var user2 = $("#user2").val();
-                var user3 = $("#user3").val();
-               /* if (user1 !='' || user2!='' || user3 != '') {
-                    if (user1==user2 || user2==user3 || user3 == user1) {
-                        alert("用户重复了")
-                    }else{
-
-                    }
-                }else{
-                    alert("用户不能为空")
-                }*/
-                $.ajax({
-                    url: quick.serverUrl + '/peopleAuthor',
-                    dataType: 'JSON',
-                    type: 'POST',
-                    data: {user1: user1, user2: user2,user3:user3},
-                    success: function (data) {
-                        layer.msg('添加成功', {icon: 1, time: 1000, skin: 'layer-ext-moon'});
-                    },
-                    error: function (err) {
-                        layer.msg("结果异常", {icon: 1, time: 1000, skin: 'layer-ext-moon'});
-                    }
-                });
-
-            }
-        })
-
-    }
-
-    function ajax(object){
-        var url = object.url || "";
-        if(!url) return;
-        var method = object.method || "GET";
-        var data = object.data || null;
-        var handler = object.handler || function(){};
-        var xmlHttp;
-        var data;
-        if(window.XMLHttpRequest){
-            xmlHttp = new window.XMLHttpRequest();
-        }else if(window.ActiveXObject){
-            xmlHttp = new window.ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlHttp.open(method,url,true);
-        xmlHttp.send(data);
-        xmlHttp.onreadystatechange = function(){
-            if(xmlHttp.readyState == 4){
-                if(xmlHttp.status ==0 || xmlHttp.status == 200){
-                    if(xmlHttp.responseXML){
-                        data = xmlHttp.responseXML;
-                    }else{
-                        if(window.JSON&&window.JSON.parse){
-                            data = window.JSON.parse(xmlHttp.responseText);
-                        }else{
-                            data = eval("("+xmlHttp.responseText+")")
-                        }
-                    }
-                    handler(data);
-                }else{
-                    showMsg("系统繁忙，请稍后再试。");
-                }
-            }
-        }
-    }
     //删除记录
     function del(node, name) {
         layer.confirm(

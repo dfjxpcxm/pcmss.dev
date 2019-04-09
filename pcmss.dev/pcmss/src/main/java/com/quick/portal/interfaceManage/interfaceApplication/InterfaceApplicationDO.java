@@ -29,7 +29,7 @@ public class InterfaceApplicationDO implements java.io.Serializable {
 	
     // <editor-fold defaultstate="collapsed" desc="私有成员">
     //申请者字段
-    private Integer app_id;
+    private String app_id;
     private String app_usename;
     private String app_reason;
     private Integer inter_id;
@@ -45,11 +45,11 @@ public class InterfaceApplicationDO implements java.io.Serializable {
         this.inter_id = inter_id;
     }
 
-    public Integer getApp_id() {
+    public String getApp_id() {
         return app_id;
     }
 
-    public void setApp_id(Integer app_id) {
+    public void setApp_id(String app_id) {
         this.app_id = app_id;
     }
 

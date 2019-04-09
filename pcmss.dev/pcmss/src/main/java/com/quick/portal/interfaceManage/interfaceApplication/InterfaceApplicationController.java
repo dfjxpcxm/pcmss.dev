@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import javax.annotation.Resource;
 
 /**
@@ -41,7 +42,7 @@ public class InterfaceApplicationController extends SysBaseController<InterfaceA
     public ISysBaseService getBaseService(){
         return interfaceApplicationService;
     }
-
+    
     //页面请求
     @RequestMapping
     public String list(ModelMap model) {
@@ -55,6 +56,4 @@ public class InterfaceApplicationController extends SysBaseController<InterfaceA
     public String chose(ModelMap model) {
         return view();
     }
-
-
 }

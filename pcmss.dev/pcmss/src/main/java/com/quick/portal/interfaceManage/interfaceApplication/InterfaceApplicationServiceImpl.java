@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.Random;
 
 /**
  * user_department服务实现类
@@ -39,7 +38,7 @@ public class InterfaceApplicationServiceImpl extends SysBaseService<InterfaceApp
      * 构造函数
      */
     public InterfaceApplicationServiceImpl() {
-        BaseTable = "interface_app_managet";
+        BaseTable = "interface_app_managent";
         BaseComment = "接口申请";
         PrimaryKey = "app_id";
         NameKey = "app_usename";
@@ -60,7 +59,7 @@ public class InterfaceApplicationServiceImpl extends SysBaseService<InterfaceApp
     @Override
     public DataStore save(InterfaceApplicationDO entity) {
         //如果编号为空,新增实体对象,否则更新实体对象
-        Integer val = entity.getApp_id();
+        Integer val = entity.getInter_id();
         int c = 0;
         Date now = DateTime.Now().getTime();
         //名称不能重复

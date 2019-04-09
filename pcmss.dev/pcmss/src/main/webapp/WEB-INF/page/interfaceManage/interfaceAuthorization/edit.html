@@ -50,9 +50,9 @@
                         </div>
                         <div class="col-sm-6 form_ipt_botm">
                             <div class="form-group">
-                                <label class="col-xs-3 lable_top"><span></span>类别</label>
+                                <label class="col-xs-3 lable_top"><span></span>操作人</label>
                                 <div class="col-xs-9">
-                                    <input type="text" id="category" name="category" class="form-control" readonly="readOnly" value="授权管理"/>
+                                    <input type="text" id="operator" name="operator" class="form-control required"/>
                                 </div>
                             </div>
                         </div>
@@ -132,7 +132,7 @@
         /*加载数据*/
         var mode = $.request.queryString["mode"];
         var sysid=$.request.queryString["inter_id"];
-        $("#pagename").text(sysid?'编辑授权管理':'新增授权管理');
+        $("#pagename").text(sysid?'编辑部门':'新增部门');
         if(sysid){
             $.post(quick.serverUrl + '/getObj?inter_id=' + sysid + "&i=" + Math.random(), function(data){
                 setForm(data);

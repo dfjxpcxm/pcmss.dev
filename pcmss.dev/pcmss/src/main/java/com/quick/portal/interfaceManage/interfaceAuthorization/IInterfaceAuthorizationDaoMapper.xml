@@ -20,13 +20,13 @@
     
     <!-- 新增user_department -->
 	<insert id="insert" parameterType="com.quick.portal.interfaceManage.interfaceAuthorization.InterfaceAuthorizationDO">
-		insert into interface_authorization (
+		insert into interface_info (
     		  inter_id,
     		  inter_name,
     		  inter_path,
     		  inter_desc,
     		  inter_state,
-
+    		  operator,
     		  category,
     		  cre_time,
     		  upd_time
@@ -36,7 +36,7 @@
 			 #{inter_path},
 			 #{inter_desc},
 			 #{inter_state},
-
+			 #{operator},
 			 #{category},
 			 now(),
 			 now()
@@ -45,13 +45,13 @@
 		
 	<!-- 修改user_department -->
 	<update id="update" parameterType="com.quick.portal.interfaceManage.interfaceAuthorization.InterfaceAuthorizationDO">
-		update interface_authorization
+		update interface_info
 		   set inter_id=#{inter_id}
 			  ,inter_name=#{inter_name}
 			  ,inter_path=#{inter_path}
 			  ,inter_desc=#{inter_desc}
 			  ,inter_state=#{inter_state}
-
+			  ,operator=#{operator}
 			  ,category=#{category}
 			  ,cre_time=now()
 			  ,upd_time=now()
@@ -60,12 +60,12 @@
     
 	<!-- 删除 -->
 	<delete id="delete" parameterType="String">
-		delete from interface_authorization where inter_id = #{inter_id}
+		delete from interface_info where inter_id = #{inter_id}
 	</delete>
     
     <!--查询-->
 	<select id="select" parameterType="map" resultType="map">
-		select * from interface_authorization
+		select * from interface_info
 		<where>
 			<include refid="where" />
 		</where>
@@ -73,7 +73,7 @@
 	
 	<!-- 查询总记录数 -->
 	<select id="count" parameterType="map" resultType="int">
-		select count(*) from interface_authorization
+		select count(*) from interface_info
 		<where>
 			<include refid="where" />
 		</where>
