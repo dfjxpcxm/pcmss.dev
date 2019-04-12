@@ -51,7 +51,7 @@
 
 	<!-- 查询系统参数表对同一权限可以分配的次数的授权策略控制-->
 	<select id="getLimtResLoginSystemParmInfo"  resultMap="sysConfResult">
-		select res_id,timeout,cnt,user_id  from sys_res_conf  where  limt_res_set_prop='1'
+		select distinct  f.res_id,f.cnt  from sys_res_conf f inner join sys_menu u on f.res_id=u.menu_id and u.menu_state=1 where  f.limt_res_set_prop='1'
 	</select>
 
 
@@ -64,32 +64,32 @@
 
 	<!-- 查询系统参数表某一时间间隔内一个特定权限配置授权策略-->
 	<select id="getLimtTimeLoginSystemParmInfo"  resultMap="sysConfResult">
-		select res_id,timeout,cnt,user_id  from sys_res_conf  where  limt_time_res_set_prop='1'
+		select distinct  f.res_id,f.cnt,f.timeout  from sys_res_conf f inner join sys_menu u on f.res_id=u.menu_id and u.menu_state=1 where  f.limt_time_res_set_prop='1'
 	</select>
 
 
 
 	<!-- 查询系统参数表某一时间间隔内一个特定权限配置访问次数-->
 	<select id="getLimtTimeLoginInfo" parameterType="map"  resultType="int">
-		SELECT COUNT(1) FROM USER_ACCESS_LOG  WHERE  MENU_ID = #{resId} AND LOG_TIME> DATE_SUB(NOW( ), INTERVAL #{timeOut} SECOND )
+		SELECT COUNT(1) FROM USER_ACCESS_LOG  WHERE  MENU_ID = #{resId} AND LOG_TIME> DATE_SUB(NOW( ), INTERVAL #{timeout} SECOND )
 	</select>
 
 
 	<!-- 查询系统参数表一个用户在一时间间隔内可以访问权限资源的次数-->
 	<select id="getLimtUserTimeLoginSystemParmInfo"  resultMap="sysConfResult">
-		select res_id,timeout,cnt,user_id from sys_res_conf  where  limt_user_res_set_prop='1'
+	  	select distinct  f.res_id,f.cnt,f.timeout,f.user_id  from sys_res_conf f inner join sys_menu u on f.res_id=u.menu_id and u.menu_state=1 where  f.limt_user_res_set_prop='1'
 	</select>
 
 
 	<!-- 查询系统参数表一个用户在一时间间隔内可以访问权限资源的次数-->
 	<select id="getLimtUserTimeLogin" parameterType="map"  resultType="int">
-		SELECT COUNT(1) FROM USER_ACCESS_LOG WHERE  MENU_ID = #{resId} AND LOG_TIME> DATE_SUB( NOW( ), INTERVAL #{timeOut} SECOND ) and USER_ID=#{user_id}
+		SELECT COUNT(1) FROM USER_ACCESS_LOG WHERE  MENU_ID = #{resId} AND LOG_TIME> DATE_SUB( NOW( ), INTERVAL #{timeout} SECOND ) and USER_ID=#{userId}
 	</select>
 
 
 	<!--修改资源ID状态禁用-->
 	<update id="updResStateInfoByID" parameterType="java.lang.String">
-		update sys_menu  set menu_state=0, upd_time =now()  where menu_id in(${id})
+		update sys_menu  set menu_state=0, upd_time =now()  where menu_id in(${ids})
 	</update>
 
 

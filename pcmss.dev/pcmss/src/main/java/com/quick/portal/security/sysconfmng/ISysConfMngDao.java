@@ -19,6 +19,7 @@
 package com.quick.portal.security.sysconfmng;
 
 import com.quick.core.base.ISysBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -57,5 +58,5 @@ public interface ISysConfMngDao<SysConfMngDO> extends ISysBaseDao<SysConfMngDO> 
 
 
     //修改资源ID状态禁用
-    public void updResStateInfoByID(String id);
+    public void updResStateInfoByID(@Param("ids") String ids);
 }

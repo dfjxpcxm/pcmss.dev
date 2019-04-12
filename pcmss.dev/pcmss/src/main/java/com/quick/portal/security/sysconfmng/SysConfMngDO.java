@@ -42,7 +42,7 @@ public class SysConfMngDO implements java.io.Serializable {
         setLimt_time_res_set(u.getLimt_time_res_set());
         setLimt_user_res_set(u.getLimt_user_res_set());
         setEntrust_set(u.getEntrust_set());
-
+        setIds(u.getIds());
     }
     // <editor-fold defaultstate="collapsed" desc="私有成员">
     /**
@@ -77,6 +77,8 @@ public class SysConfMngDO implements java.io.Serializable {
     private String  limt_user_res_set;
     //设置委托开关
     private String  entrust_set;
+
+    private String ids;
 
 
     public Integer getSys_id() {
@@ -173,5 +175,13 @@ public class SysConfMngDO implements java.io.Serializable {
 
     public void setEntrust_set(String entrust_set) {
         this.entrust_set = entrust_set;
+    }
+
+    public String getIds() {
+        return ids;
+    }
+
+    public void setIds(String ids) {
+        this.ids = ids;
     }
 }

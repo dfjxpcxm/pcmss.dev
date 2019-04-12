@@ -90,24 +90,21 @@ public class LoginFilter extends HttpServlet implements Filter {
             List<Map<String,Object>> confList  = searchLimtResLoginSet();
             String resids = getLimtResIDBySysConf(confList);
             if(null != resids && !"".equals(resids)){
-                notifyMsgInvalid(res, req,getNotifyMsg(resids,LIMT_RES_LOGIN_MSG));
-//                return;
+                notifyMsgLimtSet(res, req,getNotifyMsg(resids,LIMT_RES_LOGIN_MSG));
             }
 
             //授权策略-支持某一时间间隔内一个特定权限可以被访问的次数的授权策略控制；
             List<Map<String,Object>> limtTimeList  = searchLimtTimeLoginSet();
             String tmeResids = getLimtResIDBySysConf(limtTimeList);
             if(null != tmeResids && !"".equals(tmeResids)){
-                notifyMsgInvalid(res, req,getNotifyMsg(tmeResids,LIMT_TIME_LOGIN_MSG));
-                return;
+                notifyMsgLimtSet(res, req,getNotifyMsg(tmeResids,LIMT_TIME_LOGIN_MSG));
             }
 
             //授权策略-支持一个用户在一时间间隔内可以访问权限资源的次数的授权策略控制；
             List<Map<String,Object>> limtUserList  = searchLimtUserTimeLoginSet(user_id);
             String uResids = getLimtResIDBySysConf(limtUserList);
             if(null != uResids && !"".equals(uResids)){
-                notifyMsgInvalid(res, req,getNotifyMsg(uResids ,LIMT_USER_TIME_LOGIN_MSG));
-                return;
+                notifyMsgLimtSet(res, req,getNotifyMsg(uResids ,LIMT_USER_TIME_LOGIN_MSG));
             }
         }
 
@@ -245,7 +242,7 @@ public class LoginFilter extends HttpServlet implements Filter {
         //查询系统参数表对同一权限可以分配的次数的授权策略控制 -查询设置资源开关信息： limt_res_set='1'
         List<SysConfMngDO> retList = sysConfMngService.getLimtResLoginSystemParmInfo();
         List<Map<String,Object>> mapList = new ArrayList<>();
-        Map<String,Object> confMap = new HashMap<>();
+        Map<String,Object> dataMap = new HashMap<>();
         if(null != retList && retList.size()>0){
             Map<String,Object> sysParms = null;
             for(SysConfMngDO sysConf :retList){
@@ -262,13 +259,7 @@ public class LoginFilter extends HttpServlet implements Filter {
                 sysParms = new HashMap<>();
                 sysParms.put("resId",sysConf.getRes_id());
                 int cnt = sysConfMngService.getLimtResLoginInfo(sysParms);
-                if(cnt < Integer.valueOf(sysConf.getCnt())){
-                    confMap.put("isLimtRes","true");
-                    confMap.put("resId",sysConf.getRes_id());
-                }else{
-                    confMap.put("isLimtRes","false");
-                    confMap.put("resId",sysConf.getRes_id());
-                }
+                Map<String,Object> confMap = getLimtResStateInfo(sysConf.getCnt().intValue(),cnt,sysConf.getRes_id().toString());
                 mapList.add(confMap);
             }
 
@@ -374,8 +365,18 @@ public class LoginFilter extends HttpServlet implements Filter {
                     + ":" + request.getServerPort() + request.getContextPath()
                     + "/";
             String retUrl = casUrl.concat("/logout?service=").concat(QCommon.urlEncode(url));
-            writeMsg(msg, host, retUrl, request, response);
+            writeMsg(msg, host, retUrl, request, response,"");
         }
+    }
+
+
+    private void notifyMsgLimtSet(HttpServletResponse response, HttpServletRequest request,String msg) {
+        String host = request.getScheme() + "://" + request.getServerName()
+                + ":" + request.getServerPort() + request.getContextPath()
+                + "/";
+            String retUrl = "";
+            writeMsg(msg, host, retUrl, request, response,"1");
+
     }
 
     private boolean isAjax(HttpServletRequest request) {
@@ -395,14 +396,19 @@ public class LoginFilter extends HttpServlet implements Filter {
         }
     }
 
-    private void writeMsg(String msg, String host, String url, HttpServletRequest request, HttpServletResponse response) {
+    private void writeMsg(String msg, String host, String url, HttpServletRequest request, HttpServletResponse response,String flg) {
         response.setHeader("content-type", "text/html;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         String outString = "<html><body><script src=\"" + host + "res/plugin/jQuery/jquery-1.11.3.min.js\" type=\"text/javascript\"></script>";
         outString += "<link href=\"" + host + "res/layer/skin/default/layer.css\" rel=\"stylesheet\">";
         outString += "<script src=\"" + host + "res/layer/layer.js\"></script>";
-        outString += "<script language=javascript>layer.alert('" + msg + "',function(){(window.parent||window).location='"
-                + url + "';});</script>";
+        if(null != flg && "1".equals(flg)){
+            outString += "<script language=javascript>layer.alert('" + msg + "');</script>";
+        }else{
+            outString += "<script language=javascript>layer.alert('" + msg + "',function(){(window.parent||window).location='"
+                    + url + "';});</script>";
+        }
+
         outString += "</body></html>";
         try {
             response.getWriter().print(outString);
