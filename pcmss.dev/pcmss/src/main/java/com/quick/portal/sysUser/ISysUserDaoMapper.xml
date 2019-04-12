@@ -59,6 +59,7 @@
 			#{roles, mode=IN},
 			#{dep_id, mode=IN},
 			#{file_state, mode=IN},
+			#{job_name, mode=IN},
 			#{error_no, jdbcType=INTEGER, mode=OUT}
 		)}
 	</insert>
@@ -107,6 +108,7 @@
 			#{roles, mode=IN},
 			#{dep_id, mode=IN},
 			#{file_state, mode=IN},
+			#{job_name, mode=IN},
 			#{error_no, jdbcType=INTEGER, mode=OUT}
 		)}
 	</update>

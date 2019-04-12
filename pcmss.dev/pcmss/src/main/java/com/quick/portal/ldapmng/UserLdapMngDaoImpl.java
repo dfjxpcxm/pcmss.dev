@@ -77,6 +77,11 @@ public class UserLdapMngDaoImpl implements IUserLdapMngDao {
 		attr.put("sn", person.getUser_real_name());
 		attr.put("givenName", person.getUser_name());
 
+		if (person.getJob_name() != null
+				&& person.getJob_name().length() > 0) {
+			attr.put("secretary", person.getJob_name());
+		}
+
 		//可选字段需要判断是否为空，如果为空则不能添加
 		if (person.getUser_email() != null
 				&& person.getUser_email().length() > 0) {
@@ -135,6 +140,12 @@ public class UserLdapMngDaoImpl implements IUserLdapMngDao {
 			mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 					new BasicAttribute("telexNumber",person.getUser_tel())));
 		}
+
+		if(null!= person.getJob_name() && !"".equals(person.getJob_name())){
+			mList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute("secretary",person.getJob_name())));
+		}
+
 		if (mList.size() > 0) {
 			ModificationItem[] mArray = new ModificationItem[mList.size()];
 			for (int i = 0; i < mList.size(); i++) {
@@ -192,6 +203,8 @@ public class UserLdapMngDaoImpl implements IUserLdapMngDao {
 	public final  static String supDn = "";
 
 	public final  static String object_class_type ="inetOrgPerson";
+
+	public final  static String ldap_secret_type ="secret";
 
 
 }

@@ -169,6 +169,8 @@ public class SysUserServiceImpl extends SysBaseService<SysUserDO> implements ISy
                 sysUserDO.setUser_password(mp.get("user_password").toString());
                 sysUserDO.setUser_tel(mp.get("user_tel")==null?"":mp.get("user_tel").toString());
                 sysUserDO.setUser_id(Integer.valueOf(mp.get("user_id").toString()));
+                sysUserDO.setJob_name(mp.get("job_namne")==null?"":mp.get("job_namne").toString());
+
                 cnt = userLdapMngDao.searchUserLdapCnt(sysUserDO);
                 if(cnt == 0){
                     userLdapMngDao.saveUserLdapInfo(sysUserDO);

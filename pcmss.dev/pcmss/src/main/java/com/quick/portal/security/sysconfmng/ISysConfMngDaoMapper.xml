@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quick.portal.security.sysconfmng.ISysConfMngDao">
+
+	<resultMap id="sysConfResult" type="com.quick.portal.security.sysconfmng.SysConfMngDO">
+		<result property="user_id" column="user_id"/>
+		<result property="res_id" column="res_id"/>
+		<result property="timeout" column="timeout"/>
+		<result property="cnt" column="cnt"/>
+	</resultMap>
+
+	<!--查询条件-->
+	<sql id="where">
+		1=1
+		<if test="sys_id != null "><![CDATA[
+	       and sys_id = #{sys_id}
+	    ]]></if>
+		<if test="parm_title != null and parm_title != '' and !'null'.equals(parm_title)"><![CDATA[
+	       and parm_title = #{parm_title}
+	    ]]></if>
+		<if test="parm_val != null and parm_val != '' and !'null'.equals(parm_val)"><![CDATA[
+	       and parm_val = #{parm_val}
+	    ]]></if>
+
+		<if test="cre_time != null and )"><![CDATA[
+	       and cre_time >= #{cre_time}
+	    ]]></if>
+
+		<if test="_sql_where != null and _sql_where != ''"> <![CDATA[
+            and ${_sql_where}
+        ]]> </if>
+	</sql>
+
+
+
+	<!-- 查询系统参数表IP配置授权策略-->
+	<select id="getLimtIpSystemParmInfo"  resultType="map">
+		select parm_val from sys_glabal_parm  where parm_title in('ip_set','st_ip_val','ed_ip_val')
+	</select>
+
+	<!-- 查询系统参数表LDAP配置授权策略-->
+	<select id="getLimtLdapSystemParmInfo"  resultType="map">
+		select parm_val from sys_glabal_parm  where parm_title  in('ldap_set','ldap_mask')
+	</select>
+
+	<!-- LDAP标准属性的访问授权策略控制-->
+	<select id="getUserLdapProPertyByUserID" parameterType="int"  resultType="map">
+		select ldap_prop from sys_user  where  user_id = #{user_id}
+	</select>
+
+
+	<!-- 查询系统参数表对同一权限可以分配的次数的授权策略控制-->
+	<select id="getLimtResLoginSystemParmInfo"  resultMap="sysConfResult">
+		select res_id,timeout,cnt,user_id  from sys_res_conf  where  limt_res_set='1'
+	</select>
+
+
+
+	<!-- 查询系统参数表某一时间间隔内一个特定权限配置访问次数-->
+	<select id="getLimtResLoginInfo"  resultType="int">
+		SELECT COUNT(1) FROM USER_ACCESS_LOG  WHERE  MENU_ID = #{resId}
+	</select>
+
+
+	<!-- 查询系统参数表某一时间间隔内一个特定权限配置授权策略-->
+	<select id="getLimtTimeLoginSystemParmInfo"  resultMap="sysConfResult">
+		select res_id,timeout,cnt,user_id  from sys_res_conf  where  limt_time_res_set='1'
+	</select>
+
+
+
+	<!-- 查询系统参数表某一时间间隔内一个特定权限配置访问次数-->
+	<select id="getLimtTimeLoginInfo" parameterType="map"  resultType="int">
+		SELECT COUNT(1) FROM USER_ACCESS_LOG  WHERE  MENU_ID = #{resId} AND LOG_TIME> DATE_SUB(NOW( ), INTERVAL #{timeOut} SECOND )
+	</select>
+
+
+	<!-- 查询系统参数表一个用户在一时间间隔内可以访问权限资源的次数-->
+	<select id="getLimtUserTimeLoginSystemParmInfo"  resultMap="sysConfResult">
+		select res_id,timeout,cnt,user_id from sys_res_conf  where  limt_user_res_set='1'
+	</select>
+
+
+	<!-- 查询系统参数表一个用户在一时间间隔内可以访问权限资源的次数-->
+	<select id="getLimtUserTimeLogin" parameterType="map"  resultType="int">
+		SELECT COUNT(1) FROM USER_ACCESS_LOG WHERE  MENU_ID = #{resId} AND LOG_TIME> DATE_SUB( NOW( ), INTERVAL #{timeOut} SECOND ) and USER_ID=#{user_id}
+	</select>
+
+
+	<!--修改资源ID状态禁用-->
+	<update id="updResStateInfoByID" parameterType="java.lang.String">
+		update sys_menu  set menu_state=0, upd_time =now()  where menu_id in(${id})
+	</update>
+
+
+
+
+
+</mapper>
