@@ -91,7 +91,7 @@ public class LoginFilter extends HttpServlet implements Filter {
             String resids = getLimtResIDBySysConf(confList);
             if(null != resids && !"".equals(resids)){
                 notifyMsgInvalid(res, req,getNotifyMsg(resids,LIMT_RES_LOGIN_MSG));
-                return;
+//                return;
             }
 
             //授权策略-支持某一时间间隔内一个特定权限可以被访问的次数的授权策略控制；
@@ -374,7 +374,7 @@ public class LoginFilter extends HttpServlet implements Filter {
                     + ":" + request.getServerPort() + request.getContextPath()
                     + "/";
             String retUrl = casUrl.concat("/logout?service=").concat(QCommon.urlEncode(url));
-            writeMsg("+msg+", host, retUrl, request, response);
+            writeMsg(msg, host, retUrl, request, response);
         }
     }
 
@@ -423,9 +423,9 @@ public class LoginFilter extends HttpServlet implements Filter {
 
     public final  static  String TIMEOUT_MSG ="会话已超时，请重新登录！";
 
-    public final  static  String LDAPAUTH_MSG ="LDAP属性开关已设置禁止用户访问系统限制，请重新设置LDAP属性！";
+    public final  static  String LDAPAUTH_MSG ="系统设置指定LDAP用户属性访问限制，请联系管理员重新设置LDAP属性！";
 
-    public final  static  String IPAUTH_MSG ="指定IP段开关已设置禁止用户访问系统限制，请重新设置IP段！";
+    public final  static  String IPAUTH_MSG ="系统设置指定IP访问限制，请联系管理员重新设置IP段！";
 
 
     public final  static  String LIMT_RES_LOGIN_MSG ="用户访问res资源超越次数，请重新设置用户访问res资源次数！";

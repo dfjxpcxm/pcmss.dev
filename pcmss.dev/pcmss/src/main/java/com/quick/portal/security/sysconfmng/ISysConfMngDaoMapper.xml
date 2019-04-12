@@ -51,7 +51,7 @@
 
 	<!-- 查询系统参数表对同一权限可以分配的次数的授权策略控制-->
 	<select id="getLimtResLoginSystemParmInfo"  resultMap="sysConfResult">
-		select res_id,timeout,cnt,user_id  from sys_res_conf  where  limt_res_set='1'
+		select res_id,timeout,cnt,user_id  from sys_res_conf  where  limt_res_set_prop='1'
 	</select>
 
 
@@ -64,7 +64,7 @@
 
 	<!-- 查询系统参数表某一时间间隔内一个特定权限配置授权策略-->
 	<select id="getLimtTimeLoginSystemParmInfo"  resultMap="sysConfResult">
-		select res_id,timeout,cnt,user_id  from sys_res_conf  where  limt_time_res_set='1'
+		select res_id,timeout,cnt,user_id  from sys_res_conf  where  limt_time_res_set_prop='1'
 	</select>
 
 
@@ -77,7 +77,7 @@
 
 	<!-- 查询系统参数表一个用户在一时间间隔内可以访问权限资源的次数-->
 	<select id="getLimtUserTimeLoginSystemParmInfo"  resultMap="sysConfResult">
-		select res_id,timeout,cnt,user_id from sys_res_conf  where  limt_user_res_set='1'
+		select res_id,timeout,cnt,user_id from sys_res_conf  where  limt_user_res_set_prop='1'
 	</select>
 
 
