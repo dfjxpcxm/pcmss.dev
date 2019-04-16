@@ -19,6 +19,7 @@
 package com.quick.portal.security.sysconfmng;
 
 import com.quick.core.base.ISysBaseService;
+import com.quick.core.base.model.DataStore;
 
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,9 @@ public interface ISysConfMngService extends ISysBaseService<SysConfMngDO> {
 	//修改资源ID状态禁用
 	public void updResStateInfoByID(String id);
 
+	//多人认证
+	DataStore peopleAuthor(String user_name, String user_password);
 
+	DataStore manyPeopleCertification();
 
 }

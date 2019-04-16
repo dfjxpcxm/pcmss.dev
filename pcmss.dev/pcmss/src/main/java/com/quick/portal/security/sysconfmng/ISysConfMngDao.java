@@ -21,6 +21,7 @@ package com.quick.portal.security.sysconfmng;
 import com.quick.core.base.ISysBaseDao;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,4 +60,11 @@ public interface ISysConfMngDao<SysConfMngDO> extends ISysBaseDao<SysConfMngDO> 
 
     //修改资源ID状态禁用
     public void updResStateInfoByID(@Param("ids") String ids);
+	
+	//多人认证
+    List<Map<String, Object>> getUserInfoPwd(HashMap m);
+
+    List<Map<String, Object>> getUserName(HashMap m);
+
+    List<SysConfMngDO> manyPeopleCertification();
 }

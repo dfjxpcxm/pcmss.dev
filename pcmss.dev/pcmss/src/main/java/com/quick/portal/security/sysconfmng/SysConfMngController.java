@@ -21,6 +21,7 @@ package com.quick.portal.security.sysconfmng;
 
 import com.quick.core.base.ISysBaseService;
 import com.quick.core.base.SysBaseController;
+import com.quick.core.base.model.DataStore;
 import com.quick.core.util.common.CommonUtils;
 import com.quick.core.util.common.QCookie;
 import com.quick.portal.userAccessLog.UserAccessLogServiceUtils;
@@ -30,6 +31,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 
@@ -40,7 +42,7 @@ import javax.annotation.Resource;
  */
 @Controller
 @Scope("prototype")
-@RequestMapping(value = "/sysConfMng")
+@RequestMapping(value = "/security/sysconfmng/sysConfMng")
 public class SysConfMngController extends SysBaseController<SysConfMngDO> {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -100,6 +102,30 @@ public class SysConfMngController extends SysBaseController<SysConfMngDO> {
         UserAccessLogServiceUtils.loggerLogInfo(logger,
                 userName,operatedUser,operateType,requestResult,operLog,serviceName,ip);
     }
+ /**
+     * 多人认证 验证账号密码
+     */
+    @RequestMapping(value = "/peopleAuthor")
+    @ResponseBody
+    public DataStore peopleAuthor(String user_name, String user_password){
+        if(user_name != null ){
+            DataStore ds = sysConfMngService.peopleAuthor(user_name,user_password);
+            return ds;
+        }
+        return ActionMsg.setOk("查询失败");
+    }
 
+    /**
+     * 验证是否开启多人认证
+     * @return
+     */
+    @RequestMapping(value = "/manyPeopleCertification")
+    @ResponseBody
+    public DataStore manyPeoCer(){
+
+        DataStore ds = sysConfMngService.manyPeopleCertification();
+        return ds;
+
+    }
 
 }

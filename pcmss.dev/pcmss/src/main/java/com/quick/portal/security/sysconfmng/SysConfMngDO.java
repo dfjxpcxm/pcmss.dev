@@ -57,7 +57,10 @@ public class SysConfMngDO implements java.io.Serializable {
      *用户口令
      */
     private String  parm_val;
-
+  /**
+     * 中文名
+     */
+    private String parm_chinese;
     /**
      *upd_time
      */
@@ -91,6 +94,14 @@ public class SysConfMngDO implements java.io.Serializable {
 
     public String getParm_title() {
         return parm_title;
+    }
+
+	 public String getParm_chinese() {
+        return parm_chinese;
+    }
+
+    public void setParm_chinese(String parm_chinese) {
+        this.parm_chinese = parm_chinese;
     }
 
     public void setParm_title(String parm_title) {

@@ -20,12 +20,16 @@
 package com.quick.portal.security.sysconfmng;
 
 import com.quick.core.base.SysBaseService;
+import com.quick.core.base.model.DataStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.quick.core.util.common.MD5Util.encode;
 
 
 /**
@@ -107,5 +111,54 @@ public class SysConfMngServiceImpl extends SysBaseService<SysConfMngDO> implemen
     @Override
     public void updResStateInfoByID(String id) {
          dao.updResStateInfoByID(id);
+    }
+	 /**
+     * 多人认证
+     * @param
+     * @param
+     * @return
+     */
+    @Override
+    public DataStore peopleAuthor(String user_name, String user_password) {
+        HashMap m = new HashMap();
+        if(user_password == null){
+            m.put("user_name",user_name);
+            List<Map<String, Object>> retList = dao.getUserName(m);
+            if(null !=retList && !retList.isEmpty()){
+                return ActionMsg.setOk("查询成功");
+            }
+        }else
+        {
+
+            m.put("user_name",user_name);
+            m.put("user_password",encode(user_password));
+            List<Map<String, Object>> retList = dao.getUserInfoPwd(m);
+            if(null !=retList && !retList.isEmpty()){
+                return ActionMsg.setOk("查询成功");
+            }
+        }
+        return ActionMsg.setOk("查询失败");
+    }
+
+    @Override
+    public DataStore manyPeopleCertification() {
+        boolean man_wit_set = false;
+        boolean wit_val = false;
+        List<SysConfMngDO> li = dao.manyPeopleCertification();
+        for (int i = 0; i < li.size(); i++) {
+            if (li.get(i).getParm_title().equals("many_wit_set") && li.get(i).getParm_val().equals("true")){
+                man_wit_set = true;
+            }
+            if (li.get(i).getParm_title().equals("wit_val") && li.get(i).getParm_val().equals("3")){
+                wit_val = true;
+
+            }
+
+
+        }
+        if (man_wit_set == true && wit_val == true){
+            return ActionMsg.setOk("已开启");
+        }
+        return ActionMsg.setOk("未开启");
     }
 }

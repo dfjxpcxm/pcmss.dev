@@ -22,7 +22,7 @@
 	       and parm_val = #{parm_val}
 	    ]]></if>
 
-		<if test="cre_time != null and )"><![CDATA[
+		<if test="cre_time != null"><![CDATA[
 	       and cre_time >= #{cre_time}
 	    ]]></if>
 
@@ -92,7 +92,59 @@
 		update sys_menu  set menu_state=0, upd_time =now()  where menu_id in(${ids})
 	</update>
 
+	<!--多人认证-->
+	
+		<select id="select" parameterType="map" resultType="map" >
+		select * from sys_glabal_parm
+		<where>
+			<include refid="where"></include>
+		</where>
+	</select>
 
+	<!-- 修改user_department -->
+	<update id="update" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO">
+		update sys_glabal_parm
+		   set sys_id=#{sys_id}
+			  ,parm_title=#{parm_title}
+			  ,parm_chinese=#{parm_chinese}
+			  ,parm_val=#{parm_val}
+		 where sys_id = #{sys_id}
+	</update>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="String">
+		delete from sys_glabal_parm where sys_id = #{sys_id}
+	</delete>
+
+	<!--多人认证使用 查询账号-->
+	<select id="getUserName"  parameterType="map" resultMap="userInfoMap">
+		select u.*,u.user_name
+		from sys_user  u
+		where u.user_name = #{user_name}
+	</select>
+	<!--多人认证使用 查询账号密码-->
+	<select id="getUserInfoPwd" parameterType="map" resultMap="userInfoMap">
+		select u.*,u.user_name,u.user_password
+		from sys_user  u
+		where u.user_name = #{user_name} and u.user_password = #{user_password}
+	</select>
+
+	<!--	多人认证查询开启-->
+	<select id="manyPeopleCertification" resultMap="parmMap" >
+		select * from sys_glabal_parm where parm_title in ('many_wit_set','wit_val')
+	</select>
+
+	<resultMap id="userInfoMap" type="com.quick.portal.sysUser.SysUserDO">
+		<id property="user_id" column="user_id"/>
+		<result property="user_name" column="user_name"/>
+		<result property="user_password" column="user_password"/>
+	</resultMap>
+
+	<resultMap id="parmMap" type="com.quick.portal.security.sysconfmng.SysConfMngDO">
+		<id property="sys_id" column="sys_id"/>
+		<result property="parm_title" column="parm_title"/>
+		<result property="parm_val" column="parm_val"/>
+	</resultMap>
 
 
 
