@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>角色管理</title>
+    <#include "/WEB-INF/include/reslist.html" />
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ibox-x">
+                <!--
+                <div class="ibox-title">
+                    <h5><i class="glyphicon glyphicon-chevron-right"></i> 查询角色</h5>
+                </div>-->
+                <div class="ibox-content ibox-content-x">
+                    <div class="panel-mar">
+                        <form class="form-inline" id="formSearch">
+                            <div class="form-group" style="width:159px;">
+                                <input type="text" class="form-control form-control-green" name="user_name"
+                                       id="role_name" placeholder="用户名称">
+                            </div>
+                            <!--<div class="form-group" style="width:159px;">
+                                <select name="user_state" class="input-group form-control select_change"
+                                        id="IDS_SYSPLATFORM">
+                                    <option value="-1">用户状态</option>
+                                    <option value="1">启用</option>
+                                    <option value="0">停用</option>
+                                </select>
+
+                            </div>-->
+                            <button type="button" class="btn btn-primary" onclick="query()"> 查询</button>
+                            <div class="form-group" style="width:100px;float:right;">
+                               <!-- <button type="button" class="btn btn-primary" onclick="location.href='edit';"> 新增角色
+                                </button>-->
+                            </div>
+                        </form>
+                    </div>
+                    <div class="panel-default-green">
+                        <table class="table table-stripped" id="tb_role"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="IDS_PAGENUM" name="IDS_PAGENUM">
+<input type="hidden" id="IDS_PAGESIZE" name="IDS_PAGENUM">
+<script>
+    var pageNum = 1;
+    var pageSize = 15;
+    var queryParm = '';
+    var flag = true;
+    var pageFlag = 0;
+
+    var RFlag = $.request.queryString["RFlag"];
+
+    quick.serverUrl = "${G.serverUrl}";
+    quick.editUrl = "${G.editUrl}";
+    quick.objName = "${G.objName}";
+    quick.idField = "${G.idField}";
+
+    window.localStorage.removeItem('selected_users');
+
+    //列表初始化
+    function config() {
+        $('#tb_role').bootstrapTable('destroy');
+        _gridPool["tb_role"] = new BGrid("#tb_role");
+        _gridPool["tb_role"].config({
+            url: "/pcmss/entrust" +"/selectList", //"/getList?i=" + Math.random(),
+            idField: quick.idField,
+            sortName: quick.idField,
+            cache: false,
+            height: $(window).height() - 50,
+            toolbar: "#formSearch",
+            columns: [[
+                {
+                    field: 'user_name',
+                    width: '12%',
+                    title: '用户名称',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        if (value == "" || value == null) {
+                            return "-";
+                        } else {
+                            return value;
+                        }
+                    }
+                },
+                //{field: 'user_state', title: '用户状态', width: '12%', align: 'center'},
+                {
+
+                    field: 'user_state',
+                    width: '10%',
+                    title: '用户状态',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        if (value == '0') {
+                            return "停用";
+                        } else if (value == '1') {
+                            return "启用";
+                        } else {
+                            return "-";
+
+                        }
+                    }
+                },
+
+                {
+                    field: 'creat_time',
+                    width: '10%',
+                    title: '授权时间',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        if (value == "" || value == null) {
+                            return "-";
+                        } else {
+                            return value;
+                        }
+                    }
+                },
+                {
+                    field: 'CZ', width: '20%', title: '操作', align: 'center', formatter: function (value, row, index) {
+                        var str = '<button type="button" id="btn_auth1" class="btn_el btn_el1'+row.user_id+'" value = "'+row.user_name+'" onclick="choseboxs('+row.user_id+')">授权</button>';
+                               if(row.typ>0){
+                                    str = str+ '||<button type="button" id="btn_auth2" class="btn_el btn_el2'+row.user_id+'" value = "'+row.user_name+'" onclick="deleteUser('+row.user_id+')">取消授权</button>'+
+                                        '||<button type="button" id="btn_auth3" class="btn_el btn_el3'+row.user_id+'" value = "'+row.user_name+'" onclick="choseboxs('+row.user_id+')">查看&修改</button>';
+                        }
+                      return str;
+                    }
+                }
+            ]], onPageChange: function (number, size) {
+                $("#IDS_PAGESIZE").val(size);
+                $("#IDS_PAGENUM").val(number);
+                pageNum = number;
+                pageSize = size;
+            }, onClickRow: function (row, e) {
+                var trs = $('#tb_role').find("tr");
+                for (var i = 0; i < trs.length; i++) {
+                    if ($(trs[i]).hasClass("mySeleced")) {
+                        $(trs[i]).removeClass("mySeleced");
+                    }
+                }
+                var tr = $(e).find("td").parent();
+                tr.addClass("mySeleced");
+
+            },
+            onLoadSuccess: function (data) {
+
+            }
+        });
+
+        if (RFlag == 1) {
+            requery();
+        } else {
+            _gridPool["tb_role"].init();
+        }
+
+    }
+
+    //查看详细信息
+    function auth(role_id, role_name) {
+        navAppend("权限配置");
+        /*获取父页面元素并动态赋值父页面title*/
+        if (quick.authUrl) {
+        }
+        else {
+            quick.authUrl = "${G.serverUrl}/roleAuthorize";
+        }
+        window.location.href = quick.authUrl + "?role_id=" + role_id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+    }
+
+    //查看指标信息
+    function metricAuth(role_id, role_name) {
+        navAppend("指标权限配置");
+        /*获取父页面元素并动态赋值父页面title*/
+        if (quick.authUrl) {
+        }
+        else {
+            quick.authUrl = "${G.host}/role/metricAuth.do";
+        }
+        window.location.href = quick.authUrl + "?role_id=" + role_id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+    }
+
+
+    /*删除*/
+    function del(id, name) {
+        var msg = "确认将该角色【" + name + "】从系统中删除？删除后不可恢复";
+        layer.confirm(
+            msg,
+            {icon: 3, title: "删除角色", skin: 'layer-ext-moon'},
+            function () {
+                $.ajax({
+                    type: "post",
+                    url: '${G.serverUrl}/deleteRole',
+                    dataType: "json",
+                    data: {role_id: id},
+                    success: function (data) {
+                        if (data.code === 1)
+                            layer.msg('删除角色成功', {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+
+                        else
+                            layer.msg(data.msg, {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+
+                        _gridPool["tb_role"].refresh();
+                    },
+                    error: function (err) {
+                        layer.msg("结果异常", {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+                    }
+                });
+            }
+        );
+    }
+
+    //编辑
+    function edit(role_id, role_name) {
+        navAppend("编辑角色");
+        /*获取父页面元素并动态赋值父页面title*/
+        var pageURL = "${G.serverUrl}/edit?role_id=" + role_id + getDetailParm();
+        window.location.href = pageURL;//跳转到另一个页面，并且还在当前框架
+    }
+
+    //获取返回时传回的数据
+    function requery() {
+        var pn = Number($.request.queryString["IpageNum"]) || 1;
+        var ps = $.request.queryString["IpageSize"] || 10;
+
+        _gd["tb_role"].config({
+            pageSize: ps
+            , onLoadSuccess: function () {
+                if (pageFlag > 0) {
+                    return;
+                }
+                $('#tb_role').bootstrapTable('selectPage', pn);
+                pageFlag++;
+            }
+        });
+        _gd["tb_role"].init();
+    }
+
+    //查询
+    function query() {
+        _gridPool['tb_role'].refresh();
+        queryParm = getParm();
+    }
+
+    //获取查询
+    function getParm() {
+        var s = '&I' + $("#formSearch").serialize().replace(/&/g, "&I");
+        return s;
+    }
+
+    function getDetailParm() {
+        var s = queryParm + "&IpageNum=" + pageNum + "&IpageSize=" + pageSize;
+        return s;
+    }
+
+    function choseboxs(user_id){//nid, url,id,levelid
+       var id1 = '.btn_el1'+user_id;
+        var id2 = '.btn_el2'+user_id;
+        var id3 = '.btn_el3'+user_id;
+        var ids1 =  $(id1).attr("id");
+        var ids2 =  $(id2).attr("id");
+        var ids3 =  $(id3).attr("id");
+        var user_name =  $(id1).val();
+        var ty = "add";
+        if(ids3 == "btn_auth3"){
+            ty = "updata";
+        }
+        if(!layer.values)
+            layer.values = {};
+        layer.open({
+            type: 2 //此处以iframe举例
+            ,title: '选择记录'
+            ,area: ['600px', '500px']
+            ,shade: 0
+            ,maxmin: true
+            ,content: "${G.serverUrl}/chose"+ "?rid=" + user_id
+            ,btn: ['确认', '关闭'] //只是为了演示
+            ,yes: function(index, layero){
+                var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                if(!iframeWin._chosenId){
+                    layer.msg('您还未选择记录，请点击要选择的行', {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+                    return;
+                }
+                var list = iframeWin._chosenId;
+                var menu_id ='';
+                /*$("#"+nid).val(iframeWin._chosenName);
+                $("#"+id).val(menu_id.substr(1));
+                $("#"+levelid).val(iframeWin._chosenLevel);*/
+                layer.closeAll();
+                if(ids1 == "btn_auth1"&&list.length<1&&ids3 != "btn_auth3"){
+                    layer.msg('授权信息为空！', {icon: 2, time: 2000, skin: 'layer-ext-moon1'});
+                    return;
+                }
+                for (var i = 0; i < list.length; i++) {
+                    menu_id = menu_id + ',' + list[i];
+                }
+                if(menu_id.substr(1) == ""){
+                    deleteUser(user_id);
+                }else{
+                    addEntrust(user_id,menu_id.substr(1),user_name,ty);
+                }
+            }
+            ,btn2: function(){
+                layer.closeAll();
+            }
+            ,zIndex: layer.zIndex //重点1
+            ,success: function(layero){
+                layer.setTop(layero); //重点2
+            }
+        });
+    }
+
+    function addEntrust(to_user_id,menu_id,user_name,type) {
+        var msg = "确认对【"+user_name+"】用户授权吗？";
+        var title = "确认授权";
+        if(type == 'updata'){
+            msg = "确认对【"+user_name+"】用户的授权信息进行修改吗？";
+            title = "修改授权";
+        }
+        layer.confirm(
+            msg,
+            {icon: 3, title: title, skin: 'layer-ext-moon'},
+            function () {
+                $.ajax({
+                    type: "post",
+                    url: "${G.host}/entrust/entrustAdd",
+                    async: false,
+                    data:  {"to_user_id": to_user_id, "menu_id": menu_id},
+                    dataType: "json",
+                    success: function (data) {
+                        layer.msg('授权成功！', {icon: 1, time: 1000, skin: 'layer-ext-moon1'});
+                        window.location.href = "${G.serverUrl}/list";
+                    },
+                    error: function (err) {
+                        layer.msg("授权失败！", {icon: 2, time: 1000, skin: 'layer-ext-moon'});
+                    }
+                });
+            }
+        );
+    }
+
+
+    function deleteUser(user_id) {
+        var id = '.btn_el2'+user_id;
+        var ids =  $(id).attr("id");
+        var user_name =  $(id).val();
+        var msg = "确认对【"+user_name+"】取消授权吗？";
+        layer.confirm(
+            msg,
+            {icon: 3, title: "取消授权", skin: 'layer-ext-moon'},
+           function () {
+                $.ajax({
+                    type: "post",
+                    url: "${G.host}/entrust/entrustDelete",
+                    async: false,
+                    data: {"to_user_id": user_id},
+                    dataType: "json",
+                    success: function (data) {
+                        layer.msg('取消授权成功！', {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+                        window.location.href = "${G.serverUrl}/list";
+                    },
+                    error: function (err) {
+                        layer.msg("取消授权失败！", {icon: 2, time: 1000, skin: 'layer-ext-moon'});
+                    }
+                });
+            }
+        );
+    }
+
+
+</script>
+</body>
+</html>

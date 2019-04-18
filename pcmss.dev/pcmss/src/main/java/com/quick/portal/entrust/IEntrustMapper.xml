@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quick.portal.entrust.IEntrustDao">
+
+	<!--查询条件-->
+	<sql id="where">
+		1=1
+		<if test="id != null  and id != '' and id != 'null'"><![CDATA[
+	       and a.id = #{id}
+	    ]]></if>
+		<if test="from_user_id != null and from_user_id != ''  and from_user_id != 'null'"><![CDATA[
+	       and a.from_user_id = #{from_user_id}
+	    ]]></if>
+		<if test="to_user_id != null and to_user_id != ''  and to_user_id != 'null'"><![CDATA[
+	       and a.from_user_id = #{from_user_id}
+	    ]]></if>
+		<if test="menu_id != null and menu_id != ''  and menu_id != 'null'"><![CDATA[
+	       and a.from_user_id = #{from_user_id}
+	    ]]></if>
+	</sql>
+    
+    <!-- 新增page -->
+	<insert id="insert" parameterType="com.quick.portal.entrust.IEntrustDao">
+		insert into jurisdiction_entrust (
+    		  from_user_id,
+    		  to_user_id,
+    		  menu_id,
+    		  creat_time
+		)values(
+			 #{from_user_id},
+			 #{to_user_id},
+			 #{menu_id},
+			 #{creat_time}
+		);
+		
+	</insert>
+		
+	
+    <!--查询-->
+	<select id="select" parameterType="map" resultType="map">
+		select * from jurisdiction_entrust
+	</select>
+	<!--查询-->
+	<select id="selectUser" parameterType="map" resultType="map">
+		select a.user_id,a.user_name,
+		CASE WHEN d.to_user_id IS NULL  THEN '-' ELSE d.creat_time END creat_time,
+		a.user_state ,c.role_type_id,CASE WHEN a.user_id in (SELECT to_user_id
+		FROM jurisdiction_entrust) THEN 1 ELSE 0 END as typ
+		from sys_user a LEFT JOIN user_role_rela b ON a.user_id = b.user_id
+		LEFT JOIN user_role c ON b.role_id = c.role_id LEFT JOIN jurisdiction_entrust d
+		ON a.user_id = d.to_user_id
+		WHERE c.role_type_id >1 and a.user_state = '1'
+		<if test="user_name != null and user_name != ''">
+			and  a.user_name like CONCAT('%',#{user_name},'%')
+		</if>
+		GROUP BY a.user_id
+	</select>
+	
+	 <!--查询-->
+	<select id="selectFrom" parameterType="map" resultType="map">
+		select * from jurisdiction_entrust
+		where 1=1
+		 <if test="from_user_id != null and from_user_id != ''">
+          and  from_user_id = #{from_user_id}
+        </if>
+		<if test="to_user_id != null and to_user_id != ''">
+			and  to_user_id = #{to_user_id}
+		</if>
+		GROUP BY to_user_id,menu_id
+		ORDER BY creat_time DESC
+		
+	</select>
+
+
+
+	<!--查询-->
+	<select id="selectUserMenu" parameterType="map" resultType="map">
+		SELECT a.menu_id,b.menu_cn_name,b.super_menu_id,b.menu_level FROM menu_privilege a LEFT JOIN sys_menu b
+		ON a.menu_id = b.menu_id
+		WHERE role_id in
+		(SELECT role_id FROM user_role_rela
+		WHERE user_id = 1)
+		AND b.menu_state = 1
+		GROUP BY menu_id
+		ORDER BY menu_id
+
+	</select>
+
+	<!--查询-->
+	<select id="selectNoEntrust" parameterType="map" resultType="map">
+		SELECT a.menu_id FROM sys_menu a LEFT JOIN sys_res_conf b
+			ON a.menu_id = b.res_id
+			WHERE b.lentrust_set_prop = '0'
+
+
+	</select>
+<!-- 删除 -->
+	<delete id="deleteBy" parameterType="map">
+		delete from jurisdiction_entrust where 
+		from_user_id = #{from_user_id}  
+		and  to_user_id = #{to_user_id};
+		
+	</delete>
+
+    
+</mapper>
