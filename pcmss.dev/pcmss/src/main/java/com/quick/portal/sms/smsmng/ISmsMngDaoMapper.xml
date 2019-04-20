@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quick.portal.sms.smsmng.ISmsMngDao">
+
+	<!--查询条件-->
+	<sql id="where">
+		1=1
+		<if test="sign_id != null "><![CDATA[
+	       and sign_id = #{sign_id}
+	    ]]></if>
+		<if test="sms_title != null and sms_title != '' and !'null'.equals(sms_title)"><![CDATA[
+	       and sms_title  like CONCAT('%',#{sms_title},'%')
+	    ]]></if>
+
+        <if test="sms_content != null and sms_content != '' and !'null'.equals(sms_content)"><![CDATA[
+	       and sms_content  like CONCAT('%',#{sms_content},'%')
+	    ]]></if>
+
+		<if test="sms_rec_obj != null and sms_rec_obj != '' and !'null'.equals(sms_rec_obj)"><![CDATA[
+	       and sms_rec_obj = #{sms_rec_obj}
+	    ]]></if>
+
+		<if test="sms_author != null"><![CDATA[
+	       and sms_author = #{sms_author}
+	    ]]></if>
+
+		<if test="sms_state != null"><![CDATA[
+	       and sms_state = #{sms_state}
+	    ]]></if>
+
+		<if test="mould_id != null"><![CDATA[
+	       and mould_id = #{mould_id}
+	    ]]></if>
+
+		<if test="upd_time != null"><![CDATA[
+	       and upd_time >= #{upd_time}
+	    ]]></if>
+
+		<if test="cre_time != null"><![CDATA[
+	       and cre_time >= #{cre_time}
+	    ]]></if>
+
+		<if test="_sql_where != null and _sql_where != ''"> <![CDATA[
+            and ${_sql_where}
+        ]]> </if>
+	</sql>
+
+
+	<!-- 新增sys_sign_info -->
+	<insert id="insert" parameterType="com.quick.portal.sms.smsmng.SmsMngDO">
+		insert into sys_sms_info (
+    		  sign_id,
+    		  sms_title,
+    		  sms_content,
+    		  sms_rec_obj,
+    		  sms_author,
+    		  sms_state,
+    		  mould_id,
+    		  cre_time,
+    		  upd_time
+		)values(
+			 #{sign_id},
+			 #{sms_title},
+			 #{sms_content},
+			 #{sms_rec_obj},
+			 #{sms_author},
+			 #{sms_state},
+			 #{mould_id},
+			 now(),
+			 now()
+			)
+	</insert>
+
+	<!-- 修改app_class -->
+	<update id="update" parameterType="com.quick.portal.sms.smsmng.SmsMngDO">
+		update sys_sms_info
+		   set sign_id=#{sign_id}
+			  ,sms_title=#{sms_title}
+			  ,sms_content=#{sms_content}
+			  ,sms_rec_obj=#{sms_rec_obj}
+			  ,sms_author=#{sms_author}
+			  ,sms_state=#{sms_state}
+			  ,cre_time=now()
+			  ,upd_time=now()
+		 where sms_id = #{sms_id}
+	</update>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="int">
+		delete from sys_sms_info where sms_id = #{sms_id}
+	</delete>
+
+	<!--查询-->
+	<select id="select" parameterType="map" resultType="map">
+		select o.*,s.sign_name as sign_name,m.mould_name as  mould_name from sys_sms_info o left join sys_sign_info s
+		on o.sign_id =s.sign_id left join sys_mould_info m on o.mould_id = m.mould_id
+		<where>
+			<include refid="where" />
+		</where>
+		<if test="_sql_order != null and _sql_order != ''">
+			order by ${_sql_order}
+		</if>
+	</select>
+
+	<!-- 查询总记录数 -->
+	<select id="count" parameterType="map" resultType="int">
+		select count(*) from sys_sign_info
+		<where>
+			<include refid="where" />
+		</where>
+	</select>
+
+
+
+	<select id="getSignNameData"  resultType="map">
+		select sign_id  as sign_id,sign_name as sign_name from sys_sign_info
+		order by sign_id
+	</select>
+
+
+	<select id="getMouldNameData"  resultType="map">
+		select mould_content as mould_content,mould_name as mould_name from sys_mould_info
+		order by mould_id
+	</select>
+
+</mapper>

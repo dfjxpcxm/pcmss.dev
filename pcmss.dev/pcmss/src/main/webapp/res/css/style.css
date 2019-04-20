@@ -4034,12 +4034,12 @@ code {
     -webkit-border-image: none;
     -o-border-image: none;
     border-image: none;
-    border-style: solid solid none;
+   /* border-style: solid solid none;*/
     border-width: 2px 0px 0;
     color: inherit;
     margin-bottom: 0;
     padding: 5px 15px 7px;
-    min-height: 30px;
+/*    min-height: 30px;*/
 }
 
 .ibox-content {

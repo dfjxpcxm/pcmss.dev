@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quick.portal.sms.signmng.ISignMngDao">
+
+	<!--查询条件-->
+	<sql id="where">
+		1=1
+		<if test="sign_id != null "><![CDATA[
+	       and sign_id = #{sign_id}
+	    ]]></if>
+		<if test="sign_name != null and sign_name != '' and !'null'.equals(sign_name)"><![CDATA[
+	       and sign_name  like CONCAT('%',#{sign_name},'%')
+	    ]]></if>
+
+		<if test="sign_type != null"><![CDATA[
+	       and sign_type = #{sign_type}
+	    ]]></if>
+
+		<if test="sign_author != null"><![CDATA[
+	       and sign_author = #{sign_author}
+	    ]]></if>
+
+		<if test="sign_state != null"><![CDATA[
+	       and sign_state = #{sign_state}
+	    ]]></if>
+
+		<if test="upd_time != null"><![CDATA[
+	       and upd_time >= #{upd_time}
+	    ]]></if>
+
+		<if test="cre_time != null"><![CDATA[
+	       and cre_time >= #{cre_time}
+	    ]]></if>
+
+		<if test="_sql_where != null and _sql_where != ''"> <![CDATA[
+            and ${_sql_where}
+        ]]> </if>
+	</sql>
+
+
+	<!-- 新增sys_sign_info -->
+	<insert id="insert" parameterType="com.quick.portal.sms.signmng.SignMngDO">
+		insert into sys_sign_info (
+    		  sign_name,
+    		  sign_type,
+    		  sign_author,
+    		  sign_state,
+    		  cre_time,
+    		  upd_time
+		)values(
+			 #{sign_name},
+			 #{sign_type},
+			 #{sign_author},
+			 #{sign_state},
+			 now(),
+			 now()
+			)
+	</insert>
+
+	<!-- 修改app_class -->
+	<update id="update" parameterType="com.quick.portal.sms.signmng.SignMngDO">
+		update sys_sign_info
+		   set sign_name=#{sign_name}
+			  ,sign_type=#{sign_type}
+			  ,sign_author=#{sign_author}
+			  ,sign_state=#{sign_state}
+			  ,cre_time=now()
+			  ,upd_time=now()
+		 where sign_id = #{sign_id}
+	</update>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="int">
+		delete from sys_sign_info where sign_id = #{sign_id}
+	</delete>
+
+	<!--查询-->
+	<select id="select" parameterType="map" resultType="map">
+		select o.*,e.sign_type_name  sign_type_name from sys_sign_info o left join sign_type e
+		on o.sign_type =e.sign_type_id
+		<where>
+			<include refid="where" />
+		</where>
+		<if test="_sql_order != null and _sql_order != ''">
+			order by ${_sql_order}
+		</if>
+	</select>
+
+	<!-- 查询总记录数 -->
+	<select id="count" parameterType="map" resultType="int">
+		select count(*) from sys_sign_info
+		<where>
+			<include refid="where" />
+		</where>
+	</select>
+
+
+	<select id="getSignTypeData"  resultType="map">
+		select sign_type_id  sign_type,sign_type_name sign_name from sign_type
+		order by sign_type_id
+	</select>
+
+</mapper>
