@@ -71,13 +71,14 @@ public class EntrustServiceImpl extends SysBaseService<EntrustDO> implements IEn
     }
 
 
-	@Override
-	public List<Map<String, Object>> select(String user_name) {
+	/*@Override
+	public List<Map<String, Object>> select(String user_name,String user_id) {
 		// TODO Auto-generated method stub
 		Map<String,Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("user_name",user_name);
+		paramMap.put("user_id",user_id);
 		return dao.selectUser(paramMap);
-	}
+	}*/
 
 
 	@Override

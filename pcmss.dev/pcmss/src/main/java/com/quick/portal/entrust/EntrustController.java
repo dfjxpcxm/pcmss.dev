@@ -56,6 +56,8 @@ public class EntrustController extends SysBaseController<EntrustDO> {
     //页面请求
     @RequestMapping
     public String list(ModelMap model) {
+        String user_id = QCookie.getValue(request, "sbd.user_id");
+        model.addAttribute("user_id", user_id);
         return view();
     }
 
@@ -74,15 +76,18 @@ public class EntrustController extends SysBaseController<EntrustDO> {
         return ls;
     }
 
-    //增加授权信息
+  /*  //增加授权信息
     @RequestMapping(value = "/selectList")
     @ResponseBody
     public Object selectList(ModelMap model) {
         String user_name=request.getParameter("user_name");
+        String user_id = QCookie.getValue(request, "sbd.user_id");
         Map<String,Object> paramMap = new HashMap<String, Object>();
-        paramMap.put("rows", entrustService.select(user_name));
+        List<Map<String, Object>> ls = entrustService.select(user_name,user_id);
+        paramMap.put("total", ls.size());
+        paramMap.put("rows", ls);
         return paramMap;
-    }
+    }*/
    
     //增加授权信息
     @RequestMapping(value = "/entrustAdd",method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
@@ -92,7 +97,6 @@ public class EntrustController extends SysBaseController<EntrustDO> {
         String user_id = QCookie.getValue(request, "sbd.user_id");
         String menu_id1=request.getParameter("menu_id");
         List<String> menu_id = Arrays.asList(menu_id1.split(","));
-        System.out.println("------"+to_user_id+"----"+menu_id);
     	 return entrustService.addInfo(menu_id,user_id,to_user_id);
     }
     

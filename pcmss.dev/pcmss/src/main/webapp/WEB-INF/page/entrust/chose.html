@@ -111,8 +111,6 @@
                if (data != null && data.length > 0) {
                    $.each(data, function (i, checkMenu) {
                        var menu_id_checked = checkMenu.menu_id;
-                       _chosenId.push(menu_id_checked);
-                       //_chosenId = _chosenId+','+menu_id_checked;
                        var hasCheckNode = zTreeObj.getNodesByParam("id", menu_id_checked);
                        if (hasCheckNode != null && hasCheckNode.length > 0)
                            zTreeObj.checkNode(hasCheckNode[0], true, false);
@@ -149,26 +147,16 @@
        });
    }
    var _chosenName = null;
-   function zTreeOnCheck(event, treeId, treeNode) {
-       _chosenName = treeNode.checked;
-       _chosenLevel = treeNode.id;
-       if(_chosenName){
-           _chosenId.push(_chosenLevel);
-           //_chosenId = removeNo(_chosenId);
-       }else{
-           _chosenId = remove(_chosenId,_chosenLevel);
-       }
+   var _chosenNo = null;
+   function zTreeOnCheck() {
+       var treeObj=$.fn.zTree.getZTreeObj("treeDemo"),
+           nodes=treeObj.getCheckedNodes(true);
+       _chosenId = [];
+           for(var i=0;i<nodes.length;i++){
+               _chosenId.push(nodes[i].id);
+           }
+
     }
-   function remove(list,val) {
-       //alert(this+'.....');
-       var ls = []
-       for (var i = 0; i < list.length; i++){
-               if(val != list[i]){
-                   ls.push(list[i]);
-               }
-        }
-        return ls;
-   };
 
 </script>
 </html>
