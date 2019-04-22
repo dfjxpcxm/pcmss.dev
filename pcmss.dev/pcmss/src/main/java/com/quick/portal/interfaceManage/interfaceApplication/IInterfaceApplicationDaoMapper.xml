@@ -10,7 +10,7 @@
 	    ]]></if>
 		<if test="app_usename != null and app_usename != '' and app_usename != 'null'">
 			<![CDATA[
-	       and app_usename like CONCAT('%',#{app_usename},'%')
+	      and app_usename like CONCAT('%',#{app_usename},'%') or inter_name like CONCAT('%',#{app_usename},'%')
 	    ]]></if>
 		<if test="inter_id != null and inter_id != '' and inter_id != 'null'"><![CDATA[
 	       and inter_id like CONCAT('%',#{inter_id},'%')
@@ -31,7 +31,7 @@
     		  app_reason,
     		  inter_id,
     		  cre_time,
-    		  upd_time,
+    		  upd_time
 
 		)values(
 			 #{app_id},
@@ -62,7 +62,8 @@
     
     <!--查询-->
 	<select id="select" parameterType="map" resultType="map">
-		select interface_app_managent.*,interface_info.inter_name,interface_info.inter_path,interface_info.inter_state from interface_app_managent ,interface_info
+		select u.*,f.inter_name,f.inter_path,f.inter_state from
+		interface_app_managent u INNER JOIN interface_info f on u.inter_id = f.inter_id
 		<where>
 			<include refid="where" />
 		</where>

@@ -21,10 +21,13 @@ package com.quick.portal.security.sysconfmng;
 
 import com.quick.core.base.SysBaseService;
 import com.quick.core.base.model.DataStore;
+import com.quick.core.base.model.PageBounds;
+import com.quick.core.util.common.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,10 +51,10 @@ public class SysConfMngServiceImpl extends SysBaseService<SysConfMngDO> implemen
         BaseComment = "sys_glabal_parm";
         PrimaryKey = "sys_id";
         NameKey = "sys_id";
-
         setDao(dao);
         this.dao = dao;
     }
+
 
     private ISysConfMngDao<SysConfMngDO> dao;
 
@@ -112,8 +115,47 @@ public class SysConfMngServiceImpl extends SysBaseService<SysConfMngDO> implemen
     public void updResStateInfoByID(String id) {
          dao.updResStateInfoByID(id);
     }
-	 /**
-     * 多人认证
+
+    //以下是roy编写 --2019-4-18 start
+    //获取策略表信息 sys_res_conf_name
+    @Override
+    public List<Map<String,Object>> getResConfName() {
+            return dao.getResConfName();
+    }
+
+    //获取策略表信息 sys_res_conf sys_menu
+    @Override
+    public List<Map<String, Object>> selectResInfo(Map<String, Object> map, PageBounds pager) {
+        return dao.selectResInfo(map,pager);
+    }
+
+    @Override
+    public List<Map<String, Object>> getResUserInfo(Map<String, Object> map, PageBounds pager) {
+        return dao.getResUserInfo(map,pager);
+    }
+
+    /**
+     * 联表查询 有用户信息的
+     * @param sys_id
+     * @return
+     */
+    @Override
+    public Map<String, Object> getSysIdResInfo(String sys_id) {
+        return dao.getSysIdResInfo(sys_id);
+    }
+
+    /**
+     * 联表查询 没有用户信息的
+     * @param sys_id
+     * @return
+     */
+    @Override
+    public Map<String, Object> getSysIdResUserInfo(String sys_id) {
+        return dao.getSysIdResUserInfo(sys_id);
+    }
+
+    /**
+     * 多人认证查询验证账号密码 sys_user
      * @param
      * @param
      * @return
@@ -140,6 +182,10 @@ public class SysConfMngServiceImpl extends SysBaseService<SysConfMngDO> implemen
         return ActionMsg.setOk("查询失败");
     }
 
+    /**
+     * 多人认证配置查询是否开启sys_glabal_parm
+     * @return
+     */
     @Override
     public DataStore manyPeopleCertification() {
         boolean man_wit_set = false;
@@ -160,5 +206,59 @@ public class SysConfMngServiceImpl extends SysBaseService<SysConfMngDO> implemen
             return ActionMsg.setOk("已开启");
         }
         return ActionMsg.setOk("未开启");
+    }
+
+    /**
+     * 保存业务
+     * @param entity
+     * @return
+     */
+    @Override
+    public DataStore saveRes(SysConfMngDO entity) {
+        //如果编号为空,新增实体对象,否则更新实体对象
+        Integer val = entity.getSys_id();
+        int c = 0;
+        Date now = DateTime.Now().getTime();
+        //名称不能重复
+      /*  if(exist("dep_name", entity.getDep_name(), val))
+            return ActionMsg.setError("名称已存在，请换一个");*/
+        if(val == null || val == 0) {
+            entity.setCre_time( now );  //新增时间
+           // entity.setUpd_time( now );  //修改时间
+
+            c = dao.insertRes(entity);
+        }else {
+           // entity.setUpd_time( now );  //修改时间
+            entity.setLentrust_set_prop(entity.getLentrust_set_prop()==null || "".equals(entity.getLentrust_set_prop()) || "0".equals(entity.getLentrust_set_prop())?"0":"1");
+            entity.setLimt_res_set_prop(entity.getLimt_res_set_prop()==null || "".equals(entity.getLimt_res_set_prop()) || "0".equals(entity.getLimt_res_set_prop())?"0":"1");
+            entity.setLimt_time_res_set_prop(entity.getLimt_time_res_set_prop()==null || "".equals(entity.getLimt_time_res_set_prop()) || "0".equals(entity.getLimt_time_res_set_prop())?"0":"1");
+            entity.setLimt_user_res_set_prop(entity.getLimt_user_res_set_prop()==null || "".equals(entity.getLimt_user_res_set_prop()) || "0".equals(entity.getLimt_user_res_set_prop())?"0":"1");
+            c = dao.updateRes(entity);
+        }
+        if(c == 0)
+            return ActionMsg.setError("操作失败");
+        ActionMsg.setValue(entity);
+        return ActionMsg.setOk("操作成功");
+    }
+
+
+    /**
+     * 删除业务sys_res_conf
+     * @param sysid
+     * @return
+     */
+    @Override
+    public DataStore deleteRes(String sysid) {
+        dao.deleteRes(sysid);
+        return ActionMsg.setOk("操作成功");
+    }
+
+    /**
+     * 查询资源菜单信息
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> selectUserInfo() {
+        return dao.selectUserInfo();
     }
 }

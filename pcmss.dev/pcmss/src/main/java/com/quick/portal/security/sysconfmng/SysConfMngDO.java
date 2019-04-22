@@ -38,10 +38,10 @@ public class SysConfMngDO implements java.io.Serializable {
         setUser_id(u.getUser_id());
         setCnt(u.getCnt());
         setRes_id(u.getRes_id());
-        setLimt_res_set(u.getLimt_res_set());
-        setLimt_time_res_set(u.getLimt_time_res_set());
-        setLimt_user_res_set(u.getLimt_user_res_set());
-        setEntrust_set(u.getEntrust_set());
+        setLimt_res_set_prop(u.getLimt_res_set_prop());
+        setLimt_time_res_set_prop(u.getLimt_time_res_set_prop());
+        setLimt_user_res_set_prop(u.getLimt_user_res_set_prop());
+        setLentrust_set_prop(u.getLentrust_set_prop());
         setIds(u.getIds());
     }
     // <editor-fold defaultstate="collapsed" desc="私有成员">
@@ -67,22 +67,25 @@ public class SysConfMngDO implements java.io.Serializable {
     private Date  cre_time;
 
 
-    private Integer  res_id;
-    private Integer  timeout;
-    private Integer  user_id;
-    private Integer  cnt;
+    private Integer  res_id;//资源ID
+    private Integer  timeout;//超时定义
+    private Integer  user_id;//用户ID
+    private Integer  cnt;//次数
 
     //设置资源开关
-    private String  limt_res_set;
+    private String  limt_res_set_prop;
     //设置时间资源开关
-    private String  limt_time_res_set;
+    private String  limt_time_res_set_prop;
     //设置时间资源开关
-    private String  limt_user_res_set;
+    private String  limt_user_res_set_prop;
     //设置委托开关
-    private String  entrust_set;
+    private String  lentrust_set_prop;
 
     private String ids;
 
+    private Integer sys_res_id;
+
+    private String sys_res_name;
 
     public Integer getSys_id() {
         return sys_id;
@@ -156,37 +159,38 @@ public class SysConfMngDO implements java.io.Serializable {
         this.cnt = cnt;
     }
 
-    public String getLimt_res_set() {
-        return limt_res_set;
+    public String getLimt_res_set_prop() {
+        return limt_res_set_prop;
     }
 
-    public void setLimt_res_set(String limt_res_set) {
-        this.limt_res_set = limt_res_set;
+    public void setLimt_res_set_prop(String limt_res_set_prop) {
+        this.limt_res_set_prop = limt_res_set_prop;
     }
 
-    public String getLimt_time_res_set() {
-        return limt_time_res_set;
+    public String getLimt_time_res_set_prop() {
+        return limt_time_res_set_prop;
     }
 
-    public void setLimt_time_res_set(String limt_time_res_set) {
-        this.limt_time_res_set = limt_time_res_set;
+    public void setLimt_time_res_set_prop(String limt_time_res_set_prop) {
+        this.limt_time_res_set_prop = limt_time_res_set_prop;
     }
 
-    public String getLimt_user_res_set() {
-        return limt_user_res_set;
+    public String getLimt_user_res_set_prop() {
+        return limt_user_res_set_prop;
     }
 
-    public void setLimt_user_res_set(String limt_user_res_set) {
-        this.limt_user_res_set = limt_user_res_set;
+    public void setLimt_user_res_set_prop(String limt_user_res_set_prop) {
+        this.limt_user_res_set_prop = limt_user_res_set_prop;
     }
 
-    public String getEntrust_set() {
-        return entrust_set;
+    public String getLentrust_set_prop() {
+        return lentrust_set_prop;
     }
 
-    public void setEntrust_set(String entrust_set) {
-        this.entrust_set = entrust_set;
+    public void setLentrust_set_prop(String lentrust_set_prop) {
+        this.lentrust_set_prop = lentrust_set_prop;
     }
+
 
     public String getIds() {
         return ids;
@@ -194,5 +198,21 @@ public class SysConfMngDO implements java.io.Serializable {
 
     public void setIds(String ids) {
         this.ids = ids;
+    }
+
+    public Integer getSys_res_id() {
+        return sys_res_id;
+    }
+
+    public void setSys_res_id(Integer sys_res_id) {
+        this.sys_res_id = sys_res_id;
+    }
+
+    public String getSys_res_name() {
+        return sys_res_name;
+    }
+
+    public void setSys_res_name(String sys_res_name) {
+        this.sys_res_name = sys_res_name;
     }
 }

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <#include "/WEB-INF/include/reslist.html" />
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content wrapper-content-x animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ibox-x">
+                <div class="ibox-content ibox-content-x">
+                    <div style="margin:5px;">
+                        <table id="list" class="table-striped" style="table-layout:fixed"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="IDS_PAGENUM" name="IDS_PAGENUM">
+        <input type="hidden" id="IDS_PAGESIZE" name="IDS_PAGENUM">
+    </div>
+</div>
+</body>
+<script>
+    var pageNum = 1;
+    var pageSize = 10;
+    var queryParm = '';
+    var flag = true;
+    var pageFlag = 0;
+    //初始化表格
+    function config() {
+        var RFlag = $.request.queryString["RFlag"];
+        quick.serverUrl = "${G.serverUrl}";
+        quick.editUrl = "${G.editUrl}";
+        quick.objName = "sys_res_id";
+        quick.idField = "sys_res_id";
+        $("#list").bootstrapTable("destroy");
+        _gd["list"] = new BGrid("#list");
+        _gd["list"].config({
+            url: quick.serverUrl + "/getList?i=" + Math.random(),
+            idField: quick.idField ,
+            sortName: quick.idField ,
+            cache: false,
+            height: $(document.body).height() - 50,
+            toolbar: "#formSearch",
+            columns: [
+                {checkbox: true},
+                {
+                    field: 'sys_res_id',
+                    title: 'ID',
+                    align: 'center',
+                    width: '12%',
+                    formatter: function (value, row, index) {
+                        return "<a href='javascript:void(0)' sys_res_id='" + row.sys_res_id + "'>" + row.sys_res_id + "</a>";
+                    }
+                },
+                {field: 'sys_res_name', title: '策略定义', width: 100, align: 'center'},
+                {
+                    field: 'CZ', title: '操作', width: '15%', align: 'center', formatter: function (value, row, index) {
+                        return "<button type='button' class='btn_el' onclick='details(\"" + row.url_name + "\")'>详情</button>";
+                    }
+                }
+            ], onPageChange: function (number, size) {
+                $("#IDS_PAGESIZE").val(size);
+                $("#IDS_PAGENUM").val(number);
+                pageNum = number;
+                pageSize = size;
+            }, onPostBody: function (data) {
+                if (queryParm == '' && (data == null || data.length == 0)) {
+                    $(".no-records-found td").html('您还没有添加相关信息，请点击<a onclick="add();" href="javascript:void(0);">添加</a>');
+                }
+            }
+        });
+
+        if (RFlag == 1) {
+            requery();
+        } else {
+            _gd["list"].init();
+        }
+    }
+
+    function ajax(object){
+        var url = object.url || "";
+        if(!url) return;
+        var method = object.method || "GET";
+        var data = object.data || null;
+        var handler = object.handler || function(){};
+        var xmlHttp;
+        var data;
+        if(window.XMLHttpRequest){
+            xmlHttp = new window.XMLHttpRequest();
+        }else if(window.ActiveXObject){
+            xmlHttp = new window.ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.open(method,url,true);
+        xmlHttp.send(data);
+        xmlHttp.onreadystatechange = function(){
+            if(xmlHttp.readyState == 4){
+                if(xmlHttp.status ==0 || xmlHttp.status == 200){
+                    if(xmlHttp.responseXML){
+                        data = xmlHttp.responseXML;
+                    }else{
+                        if(window.JSON&&window.JSON.parse){
+                            data = window.JSON.parse(xmlHttp.responseText);
+                        }else{
+                            data = eval("("+xmlHttp.responseText+")")
+                        }
+                    }
+                    handler(data);
+                }else{
+                    showMsg("系统繁忙，请稍后再试。");
+                }
+            }
+        }
+    }
+    //查看详细信息
+    function details(url_name) {
+        navAppend("详情信息");
+        /*获取父页面元素并动态赋值父页面title*/
+        window.location.href = quick.serverUrl + "/"+url_name;//跳转到另一个页面，并且还在当前框架
+    }
+
+    //获取返回时传回的数据
+    function requery() {
+        var pn = Number($.request.queryString["IpageNum"]) || 1;
+        var ps = $.request.queryString["IpageSize"] || 10;
+        _gd["list"].config({
+            pageSize: ps
+            , onLoadSuccess: function () {
+                if (pageFlag > 0) {
+                    return;
+                }
+                $('#list').bootstrapTable('selectPage', pn);
+                pageFlag++;
+            }
+        });
+        _gd["list"].init();
+    }
+</script>
+</html>
