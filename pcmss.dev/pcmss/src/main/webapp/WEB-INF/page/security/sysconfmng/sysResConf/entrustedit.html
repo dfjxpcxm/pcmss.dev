@@ -28,10 +28,12 @@
 
                             <div class="col-sm-6 form_ipt_botm">
                                 <div class="form-group">
-                                    <label class="col-xs-3 lable_top"><span></span>资源名称</label>
+                                    <label class="col-xs-3 lable_top"><span></span>菜单名称</label>
                                     <div class="col-xs-9">
                                         <div class="input-group">
                                             <input type="text" id="menu_cn_name" name="menu_cn_name"readOnly="readOnly" class="form-control"/>
+                                            <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button" onclick="chosebox('menu_cn_name', '${G.serverUrl}/chose','res_id');">...</button>
                                         </span>
                                         </div>
                                     </div>

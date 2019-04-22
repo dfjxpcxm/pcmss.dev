@@ -19,7 +19,7 @@
                                                                                                  type="button"
                                                                                                  onclick="query();"> 查询</button> </span>
                              <div class="form-group" style="width:100px;float:right;">
-                                 <button type="button" class="btn btn-primary" onclick="location.href='edit';"> 新增配置
+                                 <button type="button" class="btn btn-primary" onclick="location.href='entrustedit';"> 新增配置
                                  </button>
                              </div>
                              <div class="form-group" style="width:100px;float:right;">
@@ -73,7 +73,7 @@
                         return "<a href='javascript:void(0)' onclick=\"goDetail(this);\" sys_id='" + row.sys_id + "'>" + row.sys_id + "</a>";
                     }
                 },
-                {field: 'menu_cn_name', title: '资源名称', width: 100, align: 'center'},
+                {field: 'menu_cn_name', title: '菜单名称', width: 100, align: 'center'},
                 {field: 'user_id', title: '用户ID', width: 100, align: 'center'},
                 {field: 'timeout', title: '超时时间', width: 100, align: 'center'},
                 {field: 'cnt', title: '次数', width: 100, align: 'center'},

@@ -314,13 +314,9 @@
             type: 'GET',
             success: function (data) {
               if (data.msg == "已开启"){
-                    layer.msg('多人认证已开启', {icon: 1, time: 2000, skin: 'layer-ext-moon'}, function(){
                        author();//执行认证逻辑
-                   });
                }else {
-                   layer.msg('多人认证未开启', {icon: 1, time: 2000, skin: 'layer-ext-moon'}, function(){
                        saveRolePrivilege();//执行保存方法
-                   });
                }
             },
 

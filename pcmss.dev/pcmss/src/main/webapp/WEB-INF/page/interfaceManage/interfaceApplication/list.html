@@ -71,8 +71,7 @@
                     }
                 },
                 {field: 'app_reason', title: '申请理由', width: 100, align: 'center'},
-                {field: 'inter_id', title: '接口ID', width: 100, align: 'center'},
-                {field: 'inter_name', title: '接口名字', width: 100, align: 'center'},
+                {field: 'inter_name', title: '接口名称', width: 100, align: 'center'},
                 {field: 'inter_path', title: '接口路径', width: 100, align: 'center'},
                 {
                     field: 'inter_state',
@@ -142,7 +141,7 @@
     function edit(id) {
         navAppend("编辑集成系统");
         /*获取父页面元素并动态赋值父页面title*/
-        window.location.href = quick.editUrl + "?app_id=" + id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+        window.location.href = quick.editUrl + "?mode=browse&app_id=" + id + getDetailParm();//跳转到另一个页面，并且还在当前框架
     }
 
     function add() {

@@ -44,7 +44,7 @@
 	    ]]></if>
 	    <!--不是用一个方法中调用,给与getResUserInfo()方法调用-->
 		<if test="value == 'resuseredit' "><![CDATA[
-	        and  user_id  is not null and timeout  is not null and menu_cn_name like CONCAT('%',#{menu_cn_name},'%')
+	        and menu_cn_name like CONCAT('%',#{menu_cn_name},'%')
 	        ORDER BY  limt_user_res_set_prop desc
 	    ]]></if>
 		<if test="value == 'entrustedit' "><![CDATA[

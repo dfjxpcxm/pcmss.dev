@@ -15,7 +15,7 @@
        $("#list").bootstrapTable("destroy");
        _gd["list"]=new BGrid("#list");
        _gd["list"].config({
-    	   url:quick.serverUrl+"/getList?inter_state=1&i=" + Math.random(),
+    	   url:"${G.host}/interfaceManage/interfaceInfoMaintain/getList?inter_state=1&i=" + Math.random(),
     	   idField: quick.idField,
     	   sortName: quick.idField,
            cache:false,
@@ -30,12 +30,12 @@
                    { field: 'cre_time', title: '创建时间', width: 100  }
     	   ],onClickRow:function(row,e){
                _chosen = row;
-
-               _chosenName = row.inter_id;
+               _chosenId = row.inter_id;
+               _chosenName = row.inter_name;
     	   },onCheck:function(row){
                _chosen = row;
-
-               _chosenName = row.inter_id;
+               _chosenId = row.inter_id;
+               _chosenName = row.inter_name;
            }
        });
 
