@@ -15,6 +15,9 @@
 		<if test="sys_id != null "><![CDATA[
 	       and sys_id = #{sys_id}
 	    ]]></if>
+		<if test="parm_chinese != null and parm_chinese != '' and !'null'.equals(parm_chinese)"><![CDATA[
+	       and parm_chinese = #{parm_chinese}
+	    ]]></if>
 		<if test="parm_title != null and parm_title != '' and !'null'.equals(parm_title)"><![CDATA[
 	       and parm_title = #{parm_title}
 	    ]]></if>
@@ -22,7 +25,7 @@
 	       and parm_val = #{parm_val}
 	    ]]></if>
 
-		<if test="cre_time != null and )"><![CDATA[
+		<if test="cre_time != null"><![CDATA[
 	       and cre_time >= #{cre_time}
 	    ]]></if>
 
@@ -30,9 +33,28 @@
             and ${_sql_where}
         ]]> </if>
 	</sql>
-
-
-
+	<sql id="ResWhere">
+		<if test="value == 'resedit'"><![CDATA[
+	       and  user_id is null and timeout is null and menu_cn_name like CONCAT('%',#{menu_cn_name},'%')
+	       ORDER BY  limt_res_set_prop desc
+	    ]]></if>
+		<if test="value == 'restimeedit' "><![CDATA[
+	        and  user_id is null and timeout  is not null and menu_cn_name like CONCAT('%',#{menu_cn_name},'%')
+	        ORDER BY  limt_time_res_set_prop desc
+	    ]]></if>
+	    <!--不是用一个方法中调用,给与getResUserInfo()方法调用-->
+		<if test="value == 'resuseredit' "><![CDATA[
+	        and  user_id  is not null and timeout  is not null and menu_cn_name like CONCAT('%',#{menu_cn_name},'%')
+	        ORDER BY  limt_user_res_set_prop desc
+	    ]]></if>
+		<if test="value == 'entrustedit' "><![CDATA[
+	        and  lentrust_set_prop  in ('1','0') and menu_cn_name like CONCAT('%',#{menu_cn_name},'%')
+	        ORDER BY  lentrust_set_prop desc
+	    ]]></if>
+		<if test="_sql_where != null and _sql_where != ''"> <![CDATA[
+            and ${_sql_where}
+        ]]> </if>
+	</sql>
 	<!-- 查询系统参数表IP配置授权策略-->
 	<select id="getLimtIpSystemParmInfo"  resultType="map">
 		select parm_val from sys_glabal_parm  where parm_title in('ip_set','st_ip_val','ed_ip_val')
@@ -91,8 +113,133 @@
 	<update id="updResStateInfoByID" parameterType="java.lang.String">
 		update sys_menu  set menu_state=0, upd_time =now()  where menu_id in(${ids})
 	</update>
+	<!--第一次-->
+	<select id="getResConfName" parameterType="map"  resultType="map">
+		select * from sys_res_conf_name
+	</select>
 
+	<!--查询资源分配  1-->
+	<select id="selectResInfo" parameterType="map" resultType ="map">
+		select s.*,f.menu_id,f.menu_cn_name from sys_res_conf s
+		INNER JOIN sys_menu f on s.res_id = f.menu_id
+		<where>
+			<include refid="ResWhere"></include>
+		</where>
+	</select>
+	<!--查询资源分配 用户间隔 2-->
+	<select id="getResUserInfo" parameterType="map" resultType ="map">
+		select s.*,f.menu_id,f.menu_cn_name,u.user_name,u.user_real_name from sys_res_conf s
+		INNER JOIN sys_menu f on s.res_id = f.menu_id
+		INNER JOIN sys_user u on s.user_id = u.user_id
+		<where>
+			<include refid="ResWhere"></include>
+		</where>
+	</select>
+	<!--查询资源表id对应的值 有用户的-->
+	<select id="getSysIdResUserInfo" parameterType="String" resultType ="map">
+		select s.*,f.menu_id,f.menu_cn_name,u.user_id,u.user_name,u.user_real_name from sys_res_conf s
+		INNER JOIN sys_menu f on s.res_id = f.menu_id
+		INNER JOIN sys_user u on s.user_id = u.user_id
+		where sys_id = #{sys_id}
+	</select>
+	<!--查询资源表id对应的值 没有用户的-->
+	<select id="getSysIdResInfo" parameterType="String" resultType ="map">
+		select s.*,f.menu_id,f.menu_cn_name from sys_res_conf s
+		INNER JOIN sys_menu f on s.res_id = f.menu_id
+		where sys_id = #{sys_id}
+	</select>
+	<insert id="inserRes" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO" >
+		insert into sys_res_conf (
+    		  sys_id,
+    		  res_id,
+    		  user_id,
+    		  timeout,
+    		  cnt,
+    		  limt_res_set_prop,
+    		  limt_time_res_set_prop,
+    		  limt_user_res_set_prop,
+    		  lentrust_set_prop,
+    		  cre_time
 
+		)values(
+			 #{sys_id},
+			 #{res_id},
+			 #{user_id},
+			 #{timeout},
+			 #{cnt},
+			 #{limt_res_set_prop},
+			 #{limt_time_res_set_prop},
+			 #{limt_user_res_set_prop},
+			 #{lentrust_set_prop},
+			 now()
+			)
+	</insert>
+	<!--修改sys_conf-->
+	<update id="updateRes" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO">
+		update sys_res_conf
+		   set sys_id=#{sys_id}
+			  ,res_id=#{res_id}
+			  ,user_id=#{user_id}
+			  ,timeout=#{timeout}
+			  ,cnt=#{cnt}
+			  ,limt_res_set_prop=#{limt_res_set_prop}
+			  ,limt_time_res_set_prop=#{limt_time_res_set_prop}
+			  ,limt_user_res_set_prop=#{limt_user_res_set_prop}
+			  ,lentrust_set_prop=#{lentrust_set_prop}
+		 where sys_id = #{sys_id}
+	</update>
+	<!-- 删除-->
+	<delete id="deleteRes" parameterType="String">
+		delete from sys_res_conf where sys_id = #{sys_id}
+	</delete>
+	<!--多人认证sys_glabal_parm-->
+	<select id="select" parameterType="map" resultType="map" >
+		select * from sys_glabal_parm
+		<where>
+			<include refid="where"></include>
+		</where>
+	</select>
+	<select id="selectUserInfo" parameterType="map" resultType="map" >
+		select u.user_id,u.user_name,u.user_real_name from sys_user u
+	</select>
+	<!-- 修改sys_glabal_parm -->
+	<update id="update" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO">
+		update sys_glabal_parm
+		   set sys_id=#{sys_id}
+			  ,parm_title=#{parm_title}
+			  ,parm_chinese=#{parm_chinese}
+			  ,parm_val=#{parm_val}
+		 where sys_id = #{sys_id}
+	</update>
+
+	<!-- 删除sys_glabal_parm -->
+	<delete id="delete" parameterType="String">
+		delete from sys_glabal_parm where sys_id = #{sys_id}
+	</delete>
+
+	<!--多人认证使用 查询账号-->
+	<select id="getUserName"  parameterType="map" resultMap="userInfoMap">
+		select u.*,u.user_name
+		from sys_user  u
+		where u.user_name = #{user_name}
+	</select>
+	<!--多人认证使用 查询账号密码-->
+	<select id="getUserInfoPwd" parameterType="map" resultMap="userInfoMap">
+		select u.*,u.user_name,u.user_password
+		from sys_user  u
+		where u.user_name = #{user_name} and u.user_password = #{user_password}
+	</select>
+
+	<!--	多人认证查询开启-->
+	<select id="manyPeopleCertification" resultType="map" >
+		select s.sys_id,s.parm_title,s.parm_val from sys_glabal_parm s where parm_title in ('many_wit_set','wit_val')
+	</select>
+
+	<resultMap id="userInfoMap" type="com.quick.portal.sysUser.SysUserDO">
+		<id property="user_id" column="user_id"/>
+		<result property="user_name" column="user_name"/>
+		<result property="user_password" column="user_password"/>
+	</resultMap>
 
 
 

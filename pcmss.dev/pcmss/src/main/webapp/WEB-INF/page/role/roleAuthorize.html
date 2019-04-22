@@ -8,6 +8,9 @@
         .sotxt {
             width: 40px;
         }
+        .msg{ font-size: 13px; }
+        .onError{ color: red; }
+        .onSuccess{ color: green; }
     </style>
 </head>
 <body class="gray-bg">
@@ -24,7 +27,7 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-content ibox-content-x">
                     <div class="pull-right">
-                        <button id="btnSave" class="btn btn-primary" type="button" onclick="saveRolePrivilege();">保存
+                        <button id="btnSave" class="btn btn-primary" type="button" onclick="listenOpen();">保存
                         </button>
                         <button type="button" class="btn btn-primary" onclick="cancel();">返回</button>
                     </div>
@@ -302,5 +305,162 @@
             }
         });
     }
+    /*多人认证 查询是否开启*/
+    function listenOpen() {
+        $.ajax({
+            url: '${G.host}/security/sysconfmng/sysConfMng/manyPeopleCertification',
+            dataType: 'json',
+            async:true,
+            type: 'GET',
+            success: function (data) {
+              if (data.msg == "已开启"){
+                    layer.msg('多人认证已开启', {icon: 1, time: 2000, skin: 'layer-ext-moon'}, function(){
+                       author();//执行认证逻辑
+                   });
+               }else {
+                   layer.msg('多人认证未开启', {icon: 1, time: 2000, skin: 'layer-ext-moon'}, function(){
+                       saveRolePrivilege();//执行保存方法
+                   });
+               }
+            },
 
+        });
+    }
+    function author(){
+        var str='';
+        for (var i = 1; i <= 3; i++) {
+            str +='<label >请输入第'+i+'个账号密码</label><br/>' +
+                ' <div class="form-group">'+
+                ' <label class="col-xs-3 lable_top" ><span class="span_require">*</span>账号</label>'+
+                '<div class="col-xs-9"><input type="text" id="user_name'+i+'" onblur="userAuthor('+i+')" class="form-control required" />' +
+                '<span id="usermsg'+i+'" class="">&nbsp;</span></div>'+
+                '</div>'+
+                '<div class="form-group">'+
+                '<label class="col-xs-3 lable_top"><span class="span_require">*</span>密码</label>'+
+                '<div class="col-xs-9"><input type="password" id="user_password'+i+'" onblur="pwdAuthor('+i+')" class="form-control required" />' +
+                '<span id="pwdmsg'+i+'" class="">&nbsp;</span></div>'+
+                '</div><br/>';
+        } 
+        
+        layer.open({
+            type: 1,
+            title: "<label>多人认证</label>",
+            fix: false,
+            shadeClose: false,
+            maxmin: true,
+            zIndex: layer.zIndex,
+            area: ['543px', '532px'],/*宽，高*/
+            content:str,
+            btn:['保存','取消'],
+            yes:function(){
+                var user1=$("#user_name1").val();
+                var user2=$("#user_name2").val();
+                var user3=$("#user_name3").val();
+                if (user1 == '' || user2 == ''  ||user3 == '') {
+                    layer.msg('用户名不能为空！！！', {icon: 1, time: 2000, skin: 'layer-ext-moon'}, function(){
+                        exeAuthor();//执行方法
+                    });
+                    return ;
+                } else if (user1 == user2 || user2 == user3 || user3 == user1) {
+                    layer.msg('用户名不能重复！！！', {icon: 1, time: 2000, skin: 'layer-ext-moon'}, function(){
+                        exeAuthor();//执行方法
+                    });
+                    return ;
+                } else if (exeAuthor()[1] == 1 && exeAuthor()[2] == 2 && exeAuthor()[3] == 3) {
+                    saveRolePrivilege();//执行保存方法
+                }else {
+                    exeAuthor();
+                    return ;
+                }
+            }
+        })
+    }
+    function exeAuthor() {
+        //定义数组用于接收验证成功返回来的数值
+        var sta=[];
+        for (var i = 1; i <= 3 ; i++) {
+            userAuthor(i);
+            sta[i]=pwdAuthor(i);
+
+        }
+        return sta;
+    }
+    /*验证账号密码*/
+    function checkAuthor(user_name,user_password) {
+        var msg ="";
+        $.ajax({
+            url: '${G.host}/security/sysconfmng/sysConfMng/peopleAuthor',
+            dataType: 'json',
+            async:false,
+            type: 'POST',
+            traditional:true,
+            data: {"user_name":user_name,"user_password":user_password},
+            success: function (data) {
+                msg = data.msg;//获取数据确定是否用户是否匹配
+                //layer.msg('认证通过', {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+            },
+            error: function (err) {
+                msg = data.msg;
+                // layer.msg("结果异常", {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+            }
+        });
+        return msg;
+
+    }
+    function userAuthor(number) {
+        var user_name=$("#user_name"+number).val()
+        var usermsg=$("#usermsg"+number);
+
+        if(user_name == ""){
+            var errorMsg = " 请输入用户名！";
+            //class='msg onError' 中间的空格是层叠样式的格式
+            usermsg.html(errorMsg);
+            usermsg.attr("class","msg onError");
+        }
+        else {
+            if (checkAuthor(user_name) == "查询成功") {
+                var okMsg = " 正确";
+                usermsg.empty();
+                usermsg.html(okMsg);
+                usermsg.attr("class", "msg onSuccess");
+                return number;
+
+            } else {
+                var errorMsg = " 账号不存在";
+                usermsg.empty();
+                usermsg.html(errorMsg);
+                usermsg.attr("class", "msg onError");
+            }
+
+        }
+
+    }
+    function pwdAuthor(number) {
+        var user_name=$("#user_name"+number).val()
+        var user_password=$("#user_password"+number).val();
+        var pwdmsg=$("#pwdmsg"+number);
+
+        if(user_password == ""){
+            var errorMsg = " 请输入密码,不能为空";
+            //class='msg onError' 中间的空格是层叠样式的格式
+            pwdmsg.html(errorMsg);
+            pwdmsg.attr("class","msg onError");
+        }else{
+            var msg = checkAuthor(user_name,user_password);
+            console.log(msg);
+            if(msg == "查询成功"){
+                var okMsg=" 正确";
+                pwdmsg.empty();
+                pwdmsg.html(okMsg);
+                pwdmsg.attr("class","msg onSuccess");
+                return number;
+            }else{
+                var errorMsg=" 密码错误";
+                pwdmsg.empty();
+                pwdmsg.html(errorMsg);
+                pwdmsg.attr("class","msg onError");
+            }
+
+        }
+    }
 </script>
