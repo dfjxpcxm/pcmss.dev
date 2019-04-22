@@ -27,7 +27,7 @@ import java.util.Map;
  * page服务接口
  */
 public interface IEntrustService extends ISysBaseService<EntrustDO> {
-	List<Map<String,Object>> select(String user_name);
+	//List<Map<String,Object>> select(String user_name,String user_id);
 	
 	int addInfo(List<String> list,String user_id,String to_user_id);
 	

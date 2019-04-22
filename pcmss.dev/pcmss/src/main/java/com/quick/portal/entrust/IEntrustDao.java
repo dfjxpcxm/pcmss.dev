@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public interface IEntrustDao<EntrustDO> extends ISysBaseDao<EntrustDO> {
 	
-	List<Map<String,Object>> selectUser(Map<String,Object> paramMap);
+	//List<Map<String,Object>> selectUser(Map<String,Object> paramMap);
 	
 	List<Map<String,Object>> selectFrom(Map<String, Object> paramMap);
 
@@ -36,7 +36,7 @@ public interface IEntrustDao<EntrustDO> extends ISysBaseDao<EntrustDO> {
 
 	List<Map<String,Object>> selectUserMenu(String user_id);
 
-	List<Map<String,Object>> selectInfo(Map<String,Object> paramMap);
+	//List<Map<String,Object>> selectInfo(Map<String,Object> paramMap);
 
 	List<Map<String,Object>> selectNoEntrust();
 	

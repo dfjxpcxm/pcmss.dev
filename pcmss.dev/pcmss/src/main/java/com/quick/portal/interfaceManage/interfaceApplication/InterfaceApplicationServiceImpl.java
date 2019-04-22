@@ -59,7 +59,7 @@ public class InterfaceApplicationServiceImpl extends SysBaseService<InterfaceApp
     @Override
     public DataStore save(InterfaceApplicationDO entity) {
         //如果编号为空,新增实体对象,否则更新实体对象
-        Integer val = entity.getInter_id();
+        Integer val = entity.getApp_id();
         int c = 0;
         Date now = DateTime.Now().getTime();
         //名称不能重复

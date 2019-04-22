@@ -26,7 +26,6 @@
     		  inter_path,
     		  inter_desc,
     		  inter_state,
-    		  operator,
     		  category,
     		  cre_time,
     		  upd_time
@@ -36,7 +35,6 @@
 			 #{inter_path},
 			 #{inter_desc},
 			 #{inter_state},
-			 #{operator},
 			 #{category},
 			 now(),
 			 now()
@@ -51,7 +49,6 @@
 			  ,inter_path=#{inter_path}
 			  ,inter_desc=#{inter_desc}
 			  ,inter_state=#{inter_state}
-			  ,operator=#{operator}
 			  ,category=#{category}
 			  ,cre_time=now()
 			  ,upd_time=now()

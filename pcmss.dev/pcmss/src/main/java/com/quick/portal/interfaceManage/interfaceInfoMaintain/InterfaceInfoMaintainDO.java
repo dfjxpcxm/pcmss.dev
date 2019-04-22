@@ -33,7 +33,6 @@ public class InterfaceInfoMaintainDO implements java.io.Serializable {
     private String inter_path;
     private String inter_desc;
     private String inter_state;
-    private String operator;
     private String category;
     private Date cre_time;
     private Date upd_time;
@@ -78,13 +77,6 @@ public class InterfaceInfoMaintainDO implements java.io.Serializable {
         this.inter_state = inter_state;
     }
 
-    public String getOperator() {
-        return operator;
-    }
-
-    public void setOperator(String operator) {
-        this.operator = operator;
-    }
 
     public String getCategory() {
         return category;

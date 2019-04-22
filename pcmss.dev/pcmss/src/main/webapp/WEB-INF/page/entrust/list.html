@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>角色管理</title>
+    <title>授权管理</title>
     <#include "/WEB-INF/include/reslist.html" />
 </head>
 
@@ -53,6 +53,7 @@
     var queryParm = '';
     var flag = true;
     var pageFlag = 0;
+    var user_id ='${user_id}';
 
     var RFlag = $.request.queryString["RFlag"];
 
@@ -68,7 +69,7 @@
         $('#tb_role').bootstrapTable('destroy');
         _gridPool["tb_role"] = new BGrid("#tb_role");
         _gridPool["tb_role"].config({
-            url: "/pcmss/entrust" +"/selectList", //"/getList?i=" + Math.random(),
+            url: quick.serverUrl +"/getList?user_id="+user_id+"&i=" + Math.random(),//+"/selectList", //
             idField: quick.idField,
             sortName: quick.idField,
             cache: false,
@@ -159,67 +160,6 @@
 
     }
 
-    //查看详细信息
-    function auth(role_id, role_name) {
-        navAppend("权限配置");
-        /*获取父页面元素并动态赋值父页面title*/
-        if (quick.authUrl) {
-        }
-        else {
-            quick.authUrl = "${G.serverUrl}/roleAuthorize";
-        }
-        window.location.href = quick.authUrl + "?role_id=" + role_id + getDetailParm();//跳转到另一个页面，并且还在当前框架
-    }
-
-    //查看指标信息
-    function metricAuth(role_id, role_name) {
-        navAppend("指标权限配置");
-        /*获取父页面元素并动态赋值父页面title*/
-        if (quick.authUrl) {
-        }
-        else {
-            quick.authUrl = "${G.host}/role/metricAuth.do";
-        }
-        window.location.href = quick.authUrl + "?role_id=" + role_id + getDetailParm();//跳转到另一个页面，并且还在当前框架
-    }
-
-
-    /*删除*/
-    function del(id, name) {
-        var msg = "确认将该角色【" + name + "】从系统中删除？删除后不可恢复";
-        layer.confirm(
-            msg,
-            {icon: 3, title: "删除角色", skin: 'layer-ext-moon'},
-            function () {
-                $.ajax({
-                    type: "post",
-                    url: '${G.serverUrl}/deleteRole',
-                    dataType: "json",
-                    data: {role_id: id},
-                    success: function (data) {
-                        if (data.code === 1)
-                            layer.msg('删除角色成功', {icon: 1, time: 1000, skin: 'layer-ext-moon'});
-
-                        else
-                            layer.msg(data.msg, {icon: 1, time: 1000, skin: 'layer-ext-moon'});
-
-                        _gridPool["tb_role"].refresh();
-                    },
-                    error: function (err) {
-                        layer.msg("结果异常", {icon: 1, time: 1000, skin: 'layer-ext-moon'});
-                    }
-                });
-            }
-        );
-    }
-
-    //编辑
-    function edit(role_id, role_name) {
-        navAppend("编辑角色");
-        /*获取父页面元素并动态赋值父页面title*/
-        var pageURL = "${G.serverUrl}/edit?role_id=" + role_id + getDetailParm();
-        window.location.href = pageURL;//跳转到另一个页面，并且还在当前框架
-    }
 
     //获取返回时传回的数据
     function requery() {

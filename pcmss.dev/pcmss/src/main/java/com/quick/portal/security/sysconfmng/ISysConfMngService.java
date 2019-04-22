@@ -19,6 +19,8 @@
 package com.quick.portal.security.sysconfmng;
 
 import com.quick.core.base.ISysBaseService;
+import com.quick.core.base.model.DataStore;
+import com.quick.core.base.model.PageBounds;
 
 import java.util.List;
 import java.util.Map;
@@ -60,6 +62,26 @@ public interface ISysConfMngService extends ISysBaseService<SysConfMngDO> {
 	//修改资源ID状态禁用
 	public void updResStateInfoByID(String id);
 
+	//获取策略信息
+	public List<Map<String,Object>> getResConfName();
+	//获取同一权限可以分配的次数
 
+	public List<Map<String,Object>> selectResInfo(Map<String, Object> map, PageBounds pager);
 
+	public List<Map<String,Object>>  getResUserInfo(Map<String, Object> queryMap, PageBounds pager);
+
+	public Map<String, Object> getSysIdResInfo(String sys_id);
+
+	public Map<String, Object> getSysIdResUserInfo(String sys_id);
+
+	public DataStore deleteRes(String sys_id);
+
+	public List<Map<String,Object>> selectUserInfo();
+
+	//多人认证
+	public DataStore peopleAuthor(String user_name, String user_password);
+
+	public DataStore manyPeopleCertification();
+
+	DataStore saveRes(SysConfMngDO entity);
 }

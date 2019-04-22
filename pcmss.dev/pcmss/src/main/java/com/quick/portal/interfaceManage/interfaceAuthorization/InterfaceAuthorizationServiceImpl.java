@@ -38,7 +38,7 @@ public class InterfaceAuthorizationServiceImpl extends SysBaseService<InterfaceA
      * 构造函数
      */
     public InterfaceAuthorizationServiceImpl() {
-        BaseTable = "interface_info";
+        BaseTable = "interface_authorization";
         BaseComment = "接口";
         PrimaryKey = "inter_id";
         NameKey = "inter_name";

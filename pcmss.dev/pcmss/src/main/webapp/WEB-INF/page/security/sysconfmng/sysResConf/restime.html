@@ -3,7 +3,6 @@
 <head>
     <#include "/WEB-INF/include/reslist.html" />
 </head>
-
 <body class="gray-bg">
 <div class="wrapper wrapper-content wrapper-content-x animated fadeInRight">
     <div class="row">
@@ -11,20 +10,24 @@
             <div class="ibox ibox-x">
                 <div class="ibox-content ibox-content-x">
                     <div class="panel-mar">
-                        <form id="formSearch" class="form-inline">
-                            <div class="form-group" style="padding: 0px;width:180px;">
-                                <input id="inter_name" name="inter_name" class="input-sm form-control" type="text"
-                                       placeholder="输入接口名称"/>
-                            </div>
-                            <span class="input-group-btn" style="display:inline-block;"><button class="btn btn-primary "
-                                                                                                type="button"
-                                                                                                onclick="query();"> 查询</button> </span>
-                            <div class="form-group" style="width:100px;float:right;">
-                                <button type="button" class="btn btn-primary" onclick="location.href='edit';"> 新增接口
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                         <form id="formSearch" class="form-inline">
+                             <div class="form-group" style="padding: 0px;width:180px;">
+                                 <input id="menu_cn_name" name="menu_cn_name" class="input-sm form-control" type="text"
+                                        placeholder="输入配置中文名"/>
+                             </div>
+                             <span class="input-group-btn" style="display:inline-block;"><button class="btn btn-primary "
+                                                                                                 type="button"
+                                                                                                 onclick="query();"> 查询</button> </span>
+                             <div class="form-group" style="width:100px;float:right;">
+                                 <button type="button" class="btn btn-primary" onclick="location.href=quick.editUrl;"> 新增配置
+                                 </button>
+                             </div>
+                             <div class="form-group" style="width:100px;float:right;">
+                                 <button type="button" class="btn btn-primary" onclick="cancel();"> 返回上一级
+                                 </button>
+                             </div>
+                         </form>
+                     </div>
                     <div style="margin:5px;">
                         <table id="list" class="table-striped" style="table-layout:fixed"></table>
                     </div>
@@ -42,57 +45,56 @@
     var queryParm = '';
     var flag = true;
     var pageFlag = 0;
-
     //初始化表格
     function config() {
         var RFlag = $.request.queryString["RFlag"];
         quick.serverUrl = "${G.serverUrl}";
-        quick.editUrl = "${G.editUrl}";
+        quick.editUrl = "restimeedit";
         quick.objName = "${G.objName}";
         quick.idField = "${G.idField}";
-
+        quick.listUrl = quick.serverUrl + "/list";
         $("#list").bootstrapTable("destroy");
         _gd["list"] = new BGrid("#list");
         _gd["list"].config({
-            url: quick.serverUrl + "/getList?i=" + Math.random(),
-            idField: quick.idField,
-            sortName: quick.idField,
+
+            url: quick.serverUrl + "/getListRes?value="+quick.editUrl+"&i=" + Math.random(),
+            idField: quick.idField ,
+            sortName: quick.idField ,
             cache: false,
             height: $(document.body).height() - 50,
             toolbar: "#formSearch",
             columns: [
                 {checkbox: true},
                 {
-                    field: 'inter_name',
-                    title: '接口名称',
+                    field: 'sys_id',
+                    title: 'ID',
                     align: 'center',
                     width: '12%',
                     formatter: function (value, row, index) {
-                        return "<a href='javascript:void(0)' onclick=\"goDetail(this);\" inter_id='" + row.inter_id + "'>" + row.inter_name + "</a>";
+                        return "<a href='javascript:void(0)' onclick=\"goDetail(this);\" sys_id='" + row.sys_id + "'>" + row.sys_id + "</a>";
                     }
                 },
-                {field: 'inter_path', title: '接口路径', width: 100, align: 'center'},
-                {field: 'inter_desc', title: '接口描述', width: 100, align: 'center'},
+                {field: 'menu_cn_name', title: '资源名称', width: 100, align: 'center'},
+                {field: 'timeout', title: '超时时间', width: 100, align: 'center'},
+                {field: 'cnt', title: '次数', width: 100, align: 'center'},
                 {
-                    field: 'inter_state',
-                    title: '接口状态',
+                    field: 'limt_time_res_set_prop',
+                    title: '开关状态',
                     width: 100,
                     align: 'center',
                     formatter: function (value, row, index) {
-                        var inter_state = '<span style="color:#CFCFCF">禁用</span>';
-                        if (row.inter_state == 1) {
-                            inter_state = '<span style="color:#9ACD32">激活</span>';
+                        var limt_time_res_set_prop = '<span style="color:#CFCFCF">禁用</span>';
+                        if (row.limt_time_res_set_prop == 1) {
+                            limt_time_res_set_prop = '<span style="color:#9ACD32">激活</span>';
                         }
-                        return inter_state;
+                        return limt_time_res_set_prop;
                     }
                 },
-                {field: 'category', title: '类别', width: 100, align: 'center'},
-                {field: 'cre_time', title: '创建时间', width: 100, align: 'center'},
-                {field: 'upd_time', title: '更新时间', width: 100, align: 'center'},
+
                 {
                     field: 'CZ', title: '操作', width: '15%', align: 'center', formatter: function (value, row, index) {
-                        return "<button type='button' class='btn_el' onclick='edit(\"" + row.inter_id + "\",\"" + row.inter_name + "\")'>编辑</button>| "
-                            + "<button type='button' class='btn_el' onclick='del(\"" + row.inter_id + "\",\"" + row.inter_name + "\")'>删除</button>";
+                        return "<button type='button' class='btn_el' onclick='edit(\"" + row.sys_id + "\")'>编辑</button>| "
+                            + "<button type='button' class='btn_el' onclick='del(\"" + row.sys_id + "\")'>删除</button>";
                         ;
                     }
                 }
@@ -115,6 +117,42 @@
         }
     }
 
+
+
+    function ajax(object){
+        var url = object.url || "";
+        if(!url) return;
+        var method = object.method || "GET";
+        var data = object.data || null;
+        var handler = object.handler || function(){};
+        var xmlHttp;
+        var data;
+        if(window.XMLHttpRequest){
+            xmlHttp = new window.XMLHttpRequest();
+        }else if(window.ActiveXObject){
+            xmlHttp = new window.ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.open(method,url,true);
+        xmlHttp.send(data);
+        xmlHttp.onreadystatechange = function(){
+            if(xmlHttp.readyState == 4){
+                if(xmlHttp.status ==0 || xmlHttp.status == 200){
+                    if(xmlHttp.responseXML){
+                        data = xmlHttp.responseXML;
+                    }else{
+                        if(window.JSON&&window.JSON.parse){
+                            data = window.JSON.parse(xmlHttp.responseText);
+                        }else{
+                            data = eval("("+xmlHttp.responseText+")")
+                        }
+                    }
+                    handler(data);
+                }else{
+                    showMsg("系统繁忙，请稍后再试。");
+                }
+            }
+        }
+    }
     //删除记录
     function del(node, name) {
         layer.confirm(
@@ -123,7 +161,7 @@
             function () {
                 $.ajax({
                     type: "post",
-                    url: quick.serverUrl + '/delete?inter_id=' + node,
+                    url: quick.serverUrl + '/deleteRes?sys_id=' + node,
                     dataType: "json",
                     data: {ID: node},
                     success: function (data) {
@@ -137,24 +175,22 @@
             }
         );
     }
-
     //查看详细信息
     function edit(id) {
         navAppend("编辑集成系统");
         /*获取父页面元素并动态赋值父页面title*/
-        window.location.href = quick.editUrl + "?inter_id=" + id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+        window.location.href = quick.editUrl + "?sys_id=" + id + getDetailParm();//跳转到另一个页面，并且还在当前框架
     }
 
     function add() {
         menuGoto(quick.editUrl);
     }
-
     //将url查询信息传至详细信息页面,返回时调用
     function goDetail(obj) {
-        var id = $(obj).attr("inter_id");
+        var id = $(obj).attr("sys_id");
         navAppend("详情信息");
         /*获取父页面元素并动态赋值父页面title*/
-        window.location.href = quick.editUrl + "?mode=browse&inter_id=" + id + getDetailParm();
+        window.location.href = quick.editUrl + "?mode=browse&sys_id=" + id + getDetailParm();
     }
 
     function query() {
@@ -188,7 +224,12 @@
 
     function getDetailParm() {
         var s = queryParm + "&IpageNum=" + pageNum + "&IpageSize=" + pageSize;
+
         return s;
+    }
+    function cancel(){
+        var url = quick.listUrl + urlDel(location.search, 'mode','sys_id') + '&RFlag=1';
+        window.location.href = url;
     }
 </script>
 </html>

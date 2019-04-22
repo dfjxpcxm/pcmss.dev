@@ -34,22 +34,19 @@
 		);
 		
 	</insert>
-		
-	
-    <!--查询-->
-	<select id="select" parameterType="map" resultType="map">
-		select * from jurisdiction_entrust
-	</select>
+
 	<!--查询-->
-	<select id="selectUser" parameterType="map" resultType="map">
+	<select id="select" parameterType="map" resultType="map">
 		select a.user_id,a.user_name,
-		CASE WHEN d.to_user_id IS NULL  THEN '-' ELSE d.creat_time END creat_time,
+		CASE WHEN a.user_id in (SELECT to_user_id
+		FROM jurisdiction_entrust  WHERE from_user_id = #{user_id}) THEN creat_time ELSE '-' END creat_time,
 		a.user_state ,c.role_type_id,CASE WHEN a.user_id in (SELECT to_user_id
-		FROM jurisdiction_entrust) THEN 1 ELSE 0 END as typ
+		FROM jurisdiction_entrust  WHERE from_user_id = #{user_id}) THEN 1 ELSE 0 END as typ
 		from sys_user a LEFT JOIN user_role_rela b ON a.user_id = b.user_id
 		LEFT JOIN user_role c ON b.role_id = c.role_id LEFT JOIN jurisdiction_entrust d
 		ON a.user_id = d.to_user_id
-		WHERE c.role_type_id >1 and a.user_state = '1'
+		WHERE c.role_type_id >1
+		and  a.user_id != #{user_id}
 		<if test="user_name != null and user_name != ''">
 			and  a.user_name like CONCAT('%',#{user_name},'%')
 		</if>
@@ -79,7 +76,7 @@
 		ON a.menu_id = b.menu_id
 		WHERE role_id in
 		(SELECT role_id FROM user_role_rela
-		WHERE user_id = 1)
+		WHERE user_id = #{user_id})
 		AND b.menu_state = 1
 		GROUP BY menu_id
 		ORDER BY menu_id
