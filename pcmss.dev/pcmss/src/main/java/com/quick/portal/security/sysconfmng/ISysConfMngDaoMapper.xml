@@ -231,7 +231,7 @@
 	</select>
 
 	<!--	多人认证查询开启-->
-	<select id="manyPeopleCertification" resultType="map" >
+	<select id="manyPeopleCertification" resultType="PeopleCertificationoMap" >
 		select s.sys_id,s.parm_title,s.parm_val from sys_glabal_parm s where parm_title in ('many_wit_set','wit_val')
 	</select>
 
@@ -241,6 +241,9 @@
 		<result property="user_password" column="user_password"/>
 	</resultMap>
 
-
+	<resultMap id="PeopleCertificationoMap" type="com.quick.portal.security.sysconfmng.SysConfMngDO">
+		<id property="parm_title" column="parm_title"/>
+		<result property="parm_val" column="parm_val"/>
+	</resultMap>
 
 </mapper>
