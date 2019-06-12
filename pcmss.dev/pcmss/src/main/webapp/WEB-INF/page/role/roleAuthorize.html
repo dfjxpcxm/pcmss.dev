@@ -137,7 +137,10 @@
         var rows = zTreeObj.getCheckedNodes(true).map(function (value) {
             return value['id'];
         });
-
+        if(rows==null || rows.length == 0){
+            layer.msg('请选择至少一个菜单权限！', {icon: 1, time: 2000, skin: 'layer-ext-moon'});
+            return ;
+        }
         $.ajax({
             type: "post",
             url: '${G.host}/sysPrivilege/savePrivilege?role_id=' + role_id,

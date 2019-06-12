@@ -76,6 +76,15 @@ public class EntrustController extends SysBaseController<EntrustDO> {
         return ls;
     }
 
+    @RequestMapping(value = "/selectUserIdMenu")
+    @ResponseBody
+    public Object selectUserIdMenu() {
+        //获取当前用户id
+        String user_id = request.getParameter("user_id");
+        List<Map<String, Object>> ls = entrustService.selectUserMenu(user_id);
+        return ls;
+    }
+
   /*  //增加授权信息
     @RequestMapping(value = "/selectList")
     @ResponseBody

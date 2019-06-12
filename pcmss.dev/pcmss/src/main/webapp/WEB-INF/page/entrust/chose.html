@@ -80,20 +80,53 @@
                 //在控制台打印数据
                 //console.log(JSON.stringify(data));
                 var ztreeNodes = new Array();
+
                 if(data!=null&&data.length>0){
                     $.each(data,function(i,dataNode){
                         var menu_id = dataNode.menu_id;
                         var super_menu_id = dataNode.super_menu_id;
                         var menu_cn_name = dataNode.menu_cn_name;
                         var menu_level = dataNode.menu_level;
+
                         ztreeNodes.push({"id":menu_id, "pId":super_menu_id, "name":menu_cn_name,"level":menu_level});
+
                     });
                 }
+
                 zTreeObj = $.fn.zTree.init($("#treeDemo"), ztreeSetting, ztreeNodes);
                 var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
                 treeObj.expandAll(true);
+                ss();
                 checkMenuPri();
                 checkMenuNo();
+            }
+        });
+    }
+
+    function  ss() {
+        var to_user_id = $.request.queryString["rid"];
+        $.ajax({
+            type: "get",
+            url: "${G.host}/entrust/selectUserIdMenu",
+            async:false,
+            data: {user_id: "4"},
+            dataType: "json",
+            success: function(data){
+                //在控制台打印数据
+                console.log(JSON.stringify(data));
+                if(data!=null&&data.length>0){
+                    $.each(data,function(i,dataNode){
+                        if (data != null && data.length > 0) {
+                            $.each(data, function (i, checkMenu) {
+                                var menu_id_checked = checkMenu.menu_id;
+                                var hasCheckNode = zTreeObj.getNodesByParam("id", menu_id_checked);
+                                if (hasCheckNode != null && hasCheckNode.length > 0)
+                                    zTreeObj.checkNode(hasCheckNode[0], true, false);
+                                    zTreeObj.setChkDisabled(hasCheckNode[0], true);
+                            });
+                        }
+                    });
+                }
             }
         });
     }
@@ -133,6 +166,7 @@
            success: function (data) {
                noList = data;
                //alert(JSON.stringify(data));
+               console.log(JSON.stringify(data));
                if (data != null && data.length > 0) {
                    $.each(data, function (i, checkMenu) {
                        var menu_id_checked = checkMenu.menu_id;

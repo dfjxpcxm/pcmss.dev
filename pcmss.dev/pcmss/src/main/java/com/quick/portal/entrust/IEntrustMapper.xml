@@ -85,9 +85,9 @@
 
 	<!--查询-->
 	<select id="selectNoEntrust" parameterType="map" resultType="map">
-		SELECT a.menu_id FROM sys_menu a LEFT JOIN sys_res_conf b
+		SELECT distinct a.menu_id FROM sys_res_conf b LEFT JOIN sys_menu a
 			ON a.menu_id = b.res_id
-			WHERE b.lentrust_set_prop = '0'
+			WHERE b.lentrust_set_prop = '1'
 
 
 	</select>

@@ -231,7 +231,7 @@
 	</select>
 
 	<!--	多人认证查询开启-->
-	<select id="manyPeopleCertification" resultType="PeopleCertificationoMap" >
+	<select id="manyPeopleCertification" resultMap="PeopleCertificationoMap" >
 		select s.sys_id,s.parm_title,s.parm_val from sys_glabal_parm s where parm_title in ('many_wit_set','wit_val')
 	</select>
 
