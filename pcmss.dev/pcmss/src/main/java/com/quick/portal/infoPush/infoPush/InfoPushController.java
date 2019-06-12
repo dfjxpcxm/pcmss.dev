@@ -63,12 +63,7 @@ public class InfoPushController extends SysBaseController<InfoPushDO> {
     public String list(ModelMap model) {
         return view();
     }
-   
-    @RequestMapping(value = "/show")
-    @ResponseBody
-    public List<Map<String, Object>> show() {
-    	 return infoPushService.select();
-    }
+
     
     
 

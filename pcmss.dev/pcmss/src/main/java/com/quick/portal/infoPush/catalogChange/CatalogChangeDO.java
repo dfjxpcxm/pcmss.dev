@@ -29,22 +29,24 @@ public class CatalogChangeDO implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 	
     // <editor-fold defaultstate="collapsed" desc="私有成员">
+
     /**
      *
      */
-    private Integer  id;     	
+
+	private Integer  cid;
+    private String  cata_id;
     /**
      *
      */
-    private Integer  info_id; 	
+    private String  cata_name;
     /**
      *
      */
-    private String  info_name;   	
-    /**
-     *
-     */
-    private String  info_value;     	
+    private String  cata_value;
+
+	private String  user_name;
+
     /**
      *
      */
@@ -54,30 +56,7 @@ public class CatalogChangeDO implements java.io.Serializable {
      */
     private Date  update_time;    	
 	// </editor-fold>
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public Integer getInfo_id() {
-		return info_id;
-	}
-	public void setInfo_id(Integer info_id) {
-		this.info_id = info_id;
-	}
-	public String getInfo_name() {
-		return info_name;
-	}
-	public void setInfo_name(String info_name) {
-		this.info_name = info_name;
-	}
-	public String getInfo_value() {
-		return info_value;
-	}
-	public void setInfo_value(String info_value) {
-		this.info_value = info_value;
-	}
+
 	public Date getCreat_time() {
 		return creat_time;
 	}
@@ -90,10 +69,49 @@ public class CatalogChangeDO implements java.io.Serializable {
 	public void setUpdate_time(Date update_time) {
 		this.update_time = update_time;
 	}
-	
-	
-    
-    // <editor-fold defaultstate="collapsed" desc="成员Get/Set">
+
+	public String getCata_name() {
+		return cata_name;
+	}
+
+	public void setCata_name(String cata_name) {
+		this.cata_name = cata_name;
+	}
+
+	public String getCata_value() {
+		return cata_value;
+	}
+
+	public void setCata_value(String cata_value) {
+		this.cata_value = cata_value;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+
+	public String getCata_id() {
+		return cata_id;
+	}
+
+	public void setCata_id(String cata_id) {
+		this.cata_id = cata_id;
+	}
+
+	public Integer getCid() {
+		return cid;
+	}
+
+	public void setCid(Integer cid) {
+		this.cid = cid;
+	}
+
+
+	// <editor-fold defaultstate="collapsed" desc="成员Get/Set">
     
     // </editor-fold>
     

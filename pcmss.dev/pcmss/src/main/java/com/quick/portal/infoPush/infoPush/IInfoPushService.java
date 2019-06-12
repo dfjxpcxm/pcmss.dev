@@ -28,7 +28,16 @@ import com.quick.core.base.model.DataStore;
  * page服务接口
  */
 public interface IInfoPushService extends ISysBaseService<InfoPushDO> {
-	List<Map<String,Object>> select();
-	
-	int addInfo(List<Map<String,Object>> ls);
+
+
+	/*
+	 * 通过用户帐号获取用户行为数据接口（指标接口），返回报文数据
+	 */
+	public String getUserBehaviorDataByUserID(String userID);
+
+	/*
+	 * 通过用户帐号获取资源目录数据接口，返回报文数据
+	 */
+	public String getCataDataByUserID(String userID);
+
 }

@@ -43,10 +43,10 @@ public class UserBehaviorServiceImpl extends SysBaseService<UserBehaviorDO> impl
      * 构造函数
      */
     public UserBehaviorServiceImpl() {
-        BaseTable = "page";
-        BaseComment = "page";
-        PrimaryKey = "page_id";
-        NameKey = "page_name";
+        BaseTable = "index_info";
+        BaseComment = "index_info";
+        PrimaryKey = "index_id";
+        NameKey = "index_id";
     }
     
     @Autowired
@@ -60,16 +60,7 @@ public class UserBehaviorServiceImpl extends SysBaseService<UserBehaviorDO> impl
     }
     
 
-    /**
-     * 删除业务
-     * @param sysid
-     * @return 
-     */
-    @Override
-    public DataStore delete(String sysid) {
-        dao.delete(sysid);
-        return ActionMsg.setOk("操作成功");
-    }
+
 
 
 	@Override
@@ -84,15 +75,12 @@ public class UserBehaviorServiceImpl extends SysBaseService<UserBehaviorDO> impl
 		// TODO Auto-generated method stub
 		UserBehaviorDO  pu = new UserBehaviorDO();
 		int a = 0;
-		Date now = DateTime.Now().getTime();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		for(int i = 0; i < ls.size(); i++){
-			pu.setIndex_id((String) ls.get(i).get("index_id"));
-			pu.setIndex_name((String) ls.get(i).get("index_name"));
-			pu.setIndex_value((String) ls.get(i).get("index_value"));
-			pu.setPub_time( sdf.format(now));
-			pu.setAppr_time( sdf.format(now));
-			a = a+dao.insert(pu);
+//		boolean flag = isExistUserBehaviorDataById(ls);
+		boolean flag = true;
+		if(flag) {
+			a = dao.insert(pu);
+		}else {
+			a = dao.update(pu);
 		}
 		return a;
 	}

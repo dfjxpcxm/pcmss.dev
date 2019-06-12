@@ -29,30 +29,26 @@ public class InfoPushDO implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 	
     // <editor-fold defaultstate="collapsed" desc="私有成员">
+
     /**
      *
      */
-    private Integer  id;     	
+    private Integer  info_id;
+
+	private String  index_id;
+
     /**
      *
      */
-    private Integer  push_id; 	
+    private String  index_name;
+
+
+	private String  index_value;
     /**
      *
      */
-    private Integer  push_type;   	
-    /**
-     *
-     */
-    private String  push_name;     	
-    /**
-     *
-     */
-    private String  push_info;    	
-    /**
-     *
-     */
-    private Integer  info_state; 
+    private String  user_name;
+
     /**
     *
     */
@@ -63,42 +59,9 @@ public class InfoPushDO implements java.io.Serializable {
     private Date  update_time;
     
 	// </editor-fold>
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public Integer getPush_id() {
-		return push_id;
-	}
-	public void setPush_id(Integer push_id) {
-		this.push_id = push_id;
-	}
-	public Integer getPush_type() {
-		return push_type;
-	}
-	public void setPush_type(Integer push_type) {
-		this.push_type = push_type;
-	}
-	public String getPush_name() {
-		return push_name;
-	}
-	public void setPush_name(String push_name) {
-		this.push_name = push_name;
-	}
-	public String getPush_info() {
-		return push_info;
-	}
-	public void setPush_info(String push_info) {
-		this.push_info = push_info;
-	}
-	public Integer getInfo_state() {
-		return info_state;
-	}
-	public void setInfo_state(Integer info_state) {
-		this.info_state = info_state;
-	}
+
+
+
 	public Date getCreat_time() {
 		return creat_time;
 	}
@@ -112,7 +75,49 @@ public class InfoPushDO implements java.io.Serializable {
 		this.update_time = update_time;
 	}
 
-    // <editor-fold defaultstate="collapsed" desc="成员Get/Set">
+
+
+	public String getIndex_name() {
+		return index_name;
+	}
+
+	public void setIndex_name(String index_name) {
+		this.index_name = index_name;
+	}
+
+	public String getIndex_value() {
+		return index_value;
+	}
+
+	public void setIndex_value(String index_value) {
+		this.index_value = index_value;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+
+	public Integer getInfo_id() {
+		return info_id;
+	}
+
+	public void setInfo_id(Integer info_id) {
+		this.info_id = info_id;
+	}
+
+	public String getIndex_id() {
+		return index_id;
+	}
+
+	public void setIndex_id(String index_id) {
+		this.index_id = index_id;
+	}
+
+	// <editor-fold defaultstate="collapsed" desc="成员Get/Set">
     
     // </editor-fold>
     

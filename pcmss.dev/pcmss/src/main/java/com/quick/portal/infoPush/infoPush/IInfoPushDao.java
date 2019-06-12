@@ -22,10 +22,21 @@ import java.util.List;
 import java.util.Map;
 
 import com.quick.core.base.ISysBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * page数据访问接口
  */
 public interface IInfoPushDao<InfoPushDO> extends ISysBaseDao<InfoPushDO> {
-	List<Map<String,Object>> select();
+
+
+	/*
+	 * 通过用户帐号获取用户行为数据接口（指标接口），返回报文数据
+	 */
+	public List<Map<String,Object>> getUserBehaviorDataByUserID(@Param("userID")  String userID);
+
+	/*
+	 * 通过用户帐号获取资源目录数据接口，返回报文数据
+	 */
+	public List<Map<String,Object>> getCataDataByUserID(@Param("userID") String userID);
 }

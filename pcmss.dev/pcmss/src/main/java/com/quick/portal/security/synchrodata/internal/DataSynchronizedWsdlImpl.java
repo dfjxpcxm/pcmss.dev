@@ -2,6 +2,7 @@ package com.quick.portal.security.synchrodata.internal;
 
 import javax.jws.WebService;
 
+import com.quick.portal.infoPush.infoPush.IInfoPushService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.quick.portal.security.synchrodata.bjcadata.SynchronizedDataConstants;
@@ -12,6 +13,11 @@ public class DataSynchronizedWsdlImpl implements IDataSynchronizedWsdl {
 	
 	@Autowired
 	private IDataSynchronizedService userDataSyncService;
+
+	@Autowired
+	private IInfoPushService infoPushService;
+
+
 
 	
 	/*
@@ -64,5 +70,39 @@ public class DataSynchronizedWsdlImpl implements IDataSynchronizedWsdl {
 		String str = userDataSyncService.getOrgBatchData();
 		return str;
 	}
+
+
+
+	/*
+	 * 通过用户帐号获取用户行为数据接口（指标接口），返回报文数据
+	 */
+	@Override
+	public String getUserBehaviorDataByUserID(String userID) {
+		String str = null;
+		if(null == userID || "".equals(userID)){
+			str = Dom4jUtil.creatErrXmlFile(SynchronizedDataConstants.FAIL_STATUS,SynchronizedDataConstants.PARAM_ISNULL_FAIL_MSG);
+		}else{
+			str = infoPushService.getUserBehaviorDataByUserID(userID);
+		}
+		return str;
+	}
+
+
+
+	/*
+	 * 通过用户帐号获取资源目录数据接口，返回报文数据
+	 */
+	@Override
+	public String getCataDataByUserID(String userID) {
+		String str = null;
+		if(null == userID || "".equals(userID)){
+			str = Dom4jUtil.creatErrXmlFile(SynchronizedDataConstants.FAIL_STATUS,SynchronizedDataConstants.PARAM_ISNULL_FAIL_MSG);
+		}else{
+			str = infoPushService.getCataDataByUserID(userID);
+		}
+		return str;
+	}
+
+
 
 }

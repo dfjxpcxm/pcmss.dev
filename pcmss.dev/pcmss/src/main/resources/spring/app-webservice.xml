@@ -11,6 +11,9 @@
 	<bean id="userDataSyncService"
 		  class="com.quick.portal.security.synchrodata.internal.DataSynchronzedServiceImpl" />
 
+	<bean id="infoPushService"
+		  class="com.quick.portal.infoPush.infoPush.InfoPushServiceImpl" />
+
 	<jaxws:endpoint id="intlDataSynchronizedService"
 					implementor="com.quick.portal.security.synchrodata.internal.DataSynchronizedWsdlImpl"
 					address="${portal.webservice}/pcmss/intlDataSynchronizedService" />

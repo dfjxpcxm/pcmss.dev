@@ -43,10 +43,10 @@ public class CatalogChangeServiceImpl extends SysBaseService<CatalogChangeDO> im
      * 构造函数
      */
     public CatalogChangeServiceImpl() {
-        BaseTable = "page";
-        BaseComment = "page";
-        PrimaryKey = "page_id";
-        NameKey = "page_name";
+        BaseTable = "catalogue_info";
+        BaseComment = "catalogue_info";
+        PrimaryKey = "cata_id";
+        NameKey = "cata_id";
     }
     
     @Autowired
@@ -60,17 +60,6 @@ public class CatalogChangeServiceImpl extends SysBaseService<CatalogChangeDO> im
     }
     
 
-    /**
-     * 删除业务
-     * @param sysid
-     * @return 
-     */
-    @Override
-    public DataStore delete(String sysid) {
-        dao.delete(sysid);
-        return ActionMsg.setOk("操作成功");
-    }
-
 
 	@Override
 	public List<Map<String, Object>> select() {
@@ -82,17 +71,14 @@ public class CatalogChangeServiceImpl extends SysBaseService<CatalogChangeDO> im
 	@Override
 	public int addInfo(List<Map<String, Object>> ls) {
 		// TODO Auto-generated method stub
-		CatalogChangeDO  pu = new CatalogChangeDO();
+		CatalogChangeDO  entity = new CatalogChangeDO();
 		int a = 0;
-		Date now = DateTime.Now().getTime();
-		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		for(int i = 0; i < ls.size(); i++){
-			pu.setInfo_id((Integer) ls.get(i).get("info_id"));
-			pu.setInfo_name((String) ls.get(i).get("info_name"));
-			pu.setInfo_value((String) ls.get(i).get("info_value"));
-			pu.setCreat_time( now);
-			pu.setUpdate_time( now);
-			a = a+dao.insert(pu);
+//		boolean flag = isExistCataDataById(ls);
+		boolean flag = true;
+		if(flag) {
+			a = dao.insert(entity);
+		}else {
+			a = dao.update(entity);
 		}
 		return a;
 	}

@@ -2,35 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.quick.portal.infoPush.userBehavior.IUserBehaviorDao">
 
-   
-    
     <!-- 新增page -->
-	<insert id="insert" parameterType="com.quick.portal.infoPush.userBehavior.IUserBehaviorDao">
+	<insert id="insert" parameterType="com.quick.portal.infoPush.infoPush.InfoPushDO">
 		insert into index_info (
-    		  index_id,
+		      index_id,
     		  index_name,
     		  index_value,
-    		  pub_time,
-    		  appr_time
+    		  user_name,
+    		  creat_time,
+    		  update_time
 		)values(
 			 #{index_id},
 			 #{index_name},
 			 #{index_value},
-			 #{pub_time},
-			 #{appr_time}
-		);
-		
+			 #{user_name},
+			 now(),
+			 now()
+		)
 	</insert>
+
+
+	<update id="update" parameterType="com.quick.portal.infoPush.infoPush.InfoPushDO">
+		update index_info
+		   set index_name=#{index_name}
+			  ,index_value=#{index_value}
+			  ,user_name=#{user_name}
+			  ,upd_time=now()
+		 where index_id = #{index_id}
+	</update>
 		
 	
     <!--查询-->
 	<select id="select" parameterType="map" resultType="map">
 		select * from index_info
-		
 	</select>
-	
-	
-
-
-    
 </mapper>

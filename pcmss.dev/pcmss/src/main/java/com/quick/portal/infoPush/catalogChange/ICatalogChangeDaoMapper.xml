@@ -2,35 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.quick.portal.infoPush.catalogChange.ICatalogChangeDao">
 
-   
-    
     <!-- 新增page -->
-	<insert id="insert" parameterType="com.quick.portal.infoPush.catalogChange.ICatalogChangeDao">
+	<insert id="insert" parameterType="com.quick.portal.infoPush.catalogChange.CatalogChangeDO">
 		insert into catalogue_info (
-    		  info_id,
-    		  info_name,
-    		  info_value,
+			  cata_id,
+    		  cata_name,
+    		  cata_value,
+    		  user_name,
     		  creat_time,
     		  update_time
 		)values(
-			 #{info_id},
-			 #{info_name},
-			 #{info_value},
-			 #{creat_time},
-			 #{update_time}
-		);
-		
+			 #{cata_id},
+			 #{cata_name},
+			 #{cata_value},
+			 #{user_name},
+			 now(),
+			 now()
+		)
 	</insert>
-		
-	
-    <!--查询-->
+
+
+	<update id="update" parameterType="com.quick.portal.infoPush.catalogChange.CatalogChangeDO">
+		update catalogue_info
+		   set cata_name=#{cata_name}
+			  ,cata_value=#{cata_value}
+			  ,user_name=#{user_name}
+			  ,upd_time=now()
+		 where cata_id = #{cata_id}
+	</update>
+
+
+	<!--查询-->
 	<select id="select" parameterType="map" resultType="map">
 		select * from catalogue_info
-		
 	</select>
-	
-	
-
-
-    
 </mapper>

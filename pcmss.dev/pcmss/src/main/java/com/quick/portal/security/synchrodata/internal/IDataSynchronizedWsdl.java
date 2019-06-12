@@ -27,4 +27,15 @@ public interface IDataSynchronizedWsdl {
 	 */
 	public String getOrgBatchData();
 
+
+	/*
+	 * 通过用户帐号获取用户行为数据接口（指标接口），返回报文数据
+	 */
+	public String getUserBehaviorDataByUserID(String userID);
+
+	/*
+	 * 通过用户帐号获取资源目录数据接口，返回报文数据
+	 */
+	public String getCataDataByUserID(String userID);
+
 }
