@@ -85,8 +85,16 @@ public class LoginFilter extends HttpServlet implements Filter {
                  return;
              }
 
+            //系统提供短信发送量的预警功能，用户可以设置相应短信的发送量限额，
+            // 超出限额自定提醒给管理员，防止盗刷等事件发生。
+            boolean msgAuth  = isMsgAuthSet();
+            if(! msgAuth){
+                notifyMsgLimtSet(res, req,getNotifyMsg("" ,MSCAUTH_MSG));
+//
+            }
 
-             //授权策略-支持对同一权限可以分配的次数的授权策略控制；；
+
+             //授权策略-支持对同一权限可以分配的次数的授权策略控制；
             List<Map<String,Object>> confList  = searchLimtResLoginSet();
             String resids = getLimtResIDBySysConf(confList);
             if(null != resids && !"".equals(resids)){
@@ -234,6 +242,34 @@ public class LoginFilter extends HttpServlet implements Filter {
         return bool;
     }
 
+
+    /*
+       系统提供短信发送量的预警功能，用户可以设置相应短信的发送量限额，
+        超出限额自定提醒给管理员，防止盗刷等事件发生。
+     */
+    public boolean isMsgAuthSet() {
+        boolean bool = true;
+        //系统提供短信发送量的预警功能，用户可以设置相应短信的发送量限额， parm_title in ('msg_set','msg_val')
+        List<Map<String,Object>> retList = sysConfMngService.getLimtMsgSystemParmInfo();
+        Map<String,Object> mp = new HashMap<>();
+        if(null != retList && retList.size()>0){
+            mp = retList.get(0);
+            String msgState = mp.get("parm_val").toString();
+            if("true".equals(msgState)){
+                mp = retList.get(1);
+                String msgCnt = mp.get("parm_val").toString();
+                /*
+                 *系统提供短信发送量的预警功能，用户可以设置相应短信的发送量限额，
+                 *   超出限额自定提醒给管理员，防止盗刷等事件发生。
+                 *   短信的发送量与系统短信限额比较，发送量超出，提示无法访问系统，
+                 *否则，可以访问授权策略控制
+                 */
+               boolean isBool = sysConfMngService.getUserMsgDataCnt(msgCnt);
+               return isBool;
+            }
+        }
+        return bool;
+    }
 
     /*
      *授权策略-支持对同一权限可以分配的次数的授权策略控制；
@@ -420,7 +456,9 @@ public class LoginFilter extends HttpServlet implements Filter {
 
     public String getNotifyMsg(String resids ,String msg){
         //修改资源ID状态禁用
-        sysConfMngService.updResStateInfoByID(resids);
+        if(null != resids && !"".equals(resids)){
+            sysConfMngService.updResStateInfoByID(resids);
+        }
         String notifyMsg = msg.replaceAll("res",resids);
         return notifyMsg;
     }
@@ -430,6 +468,12 @@ public class LoginFilter extends HttpServlet implements Filter {
     public final  static  String TIMEOUT_MSG ="会话已超时，请重新登录！";
 
     public final  static  String LDAPAUTH_MSG ="系统设置指定LDAP用户属性访问限制，请联系管理员重新设置LDAP属性！";
+
+
+    public final  static  String MSCAUTH_MSG ="系统设置短信的发送量已经超出限额，请联系管理员重新设置短信的发送量限额！";
+
+
+
 
     public final  static  String IPAUTH_MSG ="系统设置指定IP访问限制，请联系管理员重新设置IP段！";
 

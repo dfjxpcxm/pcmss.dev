@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="${G.host}/res/css/bootstrap.min.css?v=3.3.6"
+          rel="stylesheet">
+    <link href="${G.host}/res/css/font-awesome.min.css?v=4.4.0"
+          rel="stylesheet">
+    <link href="${G.host}/res/css/animate.css" rel="stylesheet">
+    <link href="${G.host}/res/css/style.css?v=4.1.0" rel="stylesheet">
+
+    <link href="${G.host}/res/css/summernote/summernote.css" rel="stylesheet">
+    <link href="${G.host}/res/css/summernote/summernote-bs3.css" rel="stylesheet">
+
+	<#include "/WEB-INF/include/resedit.html" />
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+            <div class="pull-right ibox-toolbars hidefield">
+                <button type="button" class="btn btn-primary" onclick="cancel();">返回</button>
+            </div>
+			<div class="ibox">
+				<div class="ibox-content ibox-content-ad" style="margin-top: 25px;">
+					<form id="form" name="form" method="post" action="${G.serverUrl}/save" class="wizard-big addForm" enctype="multipart/form-data" accept="image/jpg, image/png">
+				    <div class="row">
+
+                        <div class="col-sm-6 form_ipt_botm">
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top"><span></span>短信标题</label>
+                                <div class="col-xs-9"><input type="text" id="sms_log_title" name="sms_log_title" class="form-control" /></div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form_ipt_botm" style="width:100%;">
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top" style="width:100px;"><span class="span_require">*</span>短信内容</label>
+                                <div class="col-xs-9" style="width:89%;"><textarea style="height:150px;width:100%;resize:none;" class="form-control required" id="sms_log_content" name="sms_log_content"></textarea></div>
+                            </div>
+                        </div>
+<!--
+                        <div class="col-sm-12">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <label class="col-xs-3 lable_top" style="width:100px;"><span class="span_require">*</span>短信内容</label>
+                                </div>
+                                <div class="ibox-content no-padding">
+                                    <div class="summernote" id="sms_content">
+                                        <h2>H+ 后台主题</h2>
+                                        <p></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>-->
+
+                        <div class="col-sm-6 form_ipt_botm">
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top"><span></span>短信发送者</label>
+                                <div class="col-xs-9"><input type="text" id="sms_author" name="sms_author" class="form-control" /></div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form_ipt_botm">
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top"><span></span>短信接受者</label>
+                                <div class="col-xs-9"><input type="text" id="sms_rec_obj" name="sms_rec_obj" class="form-control" /></div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form_ipt_botm">
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>状态</label>
+                                <div class="col-xs-9">
+                                    <select name="sms_state" class="form-control required" id="sms_state">
+                                        <option value="1">成功</option>
+                                        <option value="0">失败</option>
+                                        <option value="2">发送中</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 ediefield">
+						    <div class="form-group">
+							    <label class="col-xs-3 lable_top"></label>
+							    <div class="col-xs-9">
+                                    <input type="hidden" id="sms_log_id" name="sms_log_id" />
+                    		        <input type="hidden" id="sms_id" name="sms_id" />
+							    </div>
+						    </div>
+					    </div>
+				    </div>
+				</form>
+			</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+</body>
+
+<!-- SUMMERNOTE -->
+<script src="${G.host}/res/js/summernote/summernote.min.js"></script>
+<script src="${G.host}/res/js/summernote/summernote-zh-CN.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.summernote').summernote({
+            lang: 'zh-CN'
+        });
+    });
+    quick.baseUrl = "${G.host}";
+    function config() {
+        quick.serverUrl = "${G.serverUrl}";
+        quick.objName = "${G.objName}";
+        quick.idField = "${G.idField}";
+        quick.listUrl = quick.serverUrl + "/list";
+    }
+	window.onload = function() {
+		/*自定义错误提示信息的方法*/
+
+		$("#form").validate({
+			errorPlacement: function(error, element) {
+                element.parent().append(error);
+			},
+            ignore : ":disabled",
+			rules: {
+			}
+		});
+        /*加载数据*/
+        var mode = $.request.queryString["mode"];
+        var sysid=$.request.queryString["sms_log_id"];
+        if(sysid){
+            $.post(quick.serverUrl + '/getObj?sms_log_id=' + sysid + "&i=" + Math.random(), function(data){
+                $("#sms_log_title").val(data.sms_log_title);
+                $("#sms_state").val(data.sms_state);
+                $("#sms_author").val(data.sms_author);
+                $("#sms_rec_obj").val(data.sms_rec_obj);
+                $("#sms_log_content").val(data.sms_log_content);
+
+				if(mode == "browse"){
+                    viewRead();
+                }
+            });
+        }
+    }
+
+
+
+	function cancel(){
+		var url = quick.listUrl + urlDel(location.search, 'mode','sms_log_id') + '&RFlag=1';
+		window.location.href = url;
+	}
+
+
+
+    $("#mould_id").change(function(){
+        var options=$("#mould_id option:selected");
+//        $("#sms_content").after(options.val());
+ //           debugger
+ //       $("#id").append("<p class='three'>我是子元素append</p>");
+        var content = options.val();
+        $("#sms_content").val(content);
+//        $("#sms_content").append("<p>我是子元素append</p>");
+
+//        $("#sms_content").append("<p>"+content+"</p>");
+
+
+
+
+//        var p = document.getElementById("sms_content");
+ //       p.innerHTML += "你要添加到内容";
+
+
+
+
+    });
+
+
+
+</script>
+</html>

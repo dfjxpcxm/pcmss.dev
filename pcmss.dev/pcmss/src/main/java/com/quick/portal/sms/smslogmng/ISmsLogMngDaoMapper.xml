@@ -2,8 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.quick.portal.sms.smslogmng.ISmsLogMngDao">
 
-
-
 	<!--查询条件-->
 	<sql id="where">
 		1=1
@@ -25,8 +23,11 @@
 	       and sms_state = #{sms_state}
 	    ]]></if>
 
-		<if test="cre_time != null and )"><![CDATA[
-	       and cre_time >= #{cre_time}
+		<if test="start_time != null and start_time != '' and start_time != 'null'"><![CDATA[
+	       and cre_time >= DATE_FORMAT(#{start_time},'%Y%m%d')
+	    ]]></if>
+		<if test="end_time != null and end_time != '' and end_time != 'null'"><![CDATA[
+	       and cre_time <= DATE_ADD(DATE_FORMAT(#{end_time},'%Y%m%d'), INTERVAL 1 DAY)
 	    ]]></if>
 
 		<if test="_sql_where != null and _sql_where != ''"> <![CDATA[
@@ -58,6 +59,26 @@
 			 now()
 			)
 	</insert>
+
+
+	<select id="select" parameterType="map" resultType="map">
+		select * from sys_sms_log
+		<where>
+			<include refid="where" />
+		</where>
+		<if test="_sql_order != null and _sql_order != ''">
+			order by ${_sql_order}
+		</if>
+	</select>
+
+	<!-- 查询总记录数 -->
+	<select id="count" parameterType="map" resultType="int">
+		select count(*) from sys_sms_log
+		<where>
+			<include refid="where" />
+		</where>
+	</select>
+
 
 
 </mapper>

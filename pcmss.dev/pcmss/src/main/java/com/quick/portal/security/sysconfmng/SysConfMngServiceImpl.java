@@ -70,6 +70,24 @@ public class SysConfMngServiceImpl extends SysBaseService<SysConfMngDO> implemen
     }
 
     @Override
+    public List<Map<String, Object>> getLimtMsgSystemParmInfo() {
+        return dao.getLimtMsgSystemParmInfo();
+    }
+
+    @Override
+    public boolean getUserMsgDataCnt(String sysMsgCnt) {
+        boolean bool  = true;
+        int userMsgCnt = dao.getUserMsgDataCnt();
+        Integer sCnt = Integer.parseInt(sysMsgCnt);
+        if(userMsgCnt < sCnt){
+            bool = true;
+        }else{
+            bool = false;
+        }
+        return bool;
+    }
+
+    @Override
     public String getUserLdapProPertyByUserID(String uid) {
         String ldapProperty = "";
         int id  = Integer.valueOf(uid);
@@ -197,10 +215,7 @@ public class SysConfMngServiceImpl extends SysBaseService<SysConfMngDO> implemen
             }
             if (li.get(i).getParm_title().equals("wit_val") && li.get(i).getParm_val().equals("3")){
                 wit_val = true;
-
             }
-
-
         }
         if (man_wit_set == true && wit_val == true){
             return ActionMsg.setOk("已开启");
@@ -219,16 +234,11 @@ public class SysConfMngServiceImpl extends SysBaseService<SysConfMngDO> implemen
         Integer val = entity.getSys_id();
         int c = 0;
         Date now = DateTime.Now().getTime();
-        //名称不能重复
-      /*  if(exist("dep_name", entity.getDep_name(), val))
-            return ActionMsg.setError("名称已存在，请换一个");*/
+
         if(val == null || val == 0) {
             entity.setCre_time( now );  //新增时间
-           // entity.setUpd_time( now );  //修改时间
-
             c = dao.insertRes(entity);
         }else {
-           // entity.setUpd_time( now );  //修改时间
             entity.setLentrust_set_prop(entity.getLentrust_set_prop()==null || "".equals(entity.getLentrust_set_prop()) || "0".equals(entity.getLentrust_set_prop())?"0":"1");
             entity.setLimt_res_set_prop(entity.getLimt_res_set_prop()==null || "".equals(entity.getLimt_res_set_prop()) || "0".equals(entity.getLimt_res_set_prop())?"0":"1");
             entity.setLimt_time_res_set_prop(entity.getLimt_time_res_set_prop()==null || "".equals(entity.getLimt_time_res_set_prop()) || "0".equals(entity.getLimt_time_res_set_prop())?"0":"1");

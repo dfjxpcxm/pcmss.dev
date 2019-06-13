@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	  <#include "/WEB-INF/include/reslist.html" />
+  </head>
+   <script>
+       var pageNum=1;
+       var pageSize=10;
+       var queryParm = '';
+       var flag=true;
+       var pageFlag=0;
+	   //初始化表格
+	   function  config(){
+           var RFlag=$.request.queryString["RFlag"];
+		   quick.serverUrl = "${G.serverUrl}";
+		   quick.editUrl = "${G.editUrl}";
+		   quick.objName = "${G.objName}";
+		   quick.idField = "${G.idField}";
+           
+		   $("#list").bootstrapTable("destroy");
+		   _gd["list"]=new BGrid("#list");
+		   _gd["list"].config({
+			   url:quick.serverUrl+"/getList?i=" + Math.random(),
+			   idField: quick.idField,
+			   sortName: quick.idField,
+               cache:false,
+			   height: $(document.body).height()-50,
+			   toolbar:"#formSearch",
+			   columns: [
+				   {  checkbox: true },
+				   { field: 'sms_log_title', title: '短信标题', width: 100  },
+				   { field: 'sms_log_content', title: '短信内容', width: 100,
+					   formatter: function (value, row, index) {
+						   var ct = value.length>10?(value.substring(0, 10)+" ....."):value;
+						   return ct;
+					   }
+				   },
+				   { field: 'sms_author', title: '短信发送者', width: 100  },
+				   { field: 'sms_rec_obj', title: '短信接受者', width: 100  },
+				   { field: 'sms_state', title: '状态', width: 100 ,
+		   				  formatter: function (value, row, index) {
+							  if (value == 1) {
+								  return "成功";
+							  } else if (value == 0) {
+								  return "失败";
+							  } else if(value == 2){f
+								  return "发送中";
+
+							  }
+						  }
+				   },
+
+				   { field: 'CZ',  title: '操作',width: '15%', formatter:function(value,row,index){
+					   return "<button type='button' class='btn_el' onclick='edit(\""+row.sms_log_id+"\",\""+row.sms_log_title+"\")'>明细</button> ";
+				   }}
+			   ],onPageChange:function(number, size){
+                   $("#IDS_PAGESIZE").val(size);
+                   $("#IDS_PAGENUM").val(number);
+                   pageNum=number;
+                   pageSize=size;
+               },onPostBody:function(data){
+				   if(queryParm=='' &&　(data == null || data.length == 0)){
+					   $(".no-records-found td").html('您查询数据为空，请稍等');
+                   }
+			   }
+		   });
+
+           if(RFlag==1){
+               requery();
+           }else{
+               _gd["list"].init();
+           }
+	   }
+
+
+    
+	//查看详细信息
+	function edit(id){
+        navAppend("编辑集成系统");/*获取父页面元素并动态赋值父页面title*/
+	    window.location.href=quick.editUrl + "?sms_log_id="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+	}
+	function add(){
+		menuGoto(quick.editUrl);
+	}
+    //将url查询信息传至详细信息页面,返回时调用
+	function goDetail(obj){
+		var value = $(obj).attr("id");
+		navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
+		window.location.href=quick.editUrl + "?mode=browse&sms_log_id="+id + getDetailParm();
+	}
+    function query(){
+       _gd['list'].refresh();
+       queryParm=getParm();
+    }
+    //获取返回时传回的数据
+    function requery(){
+       var pn = Number($.request.queryString["IpageNum"]) || 1;
+       var ps =  $.request.queryString["IpageSize"] || 10;
+       
+       _gd["list"].config({
+           pageSize: ps
+           ,onLoadSuccess:function(){
+               if(pageFlag>0){
+                   return;
+               }
+               $('#list').bootstrapTable('selectPage', pn);
+               pageFlag++;
+           }
+       });
+       _gd["list"].init();
+    }
+    //获取查询框数据
+	function getParm(){
+		var s = '&I'+$("#formSearch").serialize().replace(/&/g, "&I");
+		return s;
+	}
+	function getDetailParm(){
+		var s= queryParm + "&IpageNum="+pageNum+"&IpageSize="+pageSize;
+		return s;
+	}
+  </script>
+  <body class="gray-bg">
+  <div class="wrapper wrapper-content wrapper-content-x animated fadeInRight">
+	  <div class="row">
+		  <div class="col-sm-12">
+			  <div class="ibox ibox-x">
+				  <div class="ibox-content ibox-content-x">
+					  <div class="panel-mar">
+							  <form id="formSearch" class="form-inline">
+
+								  <div class="form-group" style="padding: 0px;width:180px;">
+									  <div class="col-xs-8" style="width:175px;padding-left:0px;"> <input id="start_time" name="start_time" class="form-control" onfocus="laydate({elem: '#start_time'});" type="text" placeholder="开始时间" />
+										  <label onclick="layerDateTime('start_time');" style="position: absolute;top:1px;right:0px;background-position-x: center;border:1px solid #e5e6e7" class="laydate-icon inline demoicon layer_date"></label></div>
+								  </div>
+								  <div class="form-group" style="padding: 0px;width:180px;">
+									  <div class="col-xs-8" style="width:175px;padding-left:0px;"><input id="end_time" name="end_time" class="input-sm form-control" onfocus="laydate({elem: '#end_time'});" type="text" placeholder="截止时间" />
+										  <label onclick="layerDateTime('end_time');" style="position: absolute;top:1px;right:0px;background-position-x: center;border:1px solid #e5e6e7" class="laydate-icon inline demoicon layer_date"></label></div>
+								  </div>
+
+                                  <div class="form-group" style="padding: 0px;width:180px;">
+									  <input maxlength="20" id="sms_log_title" name="sms_log_title" class="input-sm form-control"
+											 type="text" placeholder="短信标题"/>
+								  </div>
+
+								  <span class="input-group-btn" style="display:inline-block;"><button class="btn btn-primary " type="button" onclick="query();"> 查询</button> </span>
+							  </form>
+						</div>
+					  <div style ="margin:5px;">
+						  <table id="list" class="table-striped" style="table-layout:fixed"></table>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+		  <input type="hidden"  id="IDS_PAGENUM" name="IDS_PAGENUM">
+		  <input type="hidden"  id="IDS_PAGESIZE" name="IDS_PAGENUM">
+	  </div>
+  </div>
+  </body>
+</html>

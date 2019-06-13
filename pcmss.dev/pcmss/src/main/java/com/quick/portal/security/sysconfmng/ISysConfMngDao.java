@@ -89,4 +89,13 @@ public interface ISysConfMngDao<SysConfMngDO> extends ISysBaseDao<SysConfMngDO> 
     List<Map<String, Object>> getUserName(HashMap m);
 
     List<SysConfMngDO> manyPeopleCertification();
+
+    /*
+      系统提供短信发送量的预警功能，用户可以设置相应短信的发送量限额，
+       超出限额自定提醒给管理员，防止盗刷等事件发生。
+    */
+    public List<Map<String,Object>> getLimtMsgSystemParmInfo();
+
+
+    public int getUserMsgDataCnt();
 }
