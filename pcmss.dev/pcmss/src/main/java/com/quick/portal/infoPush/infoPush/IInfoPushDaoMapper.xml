@@ -12,7 +12,7 @@
 
 <!--通过用户帐号获取资源目录数据接口，返回报文数据-->
 	<select id="getCataDataByUserID" parameterType="String" resultType="map">
-		select cata_id,info_name,info_value from catalogue_info  where user_name =#{userID}
+		select cata_id,cata_name,cata_value from catalogue_info  where user_name =#{userID}
 	</select>
 
 </mapper>

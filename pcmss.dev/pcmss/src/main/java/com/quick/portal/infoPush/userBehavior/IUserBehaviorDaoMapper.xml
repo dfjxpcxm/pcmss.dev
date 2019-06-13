@@ -9,8 +9,8 @@
     		  index_name,
     		  index_value,
     		  user_name,
-    		  creat_time,
-    		  update_time
+    		  cre_time,
+    		  upd_time
 		)values(
 			 #{index_id},
 			 #{index_name},

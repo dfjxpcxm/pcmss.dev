@@ -9,8 +9,8 @@
     		  cata_name,
     		  cata_value,
     		  user_name,
-    		  creat_time,
-    		  update_time
+    		  cre_time,
+    		  upd_time
 		)values(
 			 #{cata_id},
 			 #{cata_name},

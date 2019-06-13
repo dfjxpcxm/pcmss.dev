@@ -50,25 +50,13 @@ public class CatalogChangeDO implements java.io.Serializable {
     /**
      *
      */
-    private Date  creat_time;    	
+    private Date  cre_time;
     /**
      *
      */
-    private Date  update_time;    	
+    private Date  upd_time;
 	// </editor-fold>
 
-	public Date getCreat_time() {
-		return creat_time;
-	}
-	public void setCreat_time(Date creat_time) {
-		this.creat_time = creat_time;
-	}
-	public Date getUpdate_time() {
-		return update_time;
-	}
-	public void setUpdate_time(Date update_time) {
-		this.update_time = update_time;
-	}
 
 	public String getCata_name() {
 		return cata_name;
@@ -108,6 +96,22 @@ public class CatalogChangeDO implements java.io.Serializable {
 
 	public void setCid(Integer cid) {
 		this.cid = cid;
+	}
+
+	public Date getUpd_time() {
+		return upd_time;
+	}
+
+	public void setUpd_time(Date upd_time) {
+		this.upd_time = upd_time;
+	}
+
+	public Date getCre_time() {
+		return cre_time;
+	}
+
+	public void setCre_time(Date cre_time) {
+		this.cre_time = cre_time;
 	}
 
 
