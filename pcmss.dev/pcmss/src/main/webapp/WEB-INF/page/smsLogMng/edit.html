@@ -33,27 +33,25 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-6 form_ipt_botm" style="width:100%;">
+                       <!-- <div class="col-sm-6 form_ipt_botm" style="width:100%;">
                             <div class="form-group">
                                 <label class="col-xs-3 lable_top" style="width:100px;"><span class="span_require">*</span>短信内容</label>
                                 <div class="col-xs-9" style="width:89%;"><textarea style="height:150px;width:100%;resize:none;" class="form-control required" id="sms_log_content" name="sms_log_content"></textarea></div>
                             </div>
-                        </div>
-<!--
+                        </div>-->
                         <div class="col-sm-12">
                             <div class="ibox float-e-margins">
                                 <div class="ibox-title">
                                     <label class="col-xs-3 lable_top" style="width:100px;"><span class="span_require">*</span>短信内容</label>
                                 </div>
                                 <div class="ibox-content no-padding">
-                                    <div class="summernote" id="sms_content">
-                                        <h2>H+ 后台主题</h2>
+                                    <div class="summernote" id="sms_content_fu">
+                                        <h4>请输入要添加的内容！</h4>
                                         <p></p>
                                     </div>
                                 </div>
                             </div>
-                        </div>-->
-
+                        </div>
                         <div class="col-sm-6 form_ipt_botm">
                             <div class="form-group">
                                 <label class="col-xs-3 lable_top"><span></span>短信发送者</label>
@@ -138,8 +136,7 @@
                 $("#sms_state").val(data.sms_state);
                 $("#sms_author").val(data.sms_author);
                 $("#sms_rec_obj").val(data.sms_rec_obj);
-                $("#sms_log_content").val(data.sms_log_content);
-
+                $('.summernote').code(data.sms_log_content);
 				if(mode == "browse"){
                     viewRead();
                 }
@@ -154,31 +151,11 @@
 		window.location.href = url;
 	}
 
-
-
     $("#mould_id").change(function(){
         var options=$("#mould_id option:selected");
-//        $("#sms_content").after(options.val());
- //           debugger
- //       $("#id").append("<p class='three'>我是子元素append</p>");
         var content = options.val();
         $("#sms_content").val(content);
-//        $("#sms_content").append("<p>我是子元素append</p>");
-
-//        $("#sms_content").append("<p>"+content+"</p>");
-
-
-
-
-//        var p = document.getElementById("sms_content");
- //       p.innerHTML += "你要添加到内容";
-
-
-
-
     });
-
-
 
 </script>
 </html>
