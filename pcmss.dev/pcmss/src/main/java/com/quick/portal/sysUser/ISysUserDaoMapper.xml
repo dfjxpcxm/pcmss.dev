@@ -60,6 +60,7 @@
 			#{dep_id, mode=IN},
 			#{file_state, mode=IN},
 			#{job_name, mode=IN},
+			#{idcard_num, mode=IN},
 			#{error_no, jdbcType=INTEGER, mode=OUT}
 		)}
 	</insert>
@@ -109,6 +110,7 @@
 			#{dep_id, mode=IN},
 			#{file_state, mode=IN},
 			#{job_name, mode=IN},
+			#{idcard_num, mode=IN},
 			#{error_no, jdbcType=INTEGER, mode=OUT}
 		)}
 	</update>

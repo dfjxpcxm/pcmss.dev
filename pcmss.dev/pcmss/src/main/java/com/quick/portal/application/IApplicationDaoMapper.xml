@@ -15,7 +15,7 @@
 	       and dep_id = #{dep_id}
 	    ]]></if>
 		<if test="app_name != null and app_name != '' and app_name != 'null'"><![CDATA[
-	       and app_name = #{app_name}
+	       and app_name  like CONCAT('%',#{app_name},'%')
 	    ]]></if>
 		<if test="app_level != null"><![CDATA[
 	       and app_level = #{app_level}

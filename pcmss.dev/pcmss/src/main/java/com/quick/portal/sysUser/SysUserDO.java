@@ -53,6 +53,7 @@ public class SysUserDO  implements java.io.Serializable {
         setSup_dep_global_id(u.getSup_dep_global_id());
         setUser_email(u.getUser_email());
         setFile_state(u.getFile_state());
+        setIdcard_num(u.getIdcard_num());
 
 
     }
@@ -114,6 +115,8 @@ public class SysUserDO  implements java.io.Serializable {
 
     private String job_name;
     private int job_level;
+
+    private String  idcard_num;
 
     private List<UserRoleDO> roleList;
     private List<UserDepartmentDO> depList;
@@ -402,5 +405,13 @@ public class SysUserDO  implements java.io.Serializable {
 
     public void setUser_email(String user_email) {
         this.user_email = user_email;
+    }
+
+    public String getIdcard_num() {
+        return idcard_num;
+    }
+
+    public void setIdcard_num(String idcard_num) {
+        this.idcard_num = idcard_num;
     }
 }
