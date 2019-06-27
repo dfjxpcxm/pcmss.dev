@@ -96,7 +96,7 @@
                 {
                     field: 'CZ', title: '操作', width: '15%', align: 'center', formatter: function (value, row, index) {
                         return "<button type='button' class='btn_el' onclick='edit(\"" + row.sys_id + "\")'>编辑</button>| "
-                            + "<button type='button' class='btn_el' onclick='del(\"" + row.sys_id + "\")'>删除</button>";
+                            + "<button type='button' class='btn_el' onclick='del(\"" + row.sys_id + "\",\"" + row.menu_cn_name + "\")'>删除</button>";
                         ;
                     }
                 }

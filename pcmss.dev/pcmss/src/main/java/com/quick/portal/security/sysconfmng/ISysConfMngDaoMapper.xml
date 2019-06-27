@@ -35,7 +35,7 @@
 	</sql>
 	<sql id="ResWhere">
 		<if test="value == 'resedit'"><![CDATA[
-	       and  user_id is null and timeout is null and menu_cn_name like CONCAT('%',#{menu_cn_name},'%')
+	       and  user_id is null and timeout is null and cnt is not null and menu_cn_name like CONCAT('%',#{menu_cn_name},'%')
 	       ORDER BY  limt_res_set_prop desc
 	    ]]></if>
 		<if test="value == 'restimeedit' "><![CDATA[
@@ -48,7 +48,7 @@
 	        ORDER BY  limt_user_res_set_prop desc
 	    ]]></if>
 		<if test="value == 'entrustedit' "><![CDATA[
-	        and  lentrust_set_prop  in ('1','0') and menu_cn_name like CONCAT('%',#{menu_cn_name},'%')
+	        and  user_id is null and timeout is null and cnt is null  and lentrust_set_prop  in ('1','0') and menu_cn_name like CONCAT('%',#{menu_cn_name},'%')
 	        ORDER BY  lentrust_set_prop desc
 	    ]]></if>
 		<if test="_sql_where != null and _sql_where != ''"> <![CDATA[
@@ -161,7 +161,31 @@
 		INNER JOIN sys_menu f on s.res_id = f.menu_id
 		where sys_id = #{sys_id}
 	</select>
-	<insert id="inserRes" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO" >
+	<!--查询资源表id对应的值 委托的 用于判断重复-->
+	<select id="getSysEntrustedit" parameterType="String" resultType ="map">
+		select s.* from sys_res_conf s
+		where res_id = #{res_id} and user_id is null and timeout is null and cnt is null
+	</select>
+
+	<!--查询资源表id对应的值 委托的 用于判断重复-->
+	<select id="getSysResedit" parameterType="String" resultType ="map">
+		select s.* from sys_res_conf s
+		where res_id = #{res_id} and user_id is null and timeout is null and cnt is not null
+	</select>
+
+	<!--查询资源表id对应的值 委托的 用于判断重复-->
+	<select id="getSysResTimeoutedit" parameterType="String" resultType ="map">
+		select s.* from sys_res_conf s
+		where res_id = #{res_id} and user_id is null and timeout is not null and cnt is not null
+	</select>
+
+	<!--查询资源表id对应的值 委托的 用于判断重复-->
+	<select id="getSysResUserTimeoutedit" parameterType="String" resultType ="map">
+		select s.* from sys_res_conf s
+		where res_id = #{res_id} and user_id is not null and timeout is not null and cnt is not null
+	</select>
+
+	<insert id="insertRes" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO" >
 		insert into sys_res_conf (
     		  sys_id,
     		  res_id,
@@ -187,6 +211,22 @@
 			 now()
 			)
 	</insert>
+	<insert id="insert" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO" >
+		insert into sys_glabal_parm (
+    		  sys_id,
+    		  parm_title,
+    		  parm_val,
+    		  parm_chinese,
+    		  cre_time
+
+		)values(
+			 #{sys_id},
+			 #{parm_title},
+			 #{parm_val},
+			 #{parm_chinese},
+			 now()
+			)
+	</insert>
 	<!--修改sys_conf-->
 	<update id="updateRes" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO">
 		update sys_res_conf
@@ -200,6 +240,62 @@
 			  ,limt_user_res_set_prop=#{limt_user_res_set_prop}
 			  ,lentrust_set_prop=#{lentrust_set_prop}
 		 where sys_id = #{sys_id}
+	</update>
+	<!--修改委托资源-->
+	<update id="updateEntrustResresid" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO">
+		update sys_res_conf
+		   set
+			  res_id=#{res_id}
+			  ,user_id=#{user_id}
+			  ,timeout=#{timeout}
+			  ,cnt=#{cnt}
+			  ,limt_res_set_prop=#{limt_res_set_prop}
+			  ,limt_time_res_set_prop=#{limt_time_res_set_prop}
+			  ,limt_user_res_set_prop=#{limt_user_res_set_prop}
+			  ,lentrust_set_prop=#{lentrust_set_prop}
+		 where res_id = #{res_id} and timeout is null and cnt is null and user_id is null
+	</update>
+	<!--修改次数资源-->
+	<update id="updateResresid" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO">
+		update sys_res_conf
+		   set
+			  res_id=#{res_id}
+			  ,user_id=#{user_id}
+			  ,timeout=#{timeout}
+			  ,cnt=#{cnt}
+			  ,limt_res_set_prop=#{limt_res_set_prop}
+			  ,limt_time_res_set_prop=#{limt_time_res_set_prop}
+			  ,limt_user_res_set_prop=#{limt_user_res_set_prop}
+			  ,lentrust_set_prop=#{lentrust_set_prop}
+		 where res_id = #{res_id} and timeout is null and cnt is not null and user_id is null
+	</update>
+	<!--修改次数超时资源-->
+	<update id="updateRestimeoutresid" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO">
+		update sys_res_conf
+		   set
+			  res_id=#{res_id}
+			  ,user_id=#{user_id}
+			  ,timeout=#{timeout}
+			  ,cnt=#{cnt}
+			  ,limt_res_set_prop=#{limt_res_set_prop}
+			  ,limt_time_res_set_prop=#{limt_time_res_set_prop}
+			  ,limt_user_res_set_prop=#{limt_user_res_set_prop}
+			  ,lentrust_set_prop=#{lentrust_set_prop}
+		 where res_id = #{res_id} and timeout is not null and cnt is not null and user_id is null
+	</update>
+	<!--修改次数超时用户资源-->
+	<update id="updateResUsertimeoutresid" parameterType="com.quick.portal.security.sysconfmng.SysConfMngDO">
+		update sys_res_conf
+		   set
+			  res_id=#{res_id}
+			  ,user_id=#{user_id}
+			  ,timeout=#{timeout}
+			  ,cnt=#{cnt}
+			  ,limt_res_set_prop=#{limt_res_set_prop}
+			  ,limt_time_res_set_prop=#{limt_time_res_set_prop}
+			  ,limt_user_res_set_prop=#{limt_user_res_set_prop}
+			  ,lentrust_set_prop=#{lentrust_set_prop}
+		 where res_id = #{res_id} and timeout is not null and cnt is not null and user_id is not null
 	</update>
 	<!-- 删除-->
 	<delete id="deleteRes" parameterType="String">

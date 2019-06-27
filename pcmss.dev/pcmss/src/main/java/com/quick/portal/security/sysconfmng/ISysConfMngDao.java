@@ -74,11 +74,26 @@ public interface ISysConfMngDao<SysConfMngDO> extends ISysBaseDao<SysConfMngDO> 
 
     public Map<String, Object> getSysIdResUserInfo(@Param("sys_id") String sys_id);
 
+    public List getSysEntrustedit(String resid);
+
+    public List getSysResedit(String resid);
+
+    public List getSysResTimeoutedit(String resid);
+
+    public List getSysResUserTimeoutedit(String resid);
+
+
+
 
     //增加策略信息
     int insertRes(SysConfMngDO entity);
 
     int updateRes(SysConfMngDO entity);
+
+    int updateEntrustResresid(SysConfMngDO entity);
+    int updateResresid(SysConfMngDO entity);
+    int updateRestimeoutresid(SysConfMngDO entity);
+    int updateResUsertimeoutresid(SysConfMngDO entity);
 
     int deleteRes(String sysid);
 

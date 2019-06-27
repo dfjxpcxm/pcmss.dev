@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -223,32 +224,114 @@ public class SysConfMngServiceImpl extends SysBaseService<SysConfMngDO> implemen
         return ActionMsg.setOk("未开启");
     }
 
+
     /**
      * 保存业务
      * @param entity
      * @return
      */
     @Override
-    public DataStore saveRes(SysConfMngDO entity) {
+    public DataStore saveRes(SysConfMngDO entity,String value) {
         //如果编号为空,新增实体对象,否则更新实体对象
         Integer val = entity.getSys_id();
         int c = 0;
+        String repeat_menu_name="";
         Date now = DateTime.Now().getTime();
-
-        if(val == null || val == 0) {
+        String[] arr = entity.getStr_res_id().split(",");
+        String[] menu_cn_name = entity.getMenu_cn_name().split(",");
+        Integer Cnt = entity.getCnt();
+        Integer Timeout = entity.getTimeout();
+        Integer Userid = entity.getUser_id();
+        String Limt_time_res_set_prop=entity.getLimt_time_res_set_prop()==null || "".equals(entity.getLimt_time_res_set_prop()) || "0".equals(entity.getLimt_time_res_set_prop())?"0":"1";
+        String Limt_user_res_set_prop=entity.getLimt_user_res_set_prop()==null || "".equals(entity.getLimt_user_res_set_prop()) || "0".equals(entity.getLimt_user_res_set_prop())?"0":"1";
+        String Lentrust_set_prop=entity.getLentrust_set_prop()==null || "".equals(entity.getLentrust_set_prop()) || "0".equals(entity.getLentrust_set_prop())?"0":"1";
+        String Limt_res_set_prop=entity.getLimt_res_set_prop()==null || "".equals(entity.getLimt_res_set_prop()) || "0".equals(entity.getLimt_res_set_prop())?"0":"1";
+        for (int i = 0; i < arr.length; i++) {
+            int res_id = Integer.valueOf(arr[i]);
+            entity = new SysConfMngDO();
+            entity.setLentrust_set_prop(Lentrust_set_prop);
+            entity.setLimt_res_set_prop(Limt_res_set_prop);
+            entity.setLimt_time_res_set_prop(Limt_time_res_set_prop);
+            entity.setLimt_user_res_set_prop(Limt_user_res_set_prop);
+            entity.setCnt(Cnt);
+            entity.setTimeout(Timeout);
+            entity.setUser_id(Userid);
             entity.setCre_time( now );  //新增时间
-            c = dao.insertRes(entity);
-        }else {
-            entity.setLentrust_set_prop(entity.getLentrust_set_prop()==null || "".equals(entity.getLentrust_set_prop()) || "0".equals(entity.getLentrust_set_prop())?"0":"1");
-            entity.setLimt_res_set_prop(entity.getLimt_res_set_prop()==null || "".equals(entity.getLimt_res_set_prop()) || "0".equals(entity.getLimt_res_set_prop())?"0":"1");
-            entity.setLimt_time_res_set_prop(entity.getLimt_time_res_set_prop()==null || "".equals(entity.getLimt_time_res_set_prop()) || "0".equals(entity.getLimt_time_res_set_prop())?"0":"1");
-            entity.setLimt_user_res_set_prop(entity.getLimt_user_res_set_prop()==null || "".equals(entity.getLimt_user_res_set_prop()) || "0".equals(entity.getLimt_user_res_set_prop())?"0":"1");
-            c = dao.updateRes(entity);
+            entity.setRes_id(res_id);
+            if (value.equals("entrust")){
+                if(getSysEntrustedit(arr[i]) == false ){
+                    c = dao.insertRes(entity);
+                }else  if (val != null){
+                    c = dao.updateEntrustResresid(entity);
+                }else {
+                    repeat_menu_name+=menu_cn_name[i]+",";
+                }
+            }
+            if (value.equals("res")){
+                if( getSysResedit(arr[i]) == false ){
+                    c = dao.insertRes(entity);
+                }else  if (val != null){
+                    c = dao.updateResresid(entity);
+                }else {
+                    repeat_menu_name+=menu_cn_name[i]+",";
+                }
+            }
+            if (value.equals("restimeout")){
+                if(getSysResTimeoutedit(arr[i]) == false ) {
+                    c = dao.insertRes(entity);
+                } else  if (val != null){
+                    c = dao.updateRestimeoutresid(entity);
+                }else {
+                    repeat_menu_name+=menu_cn_name[i]+",";
+                }
+            }
+            if (value.equals("resusertimeout")){
+                if(getSysResUserTimeoutedit(arr[i]) == false ){
+                    c = dao.insertRes(entity);
+                } else  if (val != null){
+                    c = dao.updateResUsertimeoutresid(entity);
+                }else {
+                    repeat_menu_name+=menu_cn_name[i]+",";
+                }
+            }
         }
         if(c == 0)
-            return ActionMsg.setError("操作失败");
+            return ActionMsg.setError("操作失败:重复菜单名称："+repeat_menu_name);
         ActionMsg.setValue(entity);
         return ActionMsg.setOk("操作成功");
+    }
+
+    @Override
+    public boolean getSysEntrustedit(String resid) {
+        if(dao.getSysEntrustedit(resid).size() == 0){
+            return false;
+        }
+        return true;
+
+    }
+
+    @Override
+    public boolean getSysResedit(String resid) {
+        if(dao.getSysResedit(resid).size() == 0){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean getSysResTimeoutedit(String resid) {
+        if(dao.getSysResTimeoutedit(resid).size() == 0){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean getSysResUserTimeoutedit(String resid) {
+        if(dao.getSysResUserTimeoutedit(resid).size() == 0){
+            return false;
+        }
+        return true;
     }
 
 
