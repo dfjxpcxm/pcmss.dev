@@ -72,6 +72,8 @@ public class SignMngController extends SysBaseController<SignMngDO> {
         return view();
     }
 
+
+
     @RequestMapping(value = "/getSignTypeData")
     @ResponseBody
     public Object getSignTypeData() throws Exception {

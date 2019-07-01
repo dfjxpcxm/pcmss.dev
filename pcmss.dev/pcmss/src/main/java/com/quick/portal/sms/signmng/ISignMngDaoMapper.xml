@@ -45,6 +45,8 @@
     		  sign_type,
     		  sign_author,
     		  sign_state,
+    		  apply_causes,
+    		  apply_scene,
     		  cre_time,
     		  upd_time
 		)values(
@@ -52,6 +54,8 @@
 			 #{sign_type},
 			 #{sign_author},
 			 #{sign_state},
+			 #{apply_causes},
+			 #{apply_scene},
 			 now(),
 			 now()
 			)
@@ -64,6 +68,8 @@
 			  ,sign_type=#{sign_type}
 			  ,sign_author=#{sign_author}
 			  ,sign_state=#{sign_state}
+			  ,apply_causes=#{apply_causes}
+			  ,apply_scene=#{apply_scene}
 			  ,cre_time=now()
 			  ,upd_time=now()
 		 where sign_id = #{sign_id}

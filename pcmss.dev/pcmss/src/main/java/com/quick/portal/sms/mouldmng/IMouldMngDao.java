@@ -30,5 +30,6 @@ import java.util.Map;
 public interface IMouldMngDao<MouldMngDO> extends ISysBaseDao<MouldMngDO> {
 
     public List<Map<String, Object>> getMouldTypeData();
+    public List<Map<String, Object>> getComMouldData();
 
 }

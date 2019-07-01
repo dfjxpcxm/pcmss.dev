@@ -28,8 +28,10 @@
 			   toolbar:"#formSearch",
 			   columns: [
 				   {  checkbox: true },
+				   { field: 'mould_ty', title: '模板类型', width: 100  },
 				   { field: 'mould_name', title: '模板名称', width: 100  },
 				   { field: 'mould_content', title: '模板内容', width: 100  },
+				   { field: 'apply_causes', title: '申请说明', width: 100  },
 				   { field: 'mould_type_name', title: '模板类别', width: 100  },
 				   { field: 'mould_state', title: '状态', width: 100 ,
 					   formatter: function (value, row, index) {
@@ -150,6 +152,10 @@
 											 type="text" placeholder="模板名称"/>
 								  </div>
 								  <span class="input-group-btn" style="display:inline-block;"><button class="btn btn-primary " type="button" onclick="query();"> 查询</button> </span>
+								  <div class="form-group" style="width:100px;float:right;">
+									  <button type="button" class="btn btn-primary" onclick="location.href='edit';"> 新增模板
+									  </button>
+								  </div>
 							  </form>
 						</div>
 					  <div style ="margin:5px;">

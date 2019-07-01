@@ -42,6 +42,19 @@
 							  }
 						  }
 				   },
+				   { field: 'apply_causes', title: '申请理由', width: 100  },
+				   { field: 'apply_scene', title: '适用场景', width: 100 ,
+					   formatter: function (value, row, index) {
+						   if (value == 1) {
+							   return "验证码";
+						   } else if (value == 0) {
+							   return "通用";
+						   } else {
+							   return "-";
+
+						   }
+					   }
+				   },
 
 				   { field: 'CZ',  title: '操作',width: '15%', formatter:function(value,row,index){
 					   return "<button type='button' class='btn_el' onclick='edit(\""+row.sign_id+"\",\""+row.sign_name+"\")'>编辑</button>| "
@@ -149,6 +162,10 @@
 								  </div>
 
 								  <span class="input-group-btn" style="display:inline-block;"><button class="btn btn-primary " type="button" onclick="query();"> 查询</button> </span>
+								  <div class="form-group" style="width:100px;float:right;">
+									  <button type="button" class="btn btn-primary" onclick="location.href='edit';"> 新增签名
+									  </button>
+								  </div>
 							  </form>
 						</div>
 					  <div style ="margin:5px;">

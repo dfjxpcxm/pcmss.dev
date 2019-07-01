@@ -36,15 +36,13 @@ public class SignMngDO implements java.io.Serializable {
         setSign_type(u.getSign_type());
         setSign_author(u.getSign_author());
         setSign_state(u.getSign_state());
+        setApply_scene(u.getApply_scene());
+        setApply_causes(u.getApply_causes());
         setCre_time(u.getCre_time());
         setUpd_time(u.getUpd_time());
 
     }
     // <editor-fold defaultstate="collapsed" desc="私有成员">
-
-
-
-
 
     /**
      *用户ID
@@ -68,6 +66,10 @@ public class SignMngDO implements java.io.Serializable {
      * 禁用：0；启用：1；
      */
     private Integer sign_state;
+
+    private Integer apply_scene;
+
+    private String apply_causes;
 
     /**
      *cre_time
@@ -119,6 +121,22 @@ public class SignMngDO implements java.io.Serializable {
 
     public void setSign_state(Integer sign_state) {
         this.sign_state = sign_state;
+    }
+
+    public Integer getApply_scene() {
+        return apply_scene;
+    }
+
+    public void setApply_scene(Integer apply_scene) {
+        this.apply_scene = apply_scene;
+    }
+
+    public String getApply_causes() {
+        return apply_causes;
+    }
+
+    public void setApply_causes(String apply_causes) {
+        this.apply_causes = apply_causes;
     }
 
     public Date getCre_time() {

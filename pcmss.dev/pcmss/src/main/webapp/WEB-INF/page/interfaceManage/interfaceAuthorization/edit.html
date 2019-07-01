@@ -120,7 +120,7 @@
         /*加载数据*/
         var mode = $.request.queryString["mode"];
         var sysid=$.request.queryString["inter_id"];
-        $("#pagename").text(sysid?'编辑接口申请管理':'新增接口申请管理');
+        $("#pagename").text(sysid?'编辑接口授权管理':'新增接口授权管理');
         if(sysid){
             $.post(quick.serverUrl + '/getObj?inter_id=' + sysid + "&i=" + Math.random(), function(data){
                 setForm(data);
