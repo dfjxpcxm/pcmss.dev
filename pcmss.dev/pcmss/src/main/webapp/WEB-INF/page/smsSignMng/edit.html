@@ -30,17 +30,6 @@
                         </div>
 
 
-                        <div class="col-sm-6 form_ipt_botm">
-                            <div class="form-group">
-                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>签名类型</label>
-                                <div class="col-xs-9">
-                                    <select name="sign_type" class="form-control required select_change"
-                                            id="sign_type">
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="col-sm-6 form_ipt_botm" style="width:100%;">
                             <div class="form-group">
                                 <label class="col-xs-3 lable_top" style="width:115px;"><span></span>申请说明</label>
@@ -52,9 +41,10 @@
                             <div class="form-group" >
                                 <label class="col-xs-3 lable_top"><span class="span_require">*</span>签名状态</label>
                                 <div class="col-xs-9">
-                                    <select name="sign_state" class="form-control required" id="sign_state">
-                                        <option value="1">启用</option>
-                                        <option value="0">禁用</option>
+                                    <select name="sign_state" class="form-control required" readonly="readonly" id="sign_state">
+                                        <option value="1">待审核</option>
+                                        <option value="0">通过</option>
+                                        <option value="2">已拒绝</option>
                                     </select>
                                 </div>
                             </div>
