@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <#include "/WEB-INF/include/resedit.html" />
+    <#include "/WEB-INF/include/reslist.html" />
     <link href="${G.host}/res/js/ztree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
     <!--<link href="http://localhost:8080/console/res/layer/skin/default/layer.css" rel="stylesheet">-->
     <script src="${G.host}/res/js/ztree/jquery.ztree.all.min.js" ></script>
@@ -56,8 +56,8 @@
         var ztreeSetting = {
             check: {
                 enable: true,
-                chkStyle: "radio",  //单选框
-                radioType: "all"   //对所有节点设置单选
+                //chkStyle: "radio",  //单选框
+                //radioType: "all"   //对所有节点设置单选
             },
             callback: {
                 onCheck: zTreeOnCheck
@@ -92,21 +92,46 @@
                 zTreeObj = $.fn.zTree.init($("#treeDemo"), ztreeSetting, ztreeNodes);
                 var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
                 treeObj.expandAll(true);
-                //checkMenuPri();
+
+                checkMenuPri();
+                zTreeOnCheck();
             }
         });
     }
 
-    var _chosenId = null;
-    var _chosenName = null;
+    var _chosenId = new Array();
+    var _chosenName = new Array();
+
     function zTreeOnCheck(event, treeId, treeNode) {
-        _chosenLevel = treeNode.level;
-        _chosenId = treeNode.id;
-        _chosenName = treeNode.name;
+       // _chosenLevel = treeNode.level;
+        //_chosenId = treeNode.id;
+       // _chosenName = treeNode.name;
+        var treeObj=$.fn.zTree.getZTreeObj("treeDemo"),
+            nodes=treeObj.getCheckedNodes(true);
+            _chosenId=[];
+            _chosenName=[];
+        var index = 0;
+        debugger;
+        for(var i=0;i<nodes.length;i++){
+            if (nodes[i].isParent != true){
+                _chosenId[index]=nodes[i].id;
+                _chosenName[index]=nodes[i].name;
+                index++;
+            }
+        }
     };
     function checkMenuPri(){
-        var role_id = $.request.queryString["role_id"];
-        $.ajax({
+         var str = $.request.queryString["str_res_id"].split(",");
+        for (var i = 0; i <str.length; i++) {
+                var menu_id_checked = str[i];
+                console.log(menu_id_checked);
+                var hasCheckNode = zTreeObj.getNodesByParam("id",menu_id_checked);
+                if(hasCheckNode!=null&&hasCheckNode.length>0)
+                    zTreeObj.checkNode(hasCheckNode[0], true, true);
+        }
+
+
+        /*$.ajax({
             type: "get",
             url: "${G.host}/roleDO/listMenuPri",
             async:false,
@@ -124,7 +149,7 @@
                 }
 
             }
-        });
+        });*/
     }
 </script>
 </html>

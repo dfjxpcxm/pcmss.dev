@@ -83,7 +83,15 @@ public interface ISysConfMngService extends ISysBaseService<SysConfMngDO> {
 
 	public DataStore manyPeopleCertification();
 
-	DataStore saveRes(SysConfMngDO entity);
+	DataStore saveRes(SysConfMngDO entity,String value);
+
+	public boolean getSysEntrustedit(String resid);
+
+	public boolean getSysResedit(String resid);
+
+	public boolean getSysResTimeoutedit(String resid);
+
+	public boolean getSysResUserTimeoutedit(String resid);
 
 	/*
       系统提供短信发送量的预警功能，用户可以设置相应短信的发送量限额，

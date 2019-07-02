@@ -56,4 +56,10 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     public List<Map<String, Object>> getMouldTypeData() {
         return dao.getMouldTypeData();
     }
+
+    @Override
+    public List<Map<String, Object>> getComMouldData()
+        {
+            return dao.getComMouldData();
+    }
 }

@@ -30,6 +30,8 @@ import java.util.Map;
 public interface IMouldMngService extends ISysBaseService<MouldMngDO> {
 
     public List<Map<String, Object>> getMouldTypeData();
+    public List<Map<String, Object>> getComMouldData();
+
 
 
 

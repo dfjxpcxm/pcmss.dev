@@ -13,13 +13,13 @@
                          <form id="formSearch" class="form-inline">
                              <div class="form-group" style="padding: 0px;width:180px;">
                                  <input id="menu_cn_name" name="menu_cn_name" class="input-sm form-control" type="text"
-                                        placeholder="输入配置中文名"/>
+                                        placeholder="输入菜单中文名"/>
                              </div>
                              <span class="input-group-btn" style="display:inline-block;"><button class="btn btn-primary "
                                                                                                  type="button"
                                                                                                  onclick="query();"> 查询</button> </span>
                              <div class="form-group" style="width:100px;float:right;">
-                                 <button type="button" class="btn btn-primary" onclick="location.href='entrustedit';"> 新增配置
+                                 <button type="button" class="btn btn-primary" onclick="location.href='entrustedit';"> 新增委托
                                  </button>
                              </div>
                              <div class="form-group" style="width:100px;float:right;">
@@ -74,9 +74,6 @@
                     }
                 },
                 {field: 'menu_cn_name', title: '菜单名称', width: 100, align: 'center'},
-                {field: 'user_id', title: '用户ID', width: 100, align: 'center'},
-                {field: 'timeout', title: '超时时间', width: 100, align: 'center'},
-                {field: 'cnt', title: '次数', width: 100, align: 'center'},
                 {
                     field: 'lentrust_set_prop',
                     title: '开关状态',

@@ -44,9 +44,11 @@
 	<!-- 新增sys_sign_info -->
 	<insert id="insert" parameterType="com.quick.portal.sms.mouldmng.MouldMngDO">
 		insert into sys_mould_info (
+    		  mould_ty,
     		  mould_name,
     		  mould_content,
     		  mould_type,
+    		  apply_causes,
     		  mould_author,
     		  mould_state,
     		  cre_time,
@@ -66,8 +68,10 @@
 	<update id="update" parameterType="com.quick.portal.sms.mouldmng.MouldMngDO">
 		update sys_mould_info
 		   set mould_name=#{mould_name}
+			  ,mould_ty=#{mould_ty}
 			  ,mould_content=#{mould_content}
 			  ,mould_type=#{mould_type}
+			  ,apply_causes=#{apply_causes}
 			  ,mould_author=#{mould_author}
 			  ,mould_state=#{mould_state}
 			  ,cre_time= now()
@@ -104,6 +108,10 @@
 	<select id="getMouldTypeData"  resultType="map">
 		select mould_type_id  mould_type,mould_type_name mould_name from mould_type
 		order by mould_type_id
+	</select>
+
+	<select id="getComMouldData"  resultType="map">
+		select * from sms_common_mould
 	</select>
 
 </mapper>

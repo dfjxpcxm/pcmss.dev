@@ -66,6 +66,7 @@ public class SysConfMngDO implements java.io.Serializable {
      */
     private Date  cre_time;
 
+    private String str_res_id;
 
     private Integer  res_id;//资源ID
     private Integer  timeout;//超时定义
@@ -86,6 +87,16 @@ public class SysConfMngDO implements java.io.Serializable {
     private Integer sys_res_id;
 
     private String sys_res_name;
+
+    private String menu_cn_name;
+
+    public String getMenu_cn_name() {
+        return menu_cn_name;
+    }
+
+    public void setMenu_cn_name(String menu_cn_name) {
+        this.menu_cn_name = menu_cn_name;
+    }
 
     public Integer getSys_id() {
         return sys_id;
@@ -214,5 +225,13 @@ public class SysConfMngDO implements java.io.Serializable {
 
     public void setSys_res_name(String sys_res_name) {
         this.sys_res_name = sys_res_name;
+    }
+
+    public String getStr_res_id() {
+        return str_res_id;
+    }
+
+    public void setStr_res_id(String str_res_id) {
+        this.str_res_id = str_res_id;
     }
 }

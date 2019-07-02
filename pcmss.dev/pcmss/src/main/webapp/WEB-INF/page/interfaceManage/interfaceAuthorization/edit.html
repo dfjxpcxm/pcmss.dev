@@ -36,7 +36,7 @@
                         </div>
                         <div class="col-sm-6 form_ipt_botm">
                             <div class="form-group">
-                                <label class="col-xs-3 lable_top"><span></span>接口描述</label>
+                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>接口描述</label>
                                 <div class="col-xs-9">
                                     <input type="text" id="inter_desc" name="inter_desc" class="form-control required"/>
                                 </div>
@@ -120,7 +120,7 @@
         /*加载数据*/
         var mode = $.request.queryString["mode"];
         var sysid=$.request.queryString["inter_id"];
-        $("#pagename").text(sysid?'编辑接口申请管理':'新增接口申请管理');
+        $("#pagename").text(sysid?'编辑接口授权管理':'新增接口授权管理');
         if(sysid){
             $.post(quick.serverUrl + '/getObj?inter_id=' + sysid + "&i=" + Math.random(), function(data){
                 setForm(data);

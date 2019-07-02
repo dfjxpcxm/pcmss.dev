@@ -48,6 +48,9 @@ public class MouldMngDO implements java.io.Serializable {
      *模板编号
      */
     private Integer  mould_id;
+
+
+    private String  mould_ty;
     /**
      *模板名称
      */
@@ -61,6 +64,8 @@ public class MouldMngDO implements java.io.Serializable {
     * 模板类别：验证码通知/短信通知/系统通知/推广短信/群发助手
     */
     private String  mould_type;
+
+    private String  apply_causes;
 
     /*
      *模板作者
@@ -82,6 +87,10 @@ public class MouldMngDO implements java.io.Serializable {
      *upd_time
      */
     private Date  upd_time;
+
+
+    private Integer common_mould_id;
+
 
 
     public Integer getMould_id() {
@@ -146,5 +155,29 @@ public class MouldMngDO implements java.io.Serializable {
 
     public void setUpd_time(Date upd_time) {
         this.upd_time = upd_time;
+    }
+
+    public String getMould_ty() {
+        return mould_ty;
+    }
+
+    public void setMould_ty(String mould_ty) {
+        this.mould_ty = mould_ty;
+    }
+
+    public String getApply_causes() {
+        return apply_causes;
+    }
+
+    public void setApply_causes(String apply_causes) {
+        this.apply_causes = apply_causes;
+    }
+
+    public Integer getCommon_mould_id() {
+        return common_mould_id;
+    }
+
+    public void setCommon_mould_id(Integer common_mould_id) {
+        this.common_mould_id = common_mould_id;
     }
 }

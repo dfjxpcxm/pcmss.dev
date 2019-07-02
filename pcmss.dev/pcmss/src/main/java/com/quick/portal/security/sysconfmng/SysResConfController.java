@@ -388,8 +388,8 @@ public class SysResConfController extends SysBaseController<SysConfMngDO> {
     //保存策略资源
     @RequestMapping(value = "/saveRes")
     @ResponseBody
-    public DataStore saveRes(SysConfMngDO entity) {
-        return sysConfMngService.saveRes(entity);
+    public DataStore saveRes(SysConfMngDO entity,String value) {
+        return sysConfMngService.saveRes(entity,value);
     }
     //删除策略资源
     @RequestMapping(value = "/deleteRes")
