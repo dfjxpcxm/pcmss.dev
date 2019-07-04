@@ -21,12 +21,15 @@ package com.quick.portal.sms.mouldmng;
 
 import com.quick.core.base.ISysBaseService;
 import com.quick.core.base.SysBaseController;
+import com.quick.core.base.model.DataStore;
 import com.quick.core.base.model.JsonDataGrid;
 import com.quick.core.base.model.PageBounds;
 import com.quick.core.util.common.CommonUtils;
 import com.quick.core.util.common.QCookie;
 import com.quick.core.util.common.QRequest;
+import com.quick.portal.sms.smsmng.SmsMngDO;
 import com.quick.portal.userAccessLog.UserAccessLogServiceUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -37,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,6 +87,14 @@ public class MouldMngController extends SysBaseController<MouldMngDO> {
     @ResponseBody
     public Object getMouldTypeData() throws Exception {
         List<Map<String, Object>> list = mouldMngService.getMouldTypeData();
+        return new JsonDataGrid(list.size(), list).toObj();
+    }
+    @RequestMapping(value = "/getMouldTypeContent")
+    @ResponseBody
+    public Object getMouldTypeContent(String mould_type) throws Exception {
+        Map<String, Object> queryMap = new HashMap<String,Object>();
+        queryMap.put("mould_type",mould_type);
+        List<Map<String, Object>> list = mouldMngService.select(queryMap);
         return new JsonDataGrid(list.size(), list).toObj();
     }
     @RequestMapping(value = "/getComMouldData")
@@ -190,4 +202,10 @@ public class MouldMngController extends SysBaseController<MouldMngDO> {
     }
 
 
+    @RequestMapping(value = "/save")
+    @ResponseBody
+    public DataStore saveAction(MouldMngDO model) {
+        return save(model);
+
+    }
 }

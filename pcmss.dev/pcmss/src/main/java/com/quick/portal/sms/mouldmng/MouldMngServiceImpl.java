@@ -20,12 +20,18 @@
 package com.quick.portal.sms.mouldmng;
 
 import com.quick.core.base.SysBaseService;
+import com.quick.core.base.model.DataStore;
+import com.quick.core.util.common.DateTime;
+import com.quick.core.util.common.ReflectUtil;
+import com.quick.portal.sms.smsmng.SmsMngDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -61,5 +67,45 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     public List<Map<String, Object>> getComMouldData()
         {
             return dao.getComMouldData();
+    }
+
+    private Class<SmsMngDO> entityClass;
+    @Transactional
+    @Override
+    public DataStore save(MouldMngDO entity) {
+        //如果编号为空,新增实体对象,否则更新实体对象
+        String key = getPrimaryKey();
+        Integer keyVal = entity.getMould_id();
+        String str = "";
+        String reg="\\$\\{+[a-zA-Z]+}";
+        Pattern pattern = Pattern.compile(reg);
+        Matcher matcher = pattern.matcher(entity.getMould_content());
+        while(matcher.find()){
+            str += matcher.group()+",";
+        }
+        String str_sub=str.substring(0,str.length()-1);
+        entity.setMould_fields(str_sub);
+        int c = 0;
+        if (keyVal == null) {
+            //如果有新增时间，维护对应字段
+            ReflectUtil.trySetValue(entity, "cre_time", DateTime.Now().getTime(), entityClass);
+            //如果有修改时间，维护对应字段
+            ReflectUtil.trySetValue(entity, "upd_time", DateTime.Now().getTime(), entityClass);
+            c = dao.insert(entity);
+        } else {
+            //如果有修改时间，维护对应字段
+            ReflectUtil.trySetValue(entity, "upd_time", DateTime.Now().getTime(), entityClass);
+            c = dao.update(entity);
+        }
+
+        if (c == 0) {
+            int error = Integer.valueOf(
+                    ReflectUtil.getValue(entity, "error_no", entityClass).toString());
+            if (error == 0)
+                return ActionMsg.setError("操作失败");
+        }
+
+        ActionMsg.setValue(entity);
+        return ActionMsg.setOk("操作成功");
     }
 }

@@ -28,7 +28,19 @@
 			   toolbar:"#formSearch",
 			   columns: [
 				   {  checkbox: true },
-				   { field: 'mould_ty', title: '模板类型', width: 100  },
+				   { field: 'mould_ty', title: '模板类型', width: 100  ,
+					   formatter: function (value, row, index) {
+						   if (value == 0) {
+							   return "验证码";
+						   } else if (value == 1) {
+							   return "短信通知";
+						   }  else if (value == 2) {
+							   return "推广短信";
+						   } else {
+							   return "-";
+
+						   }
+					   }},
 				   { field: 'mould_name', title: '模板名称', width: 100  },
 				   { field: 'mould_content', title: '模板内容', width: 100  },
 				   { field: 'apply_causes', title: '申请说明', width: 100  },

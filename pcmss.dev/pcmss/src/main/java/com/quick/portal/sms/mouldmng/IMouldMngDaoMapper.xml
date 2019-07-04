@@ -47,6 +47,7 @@
     		  mould_ty,
     		  mould_name,
     		  mould_content,
+    		  mould_fields,
     		  mould_type,
     		  apply_causes,
     		  mould_author,
@@ -56,6 +57,7 @@
 		)values(
 			 #{mould_name},
 			 #{mould_content},
+			 #{mould_fields},
 			 #{mould_type},
 			 #{mould_author},
 			 #{mould_state},
@@ -70,6 +72,7 @@
 		   set mould_name=#{mould_name}
 			  ,mould_ty=#{mould_ty}
 			  ,mould_content=#{mould_content}
+			  ,mould_fields=#{mould_fields}
 			  ,mould_type=#{mould_type}
 			  ,apply_causes=#{apply_causes}
 			  ,mould_author=#{mould_author}
@@ -80,7 +83,7 @@
 	</update>
 
 	<!-- 删除 -->
-	<delete id="delete" parameterType="int">
+	<delete id="delete" parameterType="String">
 		delete from sys_mould_info where mould_id = #{mould_id}
 	</delete>
 
@@ -113,5 +116,13 @@
 	<select id="getComMouldData"  resultType="map">
 		select * from sms_common_mould
 	</select>
-
+	<select id="getMouldTypeContent"  parameterType="map" resultType="map">
+		select a.*,b.* from sys_mould_info a LEFT JOIN mould_type b on a.mould_type = b.mould_type_id
+		<where>
+			<include refid="where" />
+		</where>
+		<if test="_sql_order != null and _sql_order != ''">
+			order by ${_sql_order}
+		</if>
+	</select>
 </mapper>
