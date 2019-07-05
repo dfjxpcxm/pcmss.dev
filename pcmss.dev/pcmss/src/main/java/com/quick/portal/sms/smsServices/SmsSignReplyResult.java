@@ -16,10 +16,10 @@ public class SmsSignReplyResult {
 }
 	 */
 	public class data{
-		int id;
-		int international;
-		int status;
-		String text;
+		public int id;
+		public int international;
+		public int status;
+		public String text;
 
 		public String toString(){
 			return String.format(
@@ -35,13 +35,13 @@ public class SmsSignReplyResult {
 		}
 	}
 	
-	int result;
-	String errmsg;
-	ArrayList<data> datas;
+	public  int result;
+	public String errmsg;
+	public ArrayList<data> datas;
 	
 	public String toString() {
 		if (0 == result) {
-			return String.format("SmsStatusReplyResult:\n"
+			return String.format("SmsSignReplyResult:\n"
 							+ "result:%d\n"
 							+ "errmsg:%s\n"
 							+ "datas:%s\n",
@@ -50,7 +50,7 @@ public class SmsSignReplyResult {
 					datas.toString()
 			);
 		} else {
-			return String.format("SmsStatusReplyResult:\n"
+			return String.format("SmsSignReplyResult:\n"
 							+ "result:%d\n"
 							+ "errmsg:%s\n", result, errmsg);
 		}

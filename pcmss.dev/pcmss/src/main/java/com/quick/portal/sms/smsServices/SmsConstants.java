@@ -41,6 +41,14 @@ public class SmsConstants {
     //国内手机区号
     public static final String NATION_CODE = "86";
 
+    //0表示国内短信
+    public static final int INTERNAL_CODE = 0;
+    //1表示海外短信
+    public static final int EXTERNAL_CODE = 1;
+
+
+
+
     //appid
     public static final int SMS_APPID = 1400224160;
     //appkey

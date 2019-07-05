@@ -17,11 +17,11 @@ public class SmsTempleReplyResult {
 }
 	 */
 	public class data{
-		int id;
-		int international;
-		int status;
-		String text;
-		int type;
+		public int id;
+		public int international;
+		public int status;
+		public String text;
+		public int type;
 
 		public String toString(){
 			return String.format(
@@ -38,10 +38,10 @@ public class SmsTempleReplyResult {
 			  );
 		}
 	}
-	
-	int result;
-	String errmsg;
-	ArrayList<data> datas;
+
+	public int result;
+	public String errmsg;
+	public ArrayList<data> datas;
 	
 	public String toString() {
 		if (0 == result) {

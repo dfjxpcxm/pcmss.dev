@@ -28,7 +28,7 @@
 			   toolbar:"#formSearch",
 			   columns: [
 				   {  checkbox: true },
-				   { field: 'mould_ty', title: '模板类型', width: 100  ,
+				   { field: 'mould_type', title: '模板类型', width: 100  ,
 					   formatter: function (value, row, index) {
 						   if (value == 0) {
 							   return "验证码";
@@ -44,14 +44,16 @@
 				   { field: 'mould_name', title: '模板名称', width: 100  },
 				   { field: 'mould_content', title: '模板内容', width: 100  },
 				   { field: 'apply_causes', title: '申请说明', width: 100  },
-				   { field: 'mould_type_name', title: '模板类别', width: 100  },
+				  /* { field: 'mould_type_name', title: '模板类别', width: 100  },*/
 				   { field: 'mould_state', title: '状态', width: 100 ,
 					   formatter: function (value, row, index) {
-						   if (value == 1) {
-							   return "启用";
-						   } else if (value == 0) {
-							   return "禁用";
-						   } else {
+						   if (value == 0) {
+							   return "通过";
+						   } else if (value == 1) {
+							   return "待审核";
+						   } else if (value == 2) {
+							   return "拒绝";
+						   }else {
 							   return "-";
 
 						   }

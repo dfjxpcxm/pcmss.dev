@@ -46,7 +46,6 @@
     		  sign_author,
     		  sign_state,
     		  apply_causes,
-    		  apply_scene,
     		  cre_time,
     		  upd_time
 		)values(
@@ -55,7 +54,6 @@
 			 #{sign_author},
 			 #{sign_state},
 			 #{apply_causes},
-			 #{apply_scene},
 			 now(),
 			 now()
 			)
@@ -64,12 +62,30 @@
 	<!-- 修改app_class -->
 	<update id="update" parameterType="com.quick.portal.sms.signmng.SignMngDO">
 		update sys_sign_info
-		   set sign_name=#{sign_name}
-			  ,sign_type=#{sign_type}
-			  ,sign_author=#{sign_author}
-			  ,sign_state=#{sign_state}
-			  ,apply_causes=#{apply_causes}
-			  ,apply_scene=#{apply_scene}
+		set
+		<if test="sign_name != null and sign_name != ''"> <![CDATA[
+           sign_name=#{sign_name}
+        ]]> </if>
+
+		<if test="sign_num != null"><![CDATA[
+	         ,sign_num=#{sign_num}
+	    ]]></if>
+
+		<if test="sign_state != null"><![CDATA[
+	           ,sign_state=#{sign_state}
+	    ]]></if>
+		<if test="apply_causes != null and apply_causes != ''"> <![CDATA[
+          ,apply_causes=#{apply_causes}
+        ]]> </if>
+		<if test="sign_type != null"><![CDATA[
+           ,sign_type=#{sign_type}
+        ]]> </if>
+		<if test="remarks != null and remarks != ''"> <![CDATA[
+            ,remarks=#{remarks}
+        ]]> </if>
+		<if test="sign_author != null and sign_author != ''"> <![CDATA[
+            ,sign_author=#{sign_author}
+        ]]> </if>
 			  ,cre_time=now()
 			  ,upd_time=now()
 		 where sign_id = #{sign_id}
@@ -82,8 +98,7 @@
 
 	<!--查询-->
 	<select id="select" parameterType="map" resultType="map">
-		select o.*,e.sign_type_name  sign_type_name from sys_sign_info o left join sign_type e
-		on o.sign_type =e.sign_type_id
+		select o.* from sys_sign_info o
 		<where>
 			<include refid="where" />
 		</where>
