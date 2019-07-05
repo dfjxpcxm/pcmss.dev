@@ -2,15 +2,25 @@ package com.quick.portal.search.infomng;
 
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.quick.core.util.common.QCommon;
+import com.quick.portal.security.authority.metric.PropertiesUtil;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.fileupload.ProgressListener;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -250,6 +260,43 @@ public class FileUploadUtils {
         }
         return extName;
     }
+    public static String getImgUploadPath(HttpServletRequest request) {
+        //将request变成多部分request
+        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+        //创建文件夹
+        //       String baseDir = PropertiesUtil.getPropery("file.dir");
+        String baseDir  = TARGE_UPLOAD_PATH;//request.getSession().getServletContext().getRealPath("/WEB-INF/upload/phoneNumber");
+        File dirPath = new File(baseDir + SRC_UPLOAD_PATH);
 
+        if (!dirPath.exists()) {
+            dirPath.mkdirs();
+        }
+        //获取multiRequest 中所有的文件名
+        Iterator iter = multiRequest.getFileNames();
+        try {
+            while (iter.hasNext()) {
+                //一次遍历所有文件
+                MultipartFile file = multiRequest.getFile(iter.next().toString());
+                if (file != null) {
+                    //上传
+                    // 获取文件名后缀
+                    String oldname = file.getOriginalFilename();
+                    String suffix = oldname.indexOf(".") != -1 ? oldname.substring(oldname.lastIndexOf(".")) : "";
+                    String fname = QCommon.getUUID() + suffix;
+///                    String fname = oldname;
+                    File uploadFile = new File(dirPath + File.separator + fname);
+                    FileCopyUtils.copy(file.getBytes(), uploadFile);
+                    String url = TARGE_UPLOAD_PATH + fname;
+                    return url;
+                }
+            }
+        } catch (Exception e) {
+            System.out.print("[getImgUploadPath]无法保存上传文件:" + e.getMessage());
+            e.printStackTrace();
+        }
+        return "";
+    }
+    private final static String TARGE_UPLOAD_PATH =  PropertiesUtil.getPropery("potal.TARGE_UPLOAD_PATH");
 
+    private final static String SRC_UPLOAD_PATH = "/phoneNumber/";
 }

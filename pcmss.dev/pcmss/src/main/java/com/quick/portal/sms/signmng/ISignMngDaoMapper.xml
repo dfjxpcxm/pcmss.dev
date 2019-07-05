@@ -76,7 +76,7 @@
 	</update>
 
 	<!-- 删除 -->
-	<delete id="delete" parameterType="int">
+	<delete id="delete" parameterType="String">
 		delete from sys_sign_info where sign_id = #{sign_id}
 	</delete>
 
