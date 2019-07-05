@@ -50,7 +50,7 @@ public class MouldMngDO implements java.io.Serializable {
     private Integer  mould_id;
 
 
-    private String  mould_ty;
+    private Integer  mould_num;
     /**
      *模板名称
      */
@@ -64,9 +64,11 @@ public class MouldMngDO implements java.io.Serializable {
     /*
     * 模板类别：验证码通知/短信通知/系统通知/推广短信/群发助手
     */
-    private String  mould_type;
+    private Integer  mould_type;
 
     private String  apply_causes;
+
+    private String remarks;
 
     /*
      *模板作者
@@ -118,13 +120,6 @@ public class MouldMngDO implements java.io.Serializable {
         this.mould_content = mould_content;
     }
 
-    public String getMould_type() {
-        return mould_type;
-    }
-
-    public void setMould_type(String mould_type) {
-        this.mould_type = mould_type;
-    }
 
     public Integer getMould_author() {
         return mould_author;
@@ -158,13 +153,7 @@ public class MouldMngDO implements java.io.Serializable {
         this.upd_time = upd_time;
     }
 
-    public String getMould_ty() {
-        return mould_ty;
-    }
 
-    public void setMould_ty(String mould_ty) {
-        this.mould_ty = mould_ty;
-    }
 
     public String getApply_causes() {
         return apply_causes;
@@ -188,5 +177,29 @@ public class MouldMngDO implements java.io.Serializable {
 
     public void setMould_fields(String mould_fields) {
         this.mould_fields = mould_fields;
+    }
+
+    public Integer getMould_num() {
+        return mould_num;
+    }
+
+    public void setMould_num(Integer mould_num) {
+        this.mould_num = mould_num;
+    }
+
+    public Integer getMould_type() {
+        return mould_type;
+    }
+
+    public void setMould_type(Integer mould_type) {
+        this.mould_type = mould_type;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

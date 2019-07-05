@@ -23,14 +23,14 @@ public class SmsMultiSender {
 	/**
 	 * 普通群发，明确指定内容，如果有多个签名，请在内容中以【】的方式添加到信息内容中，否则系统将使用默认签名
 	 * 【注意】海外短信无群发功能
-	 * @param type 短信类型，0 为普通短信，1 营销短信
-	 * @param nationCode 国家码，如 86 为中国
-	 * @param phoneNumbers 不带国家码的手机号列表
-	 * @param msg 信息内容，必须与申请的模板格式一致，否则将返回错误
-	 * @param extend 扩展码，可填空
-	 * @param ext 服务端原样返回的参数，可填空
+	 * @parm type 短信类型，0 为普通短信，1 营销短信
+	 * @parm nationCode 国家码，如 86 为中国
+	 * @parm phoneNumbers 不带国家码的手机号列表
+	 * @parm msg 信息内容，必须与申请的模板格式一致，否则将返回错误
+	 * @parm extend 扩展码，可填空
+	 * @parm ext 服务端原样返回的参数，可填空
 	 * @return {@link}SmsMultiSenderResult
-	 * @throws Excetion
+	 * @@throws Excetion
 	 */
 	public SmsMultiSenderResult send(
 			int type,
@@ -143,13 +143,13 @@ public class SmsMultiSender {
 	/**
 	 * 指定模板群发
 	 * 【注意】海外短信无群发功能
-	 * @param nationCode 国家码，如 86 为中国
-	 * @param phoneNumbers 不带国家码的手机号列表
-	 * @param templId 模板 id
-	 * @param params 模板参数列表
-	 * @param sign 签名，如果填空，系统会使用默认签名
-	 * @param extend 扩展码，可以填空
-	 * @param ext 服务端原样返回的参数，可以填空
+	 * @parm nationCode 国家码，如 86 为中国
+	 * @parm phoneNumbers 不带国家码的手机号列表
+	 * @parm templId 模板 id
+	 * @parm params 模板参数列表
+	 * @parm sign 签名，如果填空，系统会使用默认签名
+	 * @parm extend 扩展码，可以填空
+	 * @parm ext 服务端原样返回的参数，可以填空
 	 * @return {@link}SmsMultiSenderResult
 	 * @throws Exception
 	 */

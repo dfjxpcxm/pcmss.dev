@@ -44,10 +44,8 @@
 	<!-- 新增sys_sign_info -->
 	<insert id="insert" parameterType="com.quick.portal.sms.mouldmng.MouldMngDO">
 		insert into sys_mould_info (
-    		  mould_ty,
     		  mould_name,
     		  mould_content,
-    		  mould_fields,
     		  mould_type,
     		  apply_causes,
     		  mould_author,
@@ -57,8 +55,8 @@
 		)values(
 			 #{mould_name},
 			 #{mould_content},
-			 #{mould_fields},
 			 #{mould_type},
+			 #{apply_causes},
 			 #{mould_author},
 			 #{mould_state},
 			 now(),
@@ -70,13 +68,22 @@
 	<update id="update" parameterType="com.quick.portal.sms.mouldmng.MouldMngDO">
 		update sys_mould_info
 		   set mould_name=#{mould_name}
-			  ,mould_ty=#{mould_ty}
-			  ,mould_content=#{mould_content}
-			  ,mould_fields=#{mould_fields}
+
+		<if test="mould_content != null and mould_content != '' and !'null'.equals(mould_content)"><![CDATA[
+	       ,mould_content=#{mould_content}
+	    ]]></if>
+		<if test="mould_author != null"><![CDATA[
 			  ,mould_type=#{mould_type}
-			  ,apply_causes=#{apply_causes}
-			  ,mould_author=#{mould_author}
+		]]></if>
+		<if test="apply_causes != null and apply_causes != '' and !'null'.equals(apply_causes)"><![CDATA[
+	       ,apply_causes=#{apply_causes}
+	    ]]></if>
+		<if test="mould_author != null"><![CDATA[
 			  ,mould_state=#{mould_state}
+		]]></if>
+		<if test="mould_num != null"><![CDATA[
+			  ,mould_num=#{mould_num}
+		]]></if>
 			  ,cre_time= now()
 			  ,upd_time= now()
 		 where mould_id = #{mould_id}

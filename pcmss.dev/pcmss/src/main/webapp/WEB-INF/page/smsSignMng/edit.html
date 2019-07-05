@@ -15,11 +15,11 @@
 				<div class="ibox-content ibox-content-ad" style="margin-top: 25px;">
 					<form id="form" name="form" method="post" action="${G.serverUrl}/save" class="wizard-big addForm" enctype="multipart/form-data" accept="image/jpg, image/png">
 				    <div class="row">
-                        <div class="col-sm-6 form_ipt_botm">
+                        <div class="col-sm-12 form_ipt_botm"style="width:100%;">
                             <div class="form-group">
-                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>签名名称</label>
-                                <div class="col-xs-9"><input type="text" id="sign_name" name="sign_name" class="form-control required" /></div>
-                                <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;margin-left: 60px;">
+                                <label class="col-xs-3  lable_top" style="width:115px;"><span class="span_require">*</span>签名名称</label>
+                                <div class="col-xs-9"><input type="text" placeholder="长度限2－12个字符，建议为用户真实应用名/网站名/公司名"id="sign_name" name="sign_name" class="form-control required" /></div>
+                                <div class="col-xs-12" style="margin-bottom: 5px;position: relative;font-size: 10px;margin-left: 60px;">
                                     <ul>
                                     <li>· 若签名／模版内容侵犯到第三方权益必须获得第三方真实授权</li>
                                     <li>· 无须添加【】、()、[]符号，签名发送会自带【】符号，避免重复</li>
@@ -28,53 +28,59 @@
                                 </div>
                             </div>
                         </div>
+                       <!-- <div class="col-sm-6 form_ipt_botm">
+                            <div class="form-group"></div>
+                        </div>-->
 
-
+                        <div class="col-sm-12 form_ipt_botm" style="width:100%;">
+                            <div class="form-group">
+                                <label class="col-xs-3  lable_top" style="width:115px;""><span class="span_require">*</span>适用场景</label>
+                                <div class="col-xs-9 radio_ipt"><label class="radio-inline">
+                                    <input type="radio" name="sign_type" id="sign_type1" value="1" checked="checked" />
+                                    <label for="sign_type1"></label><span>验证码</span></label>&nbsp;<label class="radio-inline">
+                                    <input type="radio" name="sign_type" id="sign_type0" value="0" />
+                                    <label for="sign_type0"></label><span>通用</span></label>
+                                </div>
+                                <div class="col-xs-12" style="font-size: 10px;margin-left: 60px;">
+                                    <ul>
+                                        <li><span>·</span>  不能使用个人姓名作为短信签名</li>
+                                        <li>· 个人用户可申请1个验证码签名，通用场景签名一天支持申请1个</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                       <!-- <div class="col-sm-6 form_ipt_botm">
+                        </div>
+-->
                         <div class="col-sm-6 form_ipt_botm" style="width:100%;">
                             <div class="form-group">
                                 <label class="col-xs-3 lable_top" style="width:115px;"><span></span>申请说明</label>
-                                <div class="col-xs-9" style="width:89%;"><textarea style="height:72px;width:100%;resize:none;" class="form-control" id="apply_causes" name="apply_causes"></textarea></div>
+                                <div class="col-xs-9" style="width:89%;"><textarea style="height:72px;width:100%;resize:none;" placeholder="请描述您的业务使用场景" class="form-control" id="apply_causes" name="apply_causes"></textarea></div>
                             </div>
                         </div>
 
-                        <div class="col-sm-6 form_ipt_botm">
+                        <!--<div class="col-sm-6 form_ipt_botm">
                             <div class="form-group" >
                                 <label class="col-xs-3 lable_top"><span class="span_require">*</span>签名状态</label>
                                 <div class="col-xs-9">
                                     <select name="sign_state" class="form-control required" readonly="readonly" id="sign_state">
                                         <option value="1">待审核</option>
                                         <option value="0">通过</option>
-                                        <option value="2">已拒绝</option>
+                                        <option value="2">拒绝</option>
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-6 form_ipt_botm">
-                            <div class="form-group">
-                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>适用场景</label>
-                                <div class="col-xs-9 radio_ipt"><label class="radio-inline">
-                                    <input type="radio" name="apply_scene" id="apply_scene1" value="1" checked="checked" />
-                                    <label for="apply_scene1"></label><span>验证码</span></label>&nbsp;<label class="radio-inline">
-                                    <input type="radio" name="apply_scene" id="apply_scene0" value="0" />
-                                    <label for="apply_scene0"></label><span>通用</span></label>
-                                </div>
-                                <div class="col-xs-9 " style="font-size: 10px;margin-left: 0px;">
-                                    <ul>
-                                    <li>· 不能使用个人姓名作为短信签名</li>
-                                    <li>· 个人用户可申请1个验证码签名，通用场景签名一天支持申请1个</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        </div>-->
+
                         <div class="col-sm-12 ediefield">
 						    <div class="form-group">
-							    <label class="col-xs-3 lable_top"></label>
-							    <div class="col-xs-9">
+							    <!--<label class="col-xs-3 lable_top"></label>-->
+							    <div class="col-xs-6">
                     		        <input type="hidden" id="sign_id" name="sign_id" />
                                     <input type="hidden" id="sign_author" name="sign_author" value="${sign_author}"/>
                                     <input id="submit-form" type="button" style="margin-left: 52px" class="btn btn-primary" value="保存" onclick="return thingOver();">
 							    </div>
-                                <div class="col-xs-3" style="font-size: 10px;">
+                                <div class="col-xs-6" style="font-size: 10px;">
                                     <ul>
                                         <li>· 预计两小时完成审核</li>
                                         <li>· 审核工作时间: 周一至周日9:00-23:00（法定节日顺延）</li>
@@ -102,7 +108,7 @@
     }
 	window.onload = function() {
 		/*自定义错误提示信息的方法*/
-        selectSignType();
+ //       selectSignType();
 		$("#form").validate({
 			errorPlacement: function(error, element) {
                 element.parent().append(error);

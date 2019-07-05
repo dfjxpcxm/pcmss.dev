@@ -23,11 +23,20 @@ import com.quick.core.base.SysBaseService;
 import com.quick.core.base.model.DataStore;
 import com.quick.core.util.common.DateTime;
 import com.quick.core.util.common.ReflectUtil;
+import com.quick.portal.sms.signmng.SignMngDO;
+import com.quick.portal.sms.smsServices.SmsConstants;
+import com.quick.portal.sms.smsServices.SmsRemoveReplyResult;
+import com.quick.portal.sms.smsServices.SmsSignReplyResult;
+import com.quick.portal.sms.smsServices.SmsSignSender;
+import com.quick.portal.sms.smsServices.SmsTempleReplyResult;
+import com.quick.portal.sms.smsServices.SmsTempleSender;
 import com.quick.portal.sms.smsmng.SmsMngDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -41,6 +50,8 @@ import java.util.regex.Pattern;
 @Service("mouldMngService")
 public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements IMouldMngService {
 
+
+    public  SmsTempleSender smsTemple;
     /**
      * 构造函数
      */
@@ -70,42 +81,112 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     }
 
     private Class<SmsMngDO> entityClass;
-    @Transactional
+
+
+   /**
+    *
+    * 调用模板接口
+    */
     @Override
     public DataStore save(MouldMngDO entity) {
         //如果编号为空,新增实体对象,否则更新实体对象
-        String key = getPrimaryKey();
         Integer keyVal = entity.getMould_id();
-        String str = "";
-        String reg="\\$\\{+[a-zA-Z]+}";
-        Pattern pattern = Pattern.compile(reg);
-        Matcher matcher = pattern.matcher(entity.getMould_content());
-        while(matcher.find()){
-            str += matcher.group()+",";
-        }
-        String str_sub=str.substring(0,str.length()-1);
-        entity.setMould_fields(str_sub);
+        smsTemple = new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         int c = 0;
-        if (keyVal == null) {
-            //如果有新增时间，维护对应字段
-            ReflectUtil.trySetValue(entity, "cre_time", DateTime.Now().getTime(), entityClass);
-            //如果有修改时间，维护对应字段
-            ReflectUtil.trySetValue(entity, "upd_time", DateTime.Now().getTime(), entityClass);
+        if (keyVal == null || keyVal == 0) {
+            entity.setMould_state(1);
             c = dao.insert(entity);
+            Map<String, Object> map = new HashMap<>();
+            map.put("mould_name",entity.getMould_name());
+            List<Map<String, Object>> retList = dao.select(map);
+            if(null !=retList && retList.size()>0){
+                Map<String, Object> mp = retList.get(0);
+                keyVal = Integer.valueOf(mp.get("mould_id").toString());
+            }
+            //调用创建模板接口
+            try{
+                SmsTempleReplyResult tplReplyResult = smsTemple.sendTempleInfo("", SmsConstants.INTERNAL_CODE, entity.getMould_content(), entity.getMould_name(),0, entity.getMould_type(),SmsConstants.ADD_TEMPLATE_URL);
+                parseSmsTempleReplyResult(tplReplyResult,keyVal);
+            }catch (Exception e){
+                System.out.println("调用创建模板接口失败！"+e.getLocalizedMessage());
+                return null;
+            }
         } else {
-            //如果有修改时间，维护对应字段
-            ReflectUtil.trySetValue(entity, "upd_time", DateTime.Now().getTime(), entityClass);
             c = dao.update(entity);
+            try{
+                SmsTempleReplyResult tplReplyResult = smsTemple.sendTempleInfo("", SmsConstants.INTERNAL_CODE, entity.getMould_content(), entity.getMould_name(),entity.getMould_num(), entity.getMould_type(),SmsConstants.MOD_TEMPLATE_URL);
+                parseSmsTempleReplyResult(tplReplyResult,keyVal);
+            }catch (Exception e){
+                System.out.println("调用修改模板接口失败！"+e.getLocalizedMessage());
+                return null;
+            }
         }
 
         if (c == 0) {
-            int error = Integer.valueOf(
-                    ReflectUtil.getValue(entity, "error_no", entityClass).toString());
-            if (error == 0)
-                return ActionMsg.setError("操作失败");
+            return ActionMsg.setError("操作失败");
         }
 
         ActionMsg.setValue(entity);
+        return ActionMsg.setOk("操作成功");
+    }
+
+
+    /**
+     *
+     * 解析签名返回内容
+     *{
+     *     "result": 0,
+     *     "errmsg": "",
+     *     "data": {
+     *         "id": 123,
+     *         "international": 0,
+     *         "status": 1,
+     *         "text": "xxxxx",
+     *         "type": 0
+     *     }
+     * }
+     *
+     */
+    public void parseSmsTempleReplyResult (SmsTempleReplyResult tplReplyResult, int sid){
+        int result = tplReplyResult.result;
+        MouldMngDO entity  = new MouldMngDO();
+        if(result == 0){
+            ArrayList<SmsTempleReplyResult.data> datas = tplReplyResult.datas;
+            for(SmsTempleReplyResult.data dt : datas){
+                entity = new MouldMngDO();
+                entity.setMould_num(dt.id);
+                entity.setMould_state(dt.status);
+                entity.setMould_content(dt.text);
+                entity.setMould_type(dt.type);
+                entity.setMould_id(sid);
+                dao.update(entity);
+            }
+        }else{
+            entity.setRemarks(tplReplyResult.errmsg);
+            entity.setMould_id(sid);
+            dao.update(entity);
+        }
+    }
+
+
+
+    /**
+     * 调用删除模板接口
+     * @param sysid
+     * @return
+     */
+    @Override
+    public DataStore delete(String sysid) {
+        dao.delete(sysid);
+        ArrayList<String> tplIds = new ArrayList<>();
+        tplIds.add(sysid);
+        //调用删除签名接口
+        try{
+            SmsRemoveReplyResult tplReplyResult = smsTemple.removeTempleInfo(tplIds, SmsConstants.MOD_TEMPLATE_URL);
+        }catch (Exception e){
+            System.out.println("调用删除模板接口失败！"+e.getLocalizedMessage());
+            return null;
+        }
         return ActionMsg.setOk("操作成功");
     }
 }

@@ -28,22 +28,21 @@
 			   toolbar:"#formSearch",
 			   columns: [
 				   {  checkbox: true },
+				   { field: 'sign_num', title: '签名编号', width: 100  },
 				   { field: 'sign_name', title: '签名名称', width: 100  },
-				   { field: 'sign_type_name', title: '分类类型', width: 100  },
 				   { field: 'sign_state', title: '状态', width: 100 ,
 		   				  formatter: function (value, row, index) {
-							  if (value == 1) {
-								  return "启用";
-							  } else if (value == 0) {
-								  return "禁用";
-							  } else {
-								  return "-";
+							  if (value == 0) {
+								  return "通过";
+							  } else if (value == 1) {
+								  return "待审核";
+							  } else if (value == 2) {
+								  return "拒绝";
 
 							  }
 						  }
 				   },
-				   { field: 'apply_causes', title: '申请理由', width: 100  },
-				   { field: 'apply_scene', title: '适用场景', width: 100 ,
+				   { field: 'sign_type', title: '适用场景', width: 100 ,
 					   formatter: function (value, row, index) {
 						   if (value == 1) {
 							   return "验证码";

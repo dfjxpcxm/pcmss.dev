@@ -48,10 +48,14 @@ public class SignMngDO implements java.io.Serializable {
      *用户ID
      */
     private Integer  sign_id;
+
+    private Integer  sign_num;
     /**
      *签名名称
      */
     private String  sign_name;
+
+    private String remarks;
     /**
      *签名类别：验证码通知/短信通知/系统通知/推广短信/群发助手
      */
@@ -153,5 +157,21 @@ public class SignMngDO implements java.io.Serializable {
 
     public void setUpd_time(Date upd_time) {
         this.upd_time = upd_time;
+    }
+
+    public Integer getSign_num() {
+        return sign_num;
+    }
+
+    public void setSign_num(Integer sign_num) {
+        this.sign_num = sign_num;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

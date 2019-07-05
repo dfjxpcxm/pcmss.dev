@@ -22,7 +22,7 @@ public class SmsSignSender {
 
 	SmsSenderUtil util = new SmsSenderUtil();
 
-	public SmsSignSender(int appid, String appkey) throws Exception {
+	public SmsSignSender(int appid, String appkey) {
 		this.appid = appid;
 		this.appkey = appkey;
 	}
@@ -36,13 +36,13 @@ public class SmsSignSender {
 	 *   POST https://yun.tim.qq.com/v5/tlssmssvr/mod_sign?sdkappid=xxxxx&random=xxxx
 	 *
 	 * 普通单发短信接口，明确指定内容，如果有多个签名，请在内容中以【】的方式添加到信息内容中，否则系统将使用默认签名
-	 * @param pic 签名对应的资质证明图片进行 base64 编码格式转换后的字符串
+	 * @parm pic 签名对应的资质证明图片进行 base64 编码格式转换后的字符串
 	 * base64 编码格式工具: http://base64.xpcha.com/indexie.php ，注意编译后去掉字符串前面的前缀：“data:image/jpeg;base64,”
-	 * @param international 0表示国内短信，1表示海外短信，默认为0
-	 * @param remark 签名备注，比如申请原因，使用场景等
-	 * @param sig App 凭证，"sig" 字段根据公式 sha256（appkey=$appkey&random=$random&time=$time）
-	 * @param text 签名内容，不带【】，例如：【腾讯科技】这个签名，这里填"腾讯科技"
-	 * @param time 请求发起时间，UNIX 时间戳，如果和系统时间相差超过 10 分钟则会返回失败
+	 * @parm international 0表示国内短信，1表示海外短信，默认为0
+	 * @parm remark 签名备注，比如申请原因，使用场景等
+	 * @parm sig App 凭证，"sig" 字段根据公式 sha256（appkey=$appkey&random=$random&time=$time）
+	 * @parm text 签名内容，不带【】，例如：【腾讯科技】这个签名，这里填"腾讯科技"
+	 * @parm time 请求发起时间，UNIX 时间戳，如果和系统时间相差超过 10 分钟则会返回失败
 	 * @return {@link}SmsSignReplyResult
 	 * @throws Exception
 	 */
@@ -141,9 +141,9 @@ public class SmsSignSender {
 	/**
 	 *   删除短信签名
 	 *     POST https://yun.tim.qq.com/v5/tlssmssvr/del_sign?sdkappid=xxxxx&random=xxxx
-	 * @param sig App 凭证，"sig" 字段根据公式 sha256（appkey=$appkey&random=$random&time=$time）
-	 * @param sign_id 签签名 ID，也可以通过值指定一个 "sign_id"：123
-	 * @param time 	请求发起时间，UNIX 时间戳，如果和系统时间相差超过 10 分钟则会返回失败
+	 * @parm sig App 凭证，"sig" 字段根据公式 sha256（appkey=$appkey&random=$random&time=$time）
+	 * @parm sign_id 签签名 ID，也可以通过值指定一个 "sign_id"：123
+	 * @parm time 	请求发起时间，UNIX 时间戳，如果和系统时间相差超过 10 分钟则会返回失败
 	 * @throws Exception
 	 */
 	public SmsRemoveReplyResult removeSignInfo(
@@ -214,9 +214,9 @@ public class SmsSignSender {
 
 	 *  查询申请的短信签名状态
 	 *	  POST https://yun.tim.qq.com/v5/tlssmssvr/get_sign?sdkappid=xxxxx&random=xxxx
-	 * @param sig App 凭证，"sig" 字段根据公式 sha256（appkey=$appkey&random=$random&time=$time）
-	 * @param sign_id 签签名 ID，也可以通过值指定一个 "sign_id"：123
-	 * @param time 	请求发起时间，UNIX 时间戳，如果和系统时间相差超过 10 分钟则会返回失败
+	 * @parm sig App 凭证，"sig" 字段根据公式 sha256（appkey=$appkey&random=$random&time=$time）
+	 * @parm sign_id 签签名 ID，也可以通过值指定一个 "sign_id"：123
+	 * @parm time 	请求发起时间，UNIX 时间戳，如果和系统时间相差超过 10 分钟则会返回失败
 	 * @throws Exception
 	 */
 	public SmsSignPullerReplyResult getSignStatusPullerInfo(
