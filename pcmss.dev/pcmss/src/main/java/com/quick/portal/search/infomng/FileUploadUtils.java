@@ -286,7 +286,7 @@ public class FileUploadUtils {
 ///                    String fname = oldname;
                     File uploadFile = new File(dirPath + File.separator + fname);
                     FileCopyUtils.copy(file.getBytes(), uploadFile);
-                    String url = TARGE_UPLOAD_PATH + fname;
+                    String url = TARGE_UPLOAD_PATH + SRC_UPLOAD_PATH + fname;
                     return url;
                 }
             }
@@ -296,7 +296,7 @@ public class FileUploadUtils {
         }
         return "";
     }
-    private final static String TARGE_UPLOAD_PATH =  PropertiesUtil.getPropery("potal.TARGE_UPLOAD_PATH");
+    private final static String TARGE_UPLOAD_PATH =  "C:/Users/angxia1981/Downloads/puchenfile/";//PropertiesUtil.getPropery("potal.TARGE_UPLOAD_PATH");
 
     private final static String SRC_UPLOAD_PATH = "/phoneNumber/";
 }

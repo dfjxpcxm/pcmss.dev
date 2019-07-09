@@ -21,10 +21,10 @@ package com.quick.portal.sms.smsmng;
 
 import com.quick.core.base.ISysBaseService;
 import com.quick.core.base.SysBaseController;
+import com.quick.core.base.model.DataStore;
 import com.quick.core.base.model.JsonDataGrid;
-import com.quick.core.util.common.CommonUtils;
 import com.quick.core.util.common.QCookie;
-import com.quick.portal.userAccessLog.UserAccessLogServiceUtils;
+import com.quick.portal.search.infomng.FileUploadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -85,7 +85,14 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
         List<Map<String, Object>> list = smsMngService.getMouldNameData();
         return new JsonDataGrid(list.size(), list).toObj();
     }
+    @RequestMapping(value = "/save")
+    @ResponseBody
+    public DataStore saveAction(SmsMngDO model) {
+        String filePath = FileUploadUtils.getImgUploadPath(request);
+        model.setFilePath(filePath);
+        return save(model);
 
+    }
 
 
 

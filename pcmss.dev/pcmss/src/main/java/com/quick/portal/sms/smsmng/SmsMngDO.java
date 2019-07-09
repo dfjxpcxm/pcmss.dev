@@ -3,7 +3,7 @@
  * <h3>描述 : sys_user数据对象</h3>
  * <h3>日期 : 2018-04-13</h3>
  * <h3>版权 : Copyright (C) 北京东方金信科技有限公司</h3>
- * 
+ *
  * <p>
  * @author 你自己的姓名 mazong@seaboxdata.com
  * @version <b>v1.0.0</b>
@@ -25,7 +25,7 @@ import java.util.Date;
  * sys_glabal_parm数据对象
  */
 public class SmsMngDO implements java.io.Serializable {
-	
+
     private static final long serialVersionUID = 1L;
 
     public SmsMngDO(){}
@@ -62,6 +62,9 @@ public class SmsMngDO implements java.io.Serializable {
      */
     private String  sms_content;
 
+    private String  mould_content;
+    private String  mould_fields;
+
     /*
      * 短信接受者：手机段/自定义号
      */
@@ -93,6 +96,11 @@ public class SmsMngDO implements java.io.Serializable {
      */
     private Date  upd_time;
 
+    private Integer mun_id;
+
+    private String phone_num;
+
+    private String filePath;
 
     public Integer getSms_id() {
         return sms_id;
@@ -172,5 +180,45 @@ public class SmsMngDO implements java.io.Serializable {
 
     public void setUpd_time(Date upd_time) {
         this.upd_time = upd_time;
+    }
+
+    public String getMould_content() {
+        return mould_content;
+    }
+
+    public void setMould_content(String mould_content) {
+        this.mould_content = mould_content;
+    }
+
+    public String getMould_fields() {
+        return mould_fields;
+    }
+
+    public void setMould_fields(String mould_fields) {
+        this.mould_fields = mould_fields;
+    }
+
+    public Integer getMun_id() {
+        return mun_id;
+    }
+
+    public void setMun_id(Integer mun_id) {
+        this.mun_id = mun_id;
+    }
+
+    public String getPhone_num() {
+        return phone_num;
+    }
+
+    public void setPhone_num(String phone_num) {
+        this.phone_num = phone_num;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

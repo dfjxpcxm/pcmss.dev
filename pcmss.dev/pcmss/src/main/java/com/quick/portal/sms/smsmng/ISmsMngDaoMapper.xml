@@ -8,6 +8,9 @@
 		<if test="sign_id != null "><![CDATA[
 	       and sign_id = #{sign_id}
 	    ]]></if>
+		<if test="sms_id != null "><![CDATA[
+	       and sms_id = #{sms_id}
+	    ]]></if>
 		<if test="sms_title != null and sms_title != '' and !'null'.equals(sms_title)"><![CDATA[
 	       and sms_title  like CONCAT('%',#{sms_title},'%')
 	    ]]></if>
@@ -70,7 +73,16 @@
 			 now()
 			)
 	</insert>
-
+	<insert id="insertPhoneNUmList" parameterType="java.util.List">
+		replace into sms_phone_number
+		(phone_num)
+		values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(
+			#{item.phone_num,jdbcType=VARCHAR}
+			)
+		</foreach>
+	</insert>
 	<!-- 修改app_class -->
 	<update id="update" parameterType="com.quick.portal.sms.smsmng.SmsMngDO">
 		update sys_sms_info
@@ -86,10 +98,9 @@
 	</update>
 
 	<!-- 删除 -->
-	<delete id="delete" parameterType="int">
+	<delete id="delete" parameterType="String">
 		delete from sys_sms_info where sms_id = #{sms_id}
 	</delete>
-
 	<!--查询-->
 	<select id="select" parameterType="map" resultType="map">
 		select o.*,s.sign_name as sign_name,m.mould_name as  mould_name from sys_sms_info o left join sys_sign_info s
