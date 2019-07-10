@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<#include "/WEB-INF/include/resedit.html" />
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+            <div class="pull-right ibox-toolbars hidefield">
+                <button type="button" class="btn btn-primary" onclick="cancel();">返回</button>
+            </div>
+			<div class="ibox">
+				<div class="ibox-content ibox-content-ad" style="margin-top: 25px;">
+					<form id="form" name="form" method="post" action="${G.serverUrl}/save" class="wizard-big addForm" enctype="multipart/form-data" accept="image/jpg, image/png">
+				    <div class="row">
+                        <div class="col-sm-6 form_ipt_botm">
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>ID</label>
+                                <div class="col-xs-9"><input type="text" id="num_id" placeholder="请输入名称 不超过30个字符" readonly="readonly" name="num_id" class="form-control required" /></div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form_ipt_botm">
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>号码</label>
+                                <div class="col-xs-9"><input type="text" id="phone_num" placeholder="请输入名称 不超过30个字符" name="phone_num" class="form-control required" /></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 form_ipt_botm">
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>短信接受者</label>
+                                <div class="col-xs-9">
+                                    <input type="text" id="sms_rec_obj" name="sms_rec_obj" class="form-control required " />
+                                    <div class="col-xs-9">
+                                        <div class="input-group">
+                                            <input type="file" style="display:none;" id="prefile" accept=".xls,.xlsx" name="prefile"  onchange="previeFile(this);" />
+                                            <input type="text" style="display:none;" id="file_path" name="file_path" class="form-control"/>
+                                            <span class="input-group-btn">
+                                                <a roleDO="button" style="display: none" id="upload_button" class="btn btn-default" type="button" onclick="$('#prefile').click();">
+                                                    <i class="fa fa-upload"></i></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-9" style="width:80%;">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="mould_ty" id="mould_ty0" value="0" checked="checked" />
+                                        <label for="mould_ty0"></label><span>手动输入</span></label>&nbsp;
+                                    <label class="radio-inline">
+                                        <input type="radio" name="mould_ty" id="mould_ty1" value="1" />
+                                        <label for="mould_ty1"></label><span>文件导入</span></label>
+                                    <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;">
+                                        <ul>
+                                            <li>· 请上传xlsx格式，“变量模版”号码文件<button class="btn btn-default" type="button" onclick="chosebox('mould_content', '${G.host}/smsMouldMng/list','common_mould_id');">范例下载</button>，什么是变量模板</li>
+                                            <li>· 请保持导入文件的变量顺序与模版内容的变量顺序一致，请严格遵守范例样式</li>
+                                            <li>· 文件大小不可超过3M，建议单次导入号码50万个以内</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                      <!--  <div class="col-sm-6 form_ipt_botm">
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>模板类别</label>
+                                <div class="col-xs-9">
+                                    <select name="mould_typepe" class="form-control required select_change"
+                                            id="mould_typepe">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>-->
+                        <!--<div class="col-sm-6 form_ipt_botm">
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>状态</label>
+                                <div class="col-xs-9">
+                                    <select name="mould_state" class="form-control required" id="mould_state">
+                                        <option value="1">启用</option>
+                                        <option value="0">禁用</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+-->
+                        <div class="col-sm-12 ediefield">
+						    <div class="form-group">
+							    <div class="col-xs-6">
+                                    <input id="submit-form" type="button" class="btn btn-primary" style="margin-left: 52px" value="保存" onclick="return thingOver();">
+                                </div>
+                            </div>
+					    </div>
+				    </div>
+				</form>
+			</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+</body>
+<script>
+    quick.baseUrl = "${G.host}";
+    function config() {
+        quick.serverUrl = "${G.serverUrl}";
+        quick.objName = "${G.objName}";
+        quick.idField = "${G.idField}";
+        quick.listUrl = quick.serverUrl + "/list";
+    }
+	window.onload = function() {
+		/*自定义错误提示信息的方法*/
+
+
+		$("#form").validate({
+			errorPlacement: function(error, element) {
+                element.parent().append(error);
+			},
+            ignore : ":disabled",
+			rules: {
+			}
+		});
+        /*加载数据*/
+        var mode = $.request.queryString["mode"];
+        var sysid=$.request.queryString["mould_id"];
+        if(sysid){
+            $.post(quick.serverUrl + '/getObj?mould_id=' + sysid + "&i=" + Math.random(), function(data){
+                setForm(data);
+				if(mode == "browse"){
+                    viewRead();
+                }
+            });
+        }
+	}
+    /*完成*/
+    var isdone = true;
+    function thingOver(){
+        if(!isdone) {
+            return false;
+        }
+        isdone = false;
+        if(!$("#form").valid()){
+            return false;
+        }
+        clearPlaceHodler();
+        $('#form').ajaxSubmit(function() {
+            layer.msg('保存成功',{icon:1,time: 1500,skin: 'layer-ext-moon'}, function(){
+                cancel();
+            });
+            isdone = true;
+        });
+    }
+	function cancel(){
+		var url = quick.listUrl + urlDel(location.search, 'mode','mould_id') + '&RFlag=1';
+		window.location.href = url;
+	}
+
+    selectMouldType();
+
+    function selectMouldType() {
+        $.ajax({
+            type: "get",
+            url: quick.baseUrl + "/smsMouldMng/getMouldTypeData",
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                $("#mould_typepe").append("<option selected hidden value=''>选择模板类别</option><option value= ''>选择模板类别</option>");
+                for (var i = 0; i < data.rows.length; i++) {
+                    var item = data.rows[i];
+                    $("#mould_typepe").append("<option  value=" + item.mould_typepe + "> " + item.mould_name + "</option>");
+                }
+            }
+        });
+    }
+    $(':radio').click(function (){
+        var val=$('input:radio[name="mould_ty"]:checked').val();
+        if(val==0){
+            $("#file_path").hide();
+            $("#upload_button").hide();
+            $("#sms_rec_obj").removeAttr("readonly");
+        }
+        if(val==1)
+        {
+            $("#file_path").show();
+            $("#upload_button").show();
+            $("#sms_rec_obj").attr("readonly","readonlyd");
+        }
+    });
+    function previeFile(f){
+        if (f.files && f.files[0]){
+            $("#file_path").val('').attr("placeholder", f.files[0].name);
+        }
+    }
+</script>
+</html>
