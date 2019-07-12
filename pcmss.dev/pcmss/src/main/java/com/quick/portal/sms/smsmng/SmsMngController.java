@@ -24,6 +24,7 @@ import com.quick.core.base.SysBaseController;
 import com.quick.core.base.model.DataStore;
 import com.quick.core.base.model.JsonDataGrid;
 import com.quick.core.util.common.QCookie;
+import com.quick.core.util.common.QRequest;
 import com.quick.portal.search.infomng.FileUploadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +74,11 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
     @RequestMapping
     public String edit(ModelMap model) {
         String userId = QCookie.getValue(request, "sbd.user_id");
+
+        model.addAttribute("tpldir", TMPL_DOWNLOAD_PATH);
+
         model.addAttribute("sms_author", userId);
+
         return view();
     }
 
@@ -89,13 +102,15 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
     @ResponseBody
     public DataStore saveAction(SmsMngDO model) {
         String filePath = FileUploadUtils.getImgUploadPath(request);
-        model.setFilePath(filePath);
-        return save(model);
+
+        model.setFile_path(filePath);
+        return super.save(model);
 
     }
 
 
 
+    private final static String TMPL_DOWNLOAD_PATH = "/upload/contentRule/a62e330f32ee66d0d68a9b77583bb765.xlsx";
 
 
 }

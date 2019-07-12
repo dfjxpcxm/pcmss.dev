@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 短信模板接口类
@@ -186,7 +187,7 @@ public class TempleApiController extends SysApiController {
             throw new Exception("tplIds " + tplIds + " error");
         }
         String [] ids = tplIds.split(",");
-        ArrayList<String> tplId = (ArrayList<String>) Arrays.asList(ids);
+        List<String> tplId = Arrays.asList(ids);
         String url = SmsConstants.DEL_TEMPLATE_URL;
         SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsRemoveReplyResult smsTplRemoveReplyResult = templeMng.removeTempleInfo(tplId,url);

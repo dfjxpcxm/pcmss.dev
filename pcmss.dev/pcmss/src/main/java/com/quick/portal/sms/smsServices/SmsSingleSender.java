@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 
 import org.json.JSONObject;
@@ -119,7 +120,7 @@ public class SmsSingleSender {
         } else {
         	result = new SmsSingleSenderResult();
         	result.result = httpRspCode;
-        	result.errMsg = "http error " + httpRspCode + " " + conn.getResponseMessage();
+        	result.errmsg = "http error " + httpRspCode + " " + conn.getResponseMessage();
         }
         
         return result;
@@ -141,7 +142,7 @@ public class SmsSingleSender {
 			String nationCode,
 			String phoneNumber,
 			int templId,
-			ArrayList<String> params,
+			List<String> params,
 			String sign,
 			String extend,
 			String ext,
@@ -231,7 +232,7 @@ public class SmsSingleSender {
         } else {
         	result = new SmsSingleSenderResult();
         	result.result = httpRspCode;
-        	result.errMsg = "http error " + httpRspCode + " " + conn.getResponseMessage();
+        	result.errmsg = "http error " + httpRspCode + " " + conn.getResponseMessage();
         }
         
         return result;

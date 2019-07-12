@@ -33,4 +33,7 @@ public interface ISmsMngDao<SysConfMngDO> extends ISysBaseDao<SysConfMngDO> {
     public List<Map<String, Object>> getMouldNameData();
 
     int insertPhoneNUmList(List<SmsMngDO> smsMngDO);
+
+
+    public void insertSmsReplyResult(SmsMngDO sms);
 }

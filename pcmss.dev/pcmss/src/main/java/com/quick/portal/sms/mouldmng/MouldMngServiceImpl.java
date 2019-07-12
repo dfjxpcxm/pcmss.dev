@@ -89,45 +89,86 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     */
     @Override
     public DataStore save(MouldMngDO entity) {
+        boolean bool = false;
         //如果编号为空,新增实体对象,否则更新实体对象
         Integer keyVal = entity.getMould_id();
         smsTemple = new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         int c = 0;
         if (keyVal == null || keyVal == 0) {
             entity.setMould_state(1);
+            entity.setMould_num(0);
             c = dao.insert(entity);
-            Map<String, Object> map = new HashMap<>();
-            map.put("mould_name",entity.getMould_name());
-            List<Map<String, Object>> retList = dao.select(map);
-            if(null !=retList && retList.size()>0){
-                Map<String, Object> mp = retList.get(0);
-                keyVal = Integer.valueOf(mp.get("mould_id").toString());
-            }
+            keyVal = getTplInfoByName(entity.getMould_name());
             //调用创建模板接口
-            try{
-                SmsTempleReplyResult tplReplyResult = smsTemple.sendTempleInfo("", SmsConstants.INTERNAL_CODE, entity.getMould_content(), entity.getMould_name(),0, entity.getMould_type(),SmsConstants.ADD_TEMPLATE_URL);
-                parseSmsTempleReplyResult(tplReplyResult,keyVal);
-            }catch (Exception e){
-                System.out.println("调用创建模板接口失败！"+e.getLocalizedMessage());
-                return null;
-            }
+            bool =  sendAddTplInfo(entity,keyVal);
         } else {
             c = dao.update(entity);
-            try{
-                SmsTempleReplyResult tplReplyResult = smsTemple.sendTempleInfo("", SmsConstants.INTERNAL_CODE, entity.getMould_content(), entity.getMould_name(),entity.getMould_num(), entity.getMould_type(),SmsConstants.MOD_TEMPLATE_URL);
-                parseSmsTempleReplyResult(tplReplyResult,keyVal);
-            }catch (Exception e){
-                System.out.println("调用修改模板接口失败！"+e.getLocalizedMessage());
-                return null;
-            }
+            //调用修改模板接口
+            bool =  sendModTplInfo(entity,keyVal);
         }
-
         if (c == 0) {
             return ActionMsg.setError("操作失败");
         }
-
+        if (!bool) {
+            return ActionMsg.setError("调用模板接口失败");
+        }
         ActionMsg.setValue(entity);
         return ActionMsg.setOk("操作成功");
+    }
+
+    /**
+     * 调用创建模板接口
+     * @param entity
+     * @param id
+     * @return
+     */
+    public boolean sendAddTplInfo(MouldMngDO entity,Integer id){
+        boolean bool = false;
+        try{
+            SmsTempleReplyResult tplReplyResult = smsTemple.sendTempleInfo("", SmsConstants.INTERNAL_CODE, entity.getMould_content(), entity.getMould_name(),0, entity.getMould_type(),SmsConstants.ADD_TEMPLATE_URL);
+            parseSmsTempleReplyResult(tplReplyResult,id);
+            bool = true;
+        }catch (Exception e){
+            System.out.println("调用创建模板接口失败！"+e.getLocalizedMessage());
+            bool = false;
+            e.printStackTrace();
+        }
+        return bool;
+    }
+    /**
+     * 调用修改模板接口
+     * @param entity
+     * @param id
+     * @return
+     */
+    public boolean sendModTplInfo(MouldMngDO entity,Integer id){
+        boolean bool = false;
+        try{
+            SmsTempleReplyResult tplReplyResult = smsTemple.sendTempleInfo("", SmsConstants.INTERNAL_CODE, entity.getMould_content(), entity.getMould_name(),entity.getMould_num(), entity.getMould_type(),SmsConstants.MOD_TEMPLATE_URL);
+            parseSmsTempleReplyResult(tplReplyResult,id);
+            bool = true;
+        }catch (Exception e){
+            System.out.println("调用修改模板接口失败！"+e.getLocalizedMessage());
+            bool = false;
+            e.printStackTrace();
+        }
+        return bool;
+    }
+
+
+    /**
+     * 通过模板名称查询模板信息
+     */
+    public Integer getTplInfoByName(String tplName){
+        Integer sid = 0;
+        Map<String, Object> map = new HashMap<>();
+        map.put("mould_name",tplName);
+        List<Map<String, Object>> retList = dao.select(map);
+        if(null !=retList && retList.size()>0){
+            Map<String, Object> mp = retList.get(0);
+            sid = Integer.valueOf(mp.get("mould_id").toString());
+        }
+        return sid;
     }
 
 
@@ -162,6 +203,7 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
                 dao.update(entity);
             }
         }else{
+            entity.setMould_state(4);
             entity.setRemarks(tplReplyResult.errmsg);
             entity.setMould_id(sid);
             dao.update(entity);
@@ -177,16 +219,49 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
      */
     @Override
     public DataStore delete(String sysid) {
+        String snum = getTplInfoByID(sysid);
         dao.delete(sysid);
-        ArrayList<String> tplIds = new ArrayList<>();
-        tplIds.add(sysid);
+        ArrayList<String> tplNums = new ArrayList<>();
+        tplNums.add(snum);
         //调用删除签名接口
         try{
-            SmsRemoveReplyResult tplReplyResult = smsTemple.removeTempleInfo(tplIds, SmsConstants.MOD_TEMPLATE_URL);
+            SmsRemoveReplyResult tplReplyResult = smsTemple.removeTempleInfo(tplNums, SmsConstants.MOD_TEMPLATE_URL);
         }catch (Exception e){
             System.out.println("调用删除模板接口失败！"+e.getLocalizedMessage());
             return null;
         }
         return ActionMsg.setOk("操作成功");
+    }
+
+    /**
+     * 通过签名ID查询签名签名编号
+     */
+    public String getTplInfoByID(String sysid){
+        String snum = "";
+        Map<String, Object> map = new HashMap<>();
+        map.put("mould_id",sysid);
+        List<Map<String, Object>> retList = dao.select(map);
+        if(null !=retList && retList.size()>0){
+            Map<String, Object> mp = retList.get(0);
+            snum = mp.get("mould_num").toString();
+        }
+        return snum;
+    }
+
+    /**
+     * 获取模板编号
+     */
+    public MouldMngDO getTplInfo(Integer mtype,String content){
+        Map<String, Object> map = new HashMap<>();
+        map.put("mould_type",mtype);
+        map.put("mould_content",content);
+        List<Map<String, Object>> retList = dao.select(map);
+        MouldMngDO entity = new MouldMngDO();
+        if(null !=retList && retList.size()>0){
+            Map<String, Object> mp = retList.get(0);
+            entity.setMould_id(Integer.valueOf(mp.get("mould_id").toString()));
+            entity.setMould_num(Integer.valueOf(mp.get("mould_num").toString()));
+        }
+        return entity;
     }
 }

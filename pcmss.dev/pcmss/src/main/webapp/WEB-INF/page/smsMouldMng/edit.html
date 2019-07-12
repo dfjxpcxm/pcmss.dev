@@ -20,15 +20,16 @@
                                 <label class="col-xs-3 lable_top" style="width:115px;"><span class="span_require">*</span>模板类型</label>
                                 <div class="col-xs-9" style="width:89%;">
                                     <label class="radio-inline">
-                                    <input type="radio" name="mould_type"  value="0" checked="checked" />
-                                    <label ></label><span>验证码</span></label>&nbsp;
+                                    <input type="radio" name="mould_type" id="mould_type0" value="0" checked="checked" />
+                                    <label for="mould_type0"></label><span>验证码</span></label>&nbsp;
                                     <label class="radio-inline">
-                                    <input type="radio" name="mould_type"  value="1" />
-                                    <label ></label><span>短信通知</span></label>
+                                    <input type="radio" name="mould_type" id="mould_type1" value="1" />
+                                    <label for="mould_type1"></label><span>短信通知</span></label>
                                     <label class="radio-inline">
-                                    <input type="radio" name="mould_type"  value="2" />
-                                    <label></label><span>推广短信</span></label>
+                                    <input type="radio" name="mould_type" id="mould_type2" value="2" />
+                                    <label  for="mould_type2"></label><span>推广短信</span></label>
                                 </div>
+
                             </div>
                         </div>
 
@@ -170,7 +171,7 @@
 		window.location.href = url;
 	}
 
-    selectMouldType();
+    /*selectMouldType();
 
     function selectMouldType() {
         $.ajax({
@@ -186,6 +187,6 @@
                 }
             }
         });
-    }
+    }*/
 </script>
 </html>

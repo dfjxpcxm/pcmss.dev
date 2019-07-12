@@ -42,6 +42,7 @@
 	<insert id="insert" parameterType="com.quick.portal.sms.signmng.SignMngDO">
 		insert into sys_sign_info (
     		  sign_name,
+    		  sign_num,
     		  sign_type,
     		  sign_author,
     		  sign_state,
@@ -50,6 +51,7 @@
     		  upd_time
 		)values(
 			 #{sign_name},
+			 #{sign_num},
 			 #{sign_type},
 			 #{sign_author},
 			 #{sign_state},
@@ -62,9 +64,9 @@
 	<!-- 修改app_class -->
 	<update id="update" parameterType="com.quick.portal.sms.signmng.SignMngDO">
 		update sys_sign_info
-		set
+		set upd_time=now()
 		<if test="sign_name != null and sign_name != ''"> <![CDATA[
-           sign_name=#{sign_name}
+            ,sign_name=#{sign_name}
         ]]> </if>
 
 		<if test="sign_num != null"><![CDATA[
@@ -75,10 +77,10 @@
 	           ,sign_state=#{sign_state}
 	    ]]></if>
 		<if test="apply_causes != null and apply_causes != ''"> <![CDATA[
-          ,apply_causes=#{apply_causes}
+         	 ,apply_causes=#{apply_causes}
         ]]> </if>
 		<if test="sign_type != null"><![CDATA[
-           ,sign_type=#{sign_type}
+            ,sign_type=#{sign_type}
         ]]> </if>
 		<if test="remarks != null and remarks != ''"> <![CDATA[
             ,remarks=#{remarks}
@@ -86,8 +88,6 @@
 		<if test="sign_author != null and sign_author != ''"> <![CDATA[
             ,sign_author=#{sign_author}
         ]]> </if>
-			  ,cre_time=now()
-			  ,upd_time=now()
 		 where sign_id = #{sign_id}
 	</update>
 

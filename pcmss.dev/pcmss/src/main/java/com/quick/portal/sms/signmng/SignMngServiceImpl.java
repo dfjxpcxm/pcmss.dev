@@ -68,43 +68,90 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
      */
     @Override
     public DataStore save(SignMngDO entity) {
+        boolean bool = false;
         //如果编号为空,新增实体对象,否则更新实体对象
         Integer id = entity.getSign_id();
         smsSign = new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         int c = 0;
         if(id == null || id == 0) {
+            //0：已通过, 1：待审核, 2：已拒绝
             entity.setSign_state(1);
+            entity.setSign_num(0);
             c = dao.insert(entity);
-            Map<String, Object> map = new HashMap<>();
-            map.put("sign_name",entity.getSign_name());
-            List<Map<String, Object>> retList = dao.select(map);
-            if(null !=retList && retList.size()>0){
-                Map<String, Object> mp = retList.get(0);
-                id = Integer.valueOf(mp.get("sign_id").toString());
-            }
+            id = getSignInfoByName(entity.getSign_name());
             //调用创建签名接口
-            try{
-                SmsSignReplyResult signReplyResult = smsSign.sendSignInfo("", SmsConstants.INTERNAL_CODE, entity.getApply_causes(), entity.getSign_name(),0, SmsConstants.ADD_SIGN_URL);
-                ParseSignReplyResult(signReplyResult,id);
-            }catch (Exception e){
-                System.out.println("调用创建签名接口失败！"+e.getLocalizedMessage());
-                 return null;
-            }
+            bool = sendAddSignInfo(entity, id);
         }else {
+            entity.setSign_state(1);
             c = dao.update(entity);
-            //调用修改签名接口失败
-            try{
-                SmsSignReplyResult signReplyResult = smsSign.sendSignInfo("", SmsConstants.INTERNAL_CODE, entity.getApply_causes(), entity.getSign_name(),entity.getSign_num(), SmsConstants.MOD_SIGN_URL);
-                ParseSignReplyResult(signReplyResult,id);
-            }catch (Exception e){
-                System.out.println("调用修改签名接口失败！"+e.getLocalizedMessage());
-                return null;
-            }
+            //调用修改签名接口
+            bool = sendModSignInfo(entity, id);
         }
-        if(c == 0)
+        if(c == 0) {
             return ActionMsg.setError("操作失败");
+        }
+        if(! bool) {
+            return ActionMsg.setError("调用签名接口失败");
+        }
+
         ActionMsg.setValue(entity);
         return ActionMsg.setOk("操作成功");
+    }
+
+    /**
+     * 调用创建签名接口
+     * @param entity
+     * @param id
+     * @return
+     */
+    public boolean sendAddSignInfo(SignMngDO entity,Integer id){
+        boolean bool = false;
+        try{
+            SmsSignReplyResult signReplyResult = smsSign.sendSignInfo("", SmsConstants.INTERNAL_CODE, entity.getApply_causes(), entity.getSign_name(),0, SmsConstants.ADD_SIGN_URL);
+            ParseSignReplyResult(signReplyResult,id);
+            bool = true;
+        }catch (Exception e){
+            System.out.println("调用创建签名接口失败！"+e.getLocalizedMessage());
+            bool = false;
+            e.printStackTrace();
+        }
+        return bool;
+    }
+
+
+    /**
+     * 调用修改签名接口
+     * @param entity
+     * @param id
+     * @return
+     */
+    public boolean sendModSignInfo(SignMngDO entity,Integer id){
+        boolean bool = false;
+        try{
+            SmsSignReplyResult signReplyResult = smsSign.sendSignInfo("", SmsConstants.INTERNAL_CODE, entity.getApply_causes(), entity.getSign_name(),entity.getSign_num(), SmsConstants.MOD_SIGN_URL);
+            ParseSignReplyResult(signReplyResult,id);
+            bool = true;
+        }catch (Exception e){
+            System.out.println("调用修改签名接口失败！"+e.getLocalizedMessage());
+            bool = false;
+            e.printStackTrace();
+        }
+        return bool;
+    }
+
+    /**
+     * 通过签名名称查询签名信息
+     */
+    public Integer getSignInfoByName(String signName){
+        Integer sid = 0;
+        Map<String, Object> map = new HashMap<>();
+        map.put("sign_name",signName);
+        List<Map<String, Object>> retList = dao.select(map);
+        if(null !=retList && retList.size()>0){
+            Map<String, Object> mp = retList.get(0);
+            sid = Integer.valueOf(mp.get("sign_id").toString());
+        }
+        return sid;
     }
 
     /**
@@ -126,6 +173,7 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
                 dao.update(entity);
             }
         }else{
+            entity.setSign_state(4);
             entity.setRemarks(signReplyResult.errmsg);
             entity.setSign_id(sid);
             dao.update(entity);
@@ -146,16 +194,49 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
      */
     @Override
     public DataStore delete(String sysid) {
+        String snum = getSignInfoByID(sysid);
         dao.delete(sysid);
-        ArrayList<String> signIds = new ArrayList<>();
-        signIds.add(sysid);
+        ArrayList<String> signNums = new ArrayList<>();
+        signNums.add(snum);
         //调用删除签名接口
         try{
-            SmsRemoveReplyResult signReplyResult = smsSign.removeSignInfo(signIds, SmsConstants.MOD_SIGN_URL);
+            SmsRemoveReplyResult signReplyResult = smsSign.removeSignInfo(signNums, SmsConstants.MOD_SIGN_URL);
         }catch (Exception e){
             System.out.println("调用删除签名接口失败！"+e.getLocalizedMessage());
-            return null;
+            e.printStackTrace();
         }
         return ActionMsg.setOk("操作成功");
+    }
+
+
+    /**
+     * 通过签名ID查询签名签名编号
+     */
+    public String getSignInfoByID(String sysid){
+        String snum = "";
+        Map<String, Object> map = new HashMap<>();
+        map.put("sign_id",sysid);
+        List<Map<String, Object>> retList = dao.select(map);
+        if(null !=retList && retList.size()>0){
+            Map<String, Object> mp = retList.get(0);
+            snum = mp.get("sign_num").toString();
+        }
+        return snum;
+    }
+
+
+    /**
+     * 通过签名ID查询签名名称
+     */
+    public String getSignInfoById(Integer sid){
+        String sname = "";
+        Map<String, Object> map = new HashMap<>();
+        map.put("sign_id",sid);
+        List<Map<String, Object>> retList = dao.select(map);
+        if(null !=retList && retList.size()>0){
+            Map<String, Object> mp = retList.get(0);
+            sname = mp.get("sign_name").toString();
+        }
+        return sname;
     }
 }

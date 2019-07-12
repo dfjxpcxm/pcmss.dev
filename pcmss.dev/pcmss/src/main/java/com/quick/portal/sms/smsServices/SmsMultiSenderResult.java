@@ -50,13 +50,13 @@ public class SmsMultiSenderResult {
 	}
 
 	public int result;
-	public String errMsg = "";
+	public String errmsg = "";
 	public String ext = "";
 	public ArrayList<Detail> details;
 	
 	public String toString() {
 		return String.format(
 				"SmsMultiSenderResult\nresult %d\nerrMsg %s\next %s\ndetails %s",
-				result, errMsg, ext, details);
+				result, errmsg, ext, details);
 	}
 }

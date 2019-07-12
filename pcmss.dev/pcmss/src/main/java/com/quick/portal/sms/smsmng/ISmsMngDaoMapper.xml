@@ -59,6 +59,7 @@
     		  sms_author,
     		  sms_state,
     		  mould_id,
+    		  file_path,
     		  cre_time,
     		  upd_time
 		)values(
@@ -69,31 +70,42 @@
 			 #{sms_author},
 			 #{sms_state},
 			 #{mould_id},
+			 #{file_path},
 			 now(),
 			 now()
 			)
 	</insert>
 	<insert id="insertPhoneNUmList" parameterType="java.util.List">
 		replace into sms_phone_number
-		(phone_num)
+		(phone_num,full_name)
 		values
 		<foreach item="item" index="index" collection="list" separator=",">
 			(
-			#{item.phone_num,jdbcType=VARCHAR}
+			#{item.phone_num,jdbcType=VARCHAR},#{item.full_name,jdbcType=VARCHAR}
 			)
 		</foreach>
 	</insert>
 	<!-- 修改app_class -->
 	<update id="update" parameterType="com.quick.portal.sms.smsmng.SmsMngDO">
 		update sys_sms_info
-		   set sign_id=#{sign_id}
+		   set  upd_time=now()
+		<if test="sign_id != null"><![CDATA[
+		   	,sign_id=#{sign_id}
+		 ]]> </if>
+		<if test="sms_title != null and sms_title != '' and !'null'.equals(sms_title)"><![CDATA[
 			  ,sms_title=#{sms_title}
+		  ]]> </if>
+		<if test="sms_content != null and sms_content != '' and !'null'.equals(sms_content)"><![CDATA[
 			  ,sms_content=#{sms_content}
+		]]> </if>
+		<if test="sms_rec_obj != null and sms_rec_obj != '' and !'null'.equals(sms_rec_obj)"><![CDATA[
 			  ,sms_rec_obj=#{sms_rec_obj}
-			  ,sms_author=#{sms_author}
+		]]> </if><if test="remarks != null and remarks != '' and !'null'.equals(remarks)"><![CDATA[
+			  ,remarks=#{remarks}
+		]]> </if>
+		<if test="sms_state != null"><![CDATA[
 			  ,sms_state=#{sms_state}
-			  ,cre_time=now()
-			  ,upd_time=now()
+		]]> </if>
 		 where sms_id = #{sms_id}
 	</update>
 
@@ -108,9 +120,7 @@
 		<where>
 			<include refid="where" />
 		</where>
-		<if test="_sql_order != null and _sql_order != ''">
-			order by ${_sql_order}
-		</if>
+		 order by o.upd_time desc
 	</select>
 
 	<!-- 查询总记录数 -->
@@ -133,5 +143,32 @@
 		select mould_content as mould_content,mould_name as mould_name from sys_mould_info
 		order by mould_id
 	</select>
+
+
+
+
+
+	<!-- 新增sys_sms_num_reply -->
+	<insert id="insertSmsReplyResult" parameterType="com.quick.portal.sms.smsmng.SmsMngDO">
+		insert into sys_sms_num_reply (
+			  sms_id,
+    		  phone_num,
+    		  sms_state,
+    		  cre_time,
+    		  upd_time,
+    		  fee,
+    		  sid,
+    		  remarks
+		)values(
+			 #{sms_id},
+			 #{phone_num},
+			 #{sms_state},
+			 now(),
+			 now(),
+			 #{fee},
+			 #{sid},
+			 #{remarks}
+			)
+	</insert>
 
 </mapper>

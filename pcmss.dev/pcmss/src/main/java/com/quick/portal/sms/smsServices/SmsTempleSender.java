@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-
+import java.util.List;
 
 
 public class SmsTempleSender {
@@ -136,7 +136,7 @@ public class SmsTempleSender {
 	 * @throws Exception
 	 */
 	public SmsRemoveReplyResult removeTempleInfo(
-			ArrayList<String>  tplIds,
+			List<String> tplIds,
 			String url) throws Exception {
 
 /*

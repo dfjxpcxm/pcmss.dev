@@ -13,10 +13,10 @@
 	       and mould_name   like CONCAT('%',#{mould_name},'%')
 	    ]]></if>
 		<if test="mould_content != null and mould_content != '' and !'null'.equals(mould_content)"><![CDATA[
-	       and mould_content = #{mould_content}
+	       and mould_content like CONCAT('%',#{mould_content},'%')
 	    ]]></if>
 
-		<if test="mould_type != null and mould_type != '' and !'null'.equals(mould_type)"><![CDATA[
+		<if test="mould_type != null "><![CDATA[
 	       and mould_type = #{mould_type}
 	    ]]></if>
 
@@ -45,6 +45,7 @@
 	<insert id="insert" parameterType="com.quick.portal.sms.mouldmng.MouldMngDO">
 		insert into sys_mould_info (
     		  mould_name,
+    		  mould_num,
     		  mould_content,
     		  mould_type,
     		  apply_causes,
@@ -54,6 +55,7 @@
     		  upd_time
 		)values(
 			 #{mould_name},
+			 #{mould_num},
 			 #{mould_content},
 			 #{mould_type},
 			 #{apply_causes},
@@ -67,13 +69,16 @@
 	<!-- 修改app_class -->
 	<update id="update" parameterType="com.quick.portal.sms.mouldmng.MouldMngDO">
 		update sys_mould_info
-		   set mould_name=#{mould_name}
-
+		   set 	upd_time= now()
+		<if test="mould_name != null and mould_name != '' and !'null'.equals(mould_name)"><![CDATA[
+		   ,mould_name=#{mould_name}
+    	]]></if>
 		<if test="mould_content != null and mould_content != '' and !'null'.equals(mould_content)"><![CDATA[
 	       ,mould_content=#{mould_content}
+
 	    ]]></if>
 		<if test="mould_author != null"><![CDATA[
-			  ,mould_type=#{mould_type}
+		   ,mould_type=#{mould_type}
 		]]></if>
 		<if test="apply_causes != null and apply_causes != '' and !'null'.equals(apply_causes)"><![CDATA[
 	       ,apply_causes=#{apply_causes}
@@ -84,8 +89,11 @@
 		<if test="mould_num != null"><![CDATA[
 			  ,mould_num=#{mould_num}
 		]]></if>
-			  ,cre_time= now()
-			  ,upd_time= now()
+		<if test="remarks != null and remarks != '' and !'null'.equals(remarks)"><![CDATA[
+	       ,remarks=#{remarks}
+	    ]]></if>
+
+
 		 where mould_id = #{mould_id}
 	</update>
 

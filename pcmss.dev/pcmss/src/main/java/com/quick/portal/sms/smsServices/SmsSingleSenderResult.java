@@ -11,7 +11,7 @@ public class SmsSingleSenderResult {
 }
  */
 	public int result;
-	public String errMsg = "";
+	public String errmsg = "";
 	public String ext = "";
 	public String sid = "";
 	public int fee;
@@ -19,6 +19,6 @@ public class SmsSingleSenderResult {
 	public String toString() {
 		return String.format(
 				"SmsSingleSenderResult\nresult %d\nerrMsg %s\next %s\nsid %s\nfee %d",
-				result, errMsg, ext, sid, fee);		
+				result, errmsg, ext, sid, fee);
 	}
 }

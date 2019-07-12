@@ -50,14 +50,10 @@ public class SmsLogMngServiceImpl extends SysBaseService<SmsLogMngDO> implements
 
 
     @Override
-    public void saveSmsLogInfo(int userID, int sms_id, String log_title, String log_content, String rec_obj, int state) {
+    public void saveSmsLogInfo(int sms_id, String log_title) {
         SmsLogMngDO entity = new SmsLogMngDO () ;
         entity.setSms_id(sms_id);
         entity.setSms_log_title(log_title);
-        entity.setSms_rec_obj(rec_obj);
-        entity.setSms_log_content(log_content);
-        entity.setSms_author(userID);
-        entity.setSms_state(state);
-        dao.insert(entity);
+        dao.saveSmsLogInfo(entity);
     }
 }

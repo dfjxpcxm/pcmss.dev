@@ -53,10 +53,14 @@ public class SmsMngDO implements java.io.Serializable {
      * 签名编号
      */
     private Integer  sign_id;
+
+    private Integer mould_ty;
     /**
      *短信标题
      */
     private String  sms_title;
+
+    private String  full_name;
     /**
      *短信内容
      */
@@ -64,11 +68,15 @@ public class SmsMngDO implements java.io.Serializable {
 
     private String  mould_content;
     private String  mould_fields;
-
+    private String  sid;
     /*
      * 短信接受者：手机段/自定义号
      */
     private String sms_rec_obj;
+
+    private String remarks;
+
+    private Integer fee;
 
 
     /*
@@ -85,6 +93,8 @@ public class SmsMngDO implements java.io.Serializable {
      */
     private Integer  mould_id;
 
+    private Integer  mould_num;
+
     /**
      *cre_time
      */
@@ -100,7 +110,10 @@ public class SmsMngDO implements java.io.Serializable {
 
     private String phone_num;
 
-    private String filePath;
+    private String file_path;
+
+    private String sign_name;
+
 
     public Integer getSms_id() {
         return sms_id;
@@ -214,11 +227,69 @@ public class SmsMngDO implements java.io.Serializable {
         this.phone_num = phone_num;
     }
 
-    public String getFilePath() {
-        return filePath;
+
+
+    public Integer getMould_ty() {
+        return mould_ty;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setMould_ty(Integer mould_ty) {
+        this.mould_ty = mould_ty;
+    }
+
+    public String getSign_name() {
+        return sign_name;
+    }
+
+    public void setSign_name(String sign_name) {
+        this.sign_name = sign_name;
+    }
+
+    public String getSid() {
+        return sid;
+    }
+
+    public void setSid(String sid) {
+        this.sid = sid;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public Integer getFee() {
+        return fee;
+    }
+
+    public void setFee(Integer fee) {
+        this.fee = fee;
+    }
+
+    public String getFull_name() {
+        return full_name;
+    }
+
+    public void setFull_name(String full_name) {
+        this.full_name = full_name;
+    }
+
+    public Integer getMould_num() {
+        return mould_num;
+    }
+
+    public void setMould_num(Integer mould_num) {
+        this.mould_num = mould_num;
+    }
+
+    public String getFile_path() {
+        return file_path;
+    }
+
+    public void setFile_path(String file_path) {
+        this.file_path = file_path;
     }
 }

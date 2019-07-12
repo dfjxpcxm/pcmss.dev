@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.quick.core.util.common.QCommon;
 import com.quick.portal.security.authority.metric.PropertiesUtil;
+import com.quick.portal.sms.smsServices.SmsConstants;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.ProgressListener;
@@ -60,7 +61,7 @@ public class FileUploadUtils {
      * 写文件到当前目录的upload目录中
      * 
      * @param in
-     * @param fileName
+     * param fileName
      * @throws IOException
      */
     private static String copyFile(InputStream in, String dir, String realName) throws IOException {
@@ -265,8 +266,9 @@ public class FileUploadUtils {
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
         //创建文件夹
         //       String baseDir = PropertiesUtil.getPropery("file.dir");
-        String baseDir  = TARGE_UPLOAD_PATH;//request.getSession().getServletContext().getRealPath("/WEB-INF/upload/phoneNumber");
-        File dirPath = new File(baseDir + SRC_UPLOAD_PATH);
+        String baseDir  = SmsConstants.TARGE_UPLOAD_PATH;
+ //       String baseDir  = request.getSession().getServletContext().getRealPath("/WEB-INF/upload/contentRule");
+        File dirPath = new File(baseDir + SmsConstants.SRC_UPLOAD_PATH);
 
         if (!dirPath.exists()) {
             dirPath.mkdirs();
@@ -286,7 +288,7 @@ public class FileUploadUtils {
 ///                    String fname = oldname;
                     File uploadFile = new File(dirPath + File.separator + fname);
                     FileCopyUtils.copy(file.getBytes(), uploadFile);
-                    String url = TARGE_UPLOAD_PATH + SRC_UPLOAD_PATH + fname;
+                    String url = SmsConstants.TARGE_UPLOAD_PATH + SmsConstants.SRC_UPLOAD_PATH + fname;
                     return url;
                 }
             }
@@ -296,7 +298,7 @@ public class FileUploadUtils {
         }
         return "";
     }
-    private final static String TARGE_UPLOAD_PATH =  "C:/Users/angxia1981/Downloads/puchenfile/";//PropertiesUtil.getPropery("potal.TARGE_UPLOAD_PATH");
+//    private final static String TARGE_UPLOAD_PATH =  "C:/puchenfile";//PropertiesUtil.getPropery("potal.TARGE_UPLOAD_PATH");
 
-    private final static String SRC_UPLOAD_PATH = "/phoneNumber/";
+//    private final static String SRC_UPLOAD_PATH = "/phoneNumber/";
 }

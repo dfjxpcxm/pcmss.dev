@@ -56,4 +56,9 @@ public class SmsConstants {
     //base64
     public final static  String PIC_BASE64_PREFIX = "data:image/jpeg;base64,";
     public final static  String PIC_BASE64_SUFFIX = "/9j/4W+ARXhpZgAATU0AKgAAAAgADgEAAAMAAAABC6AAAAEBAAMAAAABD4AAAAECAAMAAAADAAAA";
+
+
+    public final static String TARGE_UPLOAD_PATH =  "C:/puchenfile";//PropertiesUtil.getPropery("potal.TARGE_UPLOAD_PATH");
+
+    public final static String SRC_UPLOAD_PATH = "/phoneNumber/";
 }

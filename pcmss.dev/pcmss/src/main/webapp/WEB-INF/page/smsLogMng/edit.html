@@ -33,13 +33,13 @@
                             </div>
                         </div>
 
-                       <!-- <div class="col-sm-6 form_ipt_botm" style="width:100%;">
+                        <div class="col-sm-6 form_ipt_botm" style="width:100%;">
                             <div class="form-group">
                                 <label class="col-xs-3 lable_top" style="width:100px;"><span class="span_require">*</span>短信内容</label>
                                 <div class="col-xs-9" style="width:89%;"><textarea style="height:150px;width:100%;resize:none;" class="form-control required" id="sms_log_content" name="sms_log_content"></textarea></div>
                             </div>
-                        </div>-->
-                        <div class="col-sm-12">
+                        </div>
+                     <!--   <div class="col-sm-12">
                             <div class="ibox float-e-margins">
                                 <div class="ibox-title">
                                     <label class="col-xs-3 lable_top" style="width:100px;"><span class="span_require">*</span>短信内容</label>
@@ -51,7 +51,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                         <div class="col-sm-6 form_ipt_botm">
                             <div class="form-group">
                                 <label class="col-xs-3 lable_top"><span></span>短信发送者</label>
@@ -71,9 +71,11 @@
                                 <label class="col-xs-3 lable_top"><span class="span_require">*</span>状态</label>
                                 <div class="col-xs-9">
                                     <select name="sms_state" class="form-control required" id="sms_state">
-                                        <option value="1">成功</option>
-                                        <option value="0">失败</option>
-                                        <option value="2">发送中</option>
+                                        <option value="1">待审核</option>
+                                        <option value="0">通过</option>
+                                        <option value="2">拒绝</option>
+                                        <option value="4">失败</option>
+
                                     </select>
                                 </div>
                             </div>
@@ -136,7 +138,7 @@
                 $("#sms_state").val(data.sms_state);
                 $("#sms_author").val(data.sms_author);
                 $("#sms_rec_obj").val(data.sms_rec_obj);
-                $('.summernote').code(data.sms_log_content);
+                $('#sms_log_content').val(data.sms_log_content);
 				if(mode == "browse"){
                     viewRead();
                 }

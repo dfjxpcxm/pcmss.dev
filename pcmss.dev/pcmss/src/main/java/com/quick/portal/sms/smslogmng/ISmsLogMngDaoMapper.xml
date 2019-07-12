@@ -11,9 +11,7 @@
 		<if test="sms_log_title != null and sms_log_title != '' and !'null'.equals(sms_log_title)"><![CDATA[
 	       and sms_log_title = #{sms_log_title}
 	    ]]></if>
-		<if test="sms_log_content != null and sms_log_content != '' and !'null'.equals(sms_log_content)"><![CDATA[
-	       and sms_log_content = #{sms_log_content}
-	    ]]></if>
+
 
 		<if test="sms_author != null "><![CDATA[
 	       and sms_author = #{sms_author}
@@ -42,19 +40,11 @@
 		insert into sys_sms_log (
     		  sms_id,
     		  sms_log_title,
-    		  sms_log_content,
-    		  sms_rec_obj,
-    		  sms_author,
-    		  sms_state,
     		  cre_time,
     		  upd_time
 		)values(
 			 #{sms_id},
 			 #{sms_log_title},
-			 #{sms_log_content},
-			 #{sms_rec_obj},
-			 #{sms_author},
-			 #{sms_state},
 			 now(),
 			 now()
 			)
@@ -62,13 +52,11 @@
 
 
 	<select id="select" parameterType="map" resultType="map">
-		select * from sys_sms_log
+		select g.sms_id,g.sms_log_title,o.sms_state as sms_state,o.sms_content as sms_log_content,o.sms_author,o.sms_rec_obj from sys_sms_log g inner join sys_sms_info o on g.sms_id=o.sms_id
 		<where>
 			<include refid="where" />
 		</where>
-		<if test="_sql_order != null and _sql_order != ''">
-			order by ${_sql_order}
-		</if>
+			order by g.upd_time desc
 	</select>
 
 	<!-- 查询总记录数 -->

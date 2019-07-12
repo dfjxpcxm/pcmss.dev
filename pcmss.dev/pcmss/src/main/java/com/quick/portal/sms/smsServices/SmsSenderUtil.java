@@ -5,6 +5,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -110,7 +111,7 @@ class SmsSenderUtil {
         return tel;
     }
     
-    public JSONArray smsParamsToJSONArray(ArrayList<String> params) {
+    public JSONArray smsParamsToJSONArray(List<String> params) {
         JSONArray smsParams = new JSONArray();        
         for (int i = 0; i < params.size(); i++) {
         	smsParams.put(params.get(i));	
@@ -122,7 +123,7 @@ class SmsSenderUtil {
     	SmsSingleSenderResult result = new SmsSingleSenderResult();
     	
     	result.result = json.getInt("result");
-    	result.errMsg = json.getString("errmsg");
+    	result.errmsg = json.getString("errmsg");
     	if (0 == result.result) {
 	    	result.ext = json.getString("ext");
 	    	result.sid = json.getString("sid");
@@ -135,7 +136,7 @@ class SmsSenderUtil {
     	SmsMultiSenderResult result = new SmsMultiSenderResult();
     	
     	result.result = json.getInt("result");
-    	result.errMsg = json.getString("errmsg");    	
+    	result.errmsg = json.getString("errmsg");
     	if (false == json.isNull("ext")) {
     		result.ext = json.getString("ext");	
     	}

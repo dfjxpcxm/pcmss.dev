@@ -30,7 +30,11 @@ import java.util.Map;
  */
 public interface ISignMngService extends ISysBaseService<SignMngDO> {
 
-    public   List<Map<String, Object>> getSignTypeData();
+    public List<Map<String, Object>> getSignTypeData();
+    /**
+      * 通过签名ID查询签名名称
+     */
+    public String getSignInfoById(Integer sid);
 
 
 

@@ -32,7 +32,6 @@
                                 </div>
                             </div>
 
-
                             <div class="col-sm-6 form_ipt_botm">
                                 <div class="form-group">
                                     <label class="col-xs-3 lable_top"><span class="span_require">*</span>签名名称</label>
@@ -41,30 +40,32 @@
                                                 id="sign_id">
                                         </select>
                                         <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;">
-                                            · 没有需要的签名，马上 <button class="btn btn-default" type="button" onclick="chosebox('mould_content', '${G.host}/smsSignMng/list','common_mould_id');">添加签名</button></a>
+                                            · 没有需要的签名，马上 <button class="btn btn-default" type="button"  style="padding: 2px 2px;" onclick="chosebox('mould_content', '${G.host}/smsSignMng/list','common_mould_id');">添加签名</button></a>
                                         </div>
                                     </div>
 
                                 </div>
                             </div>
 
-                            <div class="col-sm-6 form_ipt_botm">
+                            <div class="col-sm-6 form_ipt_botm" style="width:100%;">
                                 <div class="form-group">
-                                    <label class="col-xs-3 lable_top"><span class="span_require">*</span>短信模板</label>
-                                    <div class="col-xs-9">
-                                        <select name="mould_id" class="input-group form-control form-control-green select_change" style="width: 150px"
+                                    <label class="col-xs-2 lable_top" style=" margin-left: -10px;text-align: left;width: 113px;"><span class="span_require">*</span>短信模板</label>
+                                    <div class="col-xs-2">
+                                        <select name="mould_id" class="input-group form-control form-control-green select_change" style="width: 150px;left: -15px;"
                                                 id="mould_id">
                                         </select>
+                                    </div>
+                                    <div class="col-xs-2">
                                         <select name="mould_content" class="input-group form-control required form-control-green select_change" style="width: 150px"
                                                 id="mould_content">
                                         </select>
-                                        <div class="col-xs-9"><input type="text" id="mould_fields" name="mould_fields" class="form-control required " onkeyup="setMouldFields()" /></div>
-                                        <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;">
-                                            · 没有需要的模板，马上 <button class="btn btn-default" type="button" onclick="chosebox('mould_content', '${G.host}/smsMouldMng/list','common_mould_id');">添加模板</button></a>
-                                        </div>
-
                                     </div>
-
+                                    <div class="col-xs-6">
+                                        <input type="text" id="mould_fields" name="mould_fields" class="form-control required " onkeyup="setMouldFields()" />
+                                    </div>
+                                    <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;left: 100px">
+                                            · 没有需要的模板，马上 <button class="btn btn-default" type="button" style="padding: 2px 2px;"  onclick="chosebox('mould_content', '${G.host}/smsMouldMng/list','common_mould_id');">添加模板</button></a>
+                                    </div>
 
                                 </div>
                             </div>
@@ -81,7 +82,7 @@
                                 <div class="form-group">
                                     <label class="col-xs-3 lable_top"><span class="span_require">*</span>短信接受者</label>
                                     <div class="col-xs-9">
-                                        <input type="text" id="sms_rec_obj" name="sms_rec_obj" class="form-control required " />
+                                        <input type="text" id="sms_rec_obj" name="sms_rec_obj"  />
                                         <div class="col-xs-9">
                                             <div class="input-group">
                                                 <input type="file" style="display:none;" id="prefile" accept=".xls,.xlsx" name="prefile"  onchange="previeFile(this);" />
@@ -93,16 +94,18 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-9" style="width:80%;">
+                                    <div class="col-xs-9" style="width:80%;left:100px;">
                                         <label class="radio-inline">
                                             <input type="radio" name="mould_ty" id="mould_ty0" value="0" checked="checked" />
                                             <label for="mould_ty0"></label><span>手动输入</span></label>&nbsp;
                                         <label class="radio-inline">
                                             <input type="radio" name="mould_ty" id="mould_ty1" value="1" />
                                             <label for="mould_ty1"></label><span>文件导入</span></label>
-                                        <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;">
+                                        <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;width: 500px;left: -30px;">
                                             <ul>
-                                                <li>· 请上传xlsx格式，“变量模版”号码文件<button class="btn btn-default" type="button" onclick="chosebox('mould_content', '${G.host}/smsMouldMng/list','common_mould_id');">范例下载</button>，什么是变量模板</li>
+
+
+                                                <li>· 请上传xlsx格式，“变量模版”号码文件<button id ="bt" class="btn btn-default" style="padding: 2px 2px;" type="button"><a id ="dt" style="font-size: 12px;">模板下载</a></button>，什么是变量模板</li>
                                                 <li>· 请保持导入文件的变量顺序与模版内容的变量顺序一致，请严格遵守范例样式</li>
                                                 <li>· 文件大小不可超过3M，建议单次导入号码50万个以内</li>
                                             </ul>
@@ -118,9 +121,10 @@
                                         <input type="hidden" id="sms_id" name="sms_id" />
                                         <input type="hidden" id="sms_author" name="sms_author" value="${sms_author}"/>
                                         <input type="hidden" id="sms_state" name="sms_state" value="2"/>
-                                        <!--<input type="hidden" id="sms_content" name="sms_content" />-->
-                                        <input id="submit-form" type="button" class="btn btn-primary" value="保存" onclick="return thingOver();">
-                                        <input id="send-form" type="button" class="btn btn-primary" value="发送" onclick="return thingSend();">
+                                        <input type="hidden" id="sign_name" name="sign_name" />
+                                        <input type="hidden" id="mould_name" name="mould_name" />
+                                        <input id="submit-form" type="button" class="btn btn-primary" value="发送" onclick="return thingOver();">
+                                        <!--<input id="send-form" type="button" class="btn btn-primary" value="发送" onclick="return thingSend();">-->
                                     </div>
                                 </div>
                             </div>
@@ -135,17 +139,23 @@
 
 </body>
 
-<!-- SUMMERNOTE -->
+<!-- SUMMERNOTE
 <script src="${G.host}/res/js/summernote/summernote.min.js"></script>
 <script src="${G.host}/res/js/summernote/summernote-zh-CN.js"></script>
+ -->
+
 
 <script>
-    $(document).ready(function () {
+    quick.baseUrl = "${G.host}";
+    var pdir = "${tpldir}";
+    var href = quick.baseUrl+pdir ;
+    $('#dt').attr('href',href);
+/*    $(document).ready(function () {
         $('.summernote').summernote({
             lang: 'zh-CN'
         });
-    });
-    quick.baseUrl = "${G.host}";
+    });*/
+
     selectSignNameData();
     selectMouldNameData();
     selectMouldContentData(null);
@@ -155,6 +165,9 @@
         quick.idField = "${G.idField}";
         quick.listUrl = quick.serverUrl + "/list";
     }
+
+
+
     window.onload = function() {
         /*自定义错误提示信息的方法*/
 
@@ -202,9 +215,25 @@
             return false;
         }
         isdone = false;
-        if(!$("#form").valid()){
+       if(!$("#form").valid()){
             return false;
         }
+        var t =$('input:radio[name="mould_ty"]:checked').val();
+       if(t ==1){
+           var p = $("#file_path").val();
+           if(p ==null ||p.length ==0){
+               layer.msg('上传文件不能空',{icon:1,time: 1500,skin: 'layer-ext-moon'})
+               return false;
+           }
+       }else{
+           var p = $("#sms_rec_obj").val();
+           if(p ==null ||p.length ==0){
+               layer.msg('短信接受者不能空',{icon:1,time: 1500,skin: 'layer-ext-moon'})
+               return false;
+           }
+       }
+
+
         clearPlaceHodler();
         //$("#sms_content").val($(".summernote").code());
         $('#form').ajaxSubmit(function() {
@@ -329,13 +358,13 @@
         if(val==0){
             $("#file_path").hide();
             $("#upload_button").hide();
-            $("#sms_rec_obj").removeAttr("readonly");
+            $("#sms_rec_obj").removeAttr("readOnly");
         }
         if(val==1)
         {
             $("#file_path").show();
             $("#upload_button").show();
-            $("#sms_rec_obj").attr("readonly","readonlyd");
+            $("#sms_rec_obj").attr("readOnly","readOnly");
         }
     });
     function previeFile(f){
@@ -343,5 +372,7 @@
             $("#file_path").val('').attr("placeholder", f.files[0].name);
         }
     }
+
+
 </script>
 </html>

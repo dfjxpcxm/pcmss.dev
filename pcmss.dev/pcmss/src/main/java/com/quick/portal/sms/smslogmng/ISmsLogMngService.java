@@ -27,7 +27,7 @@ import com.quick.core.base.ISysBaseService;
 public interface ISmsLogMngService extends ISysBaseService<SmsLogMngDO> {
 
 
-	public void saveSmsLogInfo(int userID, int sms_id, String log_title, String log_content, String rec_obj,int state);
+	public void saveSmsLogInfo( int sms_id, String log_title);
 
 
 }
