@@ -77,13 +77,13 @@
 	       ,mould_content=#{mould_content}
 
 	    ]]></if>
-		<if test="mould_author != null"><![CDATA[
+		<if test="mould_type != null"><![CDATA[
 		   ,mould_type=#{mould_type}
 		]]></if>
 		<if test="apply_causes != null and apply_causes != '' and !'null'.equals(apply_causes)"><![CDATA[
 	       ,apply_causes=#{apply_causes}
 	    ]]></if>
-		<if test="mould_author != null"><![CDATA[
+		<if test="mould_state != null"><![CDATA[
 			  ,mould_state=#{mould_state}
 		]]></if>
 		<if test="mould_num != null"><![CDATA[
@@ -92,8 +92,6 @@
 		<if test="remarks != null and remarks != '' and !'null'.equals(remarks)"><![CDATA[
 	       ,remarks=#{remarks}
 	    ]]></if>
-
-
 		 where mould_id = #{mould_id}
 	</update>
 
@@ -128,9 +126,8 @@
 		order by mould_type_id
 	</select>
 
-	<select id="getComMouldData"  resultType="map">
-		select * from sms_common_mould
-	</select>
+
+
 	<select id="getMouldTypeContent"  parameterType="map" resultType="map">
 		select a.*,b.* from sys_mould_info a LEFT JOIN mould_type b on a.mould_type = b.mould_type_id
 		<where>

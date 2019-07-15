@@ -21,6 +21,7 @@ package com.quick.portal.sms.mouldmng;
 
 import com.quick.core.base.SysBaseService;
 import com.quick.core.base.model.DataStore;
+import com.quick.core.base.model.PageBounds;
 import com.quick.core.util.common.DateTime;
 import com.quick.core.util.common.ReflectUtil;
 import com.quick.portal.sms.signmng.SignMngDO;
@@ -74,11 +75,7 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
         return dao.getMouldTypeData();
     }
 
-    @Override
-    public List<Map<String, Object>> getComMouldData()
-        {
-            return dao.getComMouldData();
-    }
+
 
     private Class<SmsMngDO> entityClass;
 

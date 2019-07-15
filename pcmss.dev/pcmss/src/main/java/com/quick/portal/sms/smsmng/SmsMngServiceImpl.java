@@ -327,22 +327,5 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         return mngDO;
     }
 
-    public static void  main(String [] args){
-        String aa = "1,1";
-        String [] parms = aa.split(",");
-        List<String> params = new ArrayList<String>();
-//        ArrayList<String> list = new ArrayList<> (parms);
-//        List<String> params = new ArrayList<>();
-        params =  Arrays.asList(parms);
-        for(String a :params){
-            System.out.println(a);
-        }
-
-
-
-    }
-
-
-
 
 }

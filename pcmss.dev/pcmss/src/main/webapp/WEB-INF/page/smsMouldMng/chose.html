@@ -11,11 +11,13 @@
 	function  config(){
 		quick.serverUrl = "${G.serverUrl}";
 		quick.idField = "${G.idField}";
+		var host ="${G.host}";
+		var s=$.request.queryString["rid"];
 
 		$("#list").bootstrapTable("destroy");
 		_gd["list"]=new BGrid("#list");
 		_gd["list"].config({
-			url:quick.serverUrl+"/getComMouldList?mould_state=1&i=" + Math.random(),
+			url:host+"/commonMouldMng/getList?mould_type="+s+"&i=" + Math.random(),
 			idField: quick.idField,
 			sortName: quick.idField,
 			cache:false,

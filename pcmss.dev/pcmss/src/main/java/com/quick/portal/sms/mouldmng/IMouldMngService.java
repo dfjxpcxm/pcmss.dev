@@ -19,6 +19,7 @@
 package com.quick.portal.sms.mouldmng;
 
 import com.quick.core.base.ISysBaseService;
+import com.quick.core.base.model.PageBounds;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,8 @@ import java.util.Map;
 public interface IMouldMngService extends ISysBaseService<MouldMngDO> {
 
     public List<Map<String, Object>> getMouldTypeData();
-    public List<Map<String, Object>> getComMouldData();
+
+
     //获取模板编号
     public MouldMngDO getTplInfo(Integer mtype,String content);
 

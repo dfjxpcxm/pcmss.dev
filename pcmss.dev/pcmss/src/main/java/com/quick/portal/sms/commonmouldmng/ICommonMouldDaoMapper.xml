@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quick.portal.sms.commonmouldmng.ICommonMouldMngDao">
+
+
+	<!--查询条件-->
+	<sql id="where">
+		1=1
+		<if test="mould_type != null "><![CDATA[
+	       and mould_type = #{mould_type}
+	    ]]></if>
+		<if test="mould_content != null and mould_content != '' and !'null'.equals(mould_content)"><![CDATA[
+	       and mould_content like CONCAT('%',#{mould_content},'%')
+	    ]]></if>
+		<if test="mould_state != null"><![CDATA[
+	       and mould_state = #{mould_state}
+	    ]]></if>
+
+		<if test="cre_time != null"><![CDATA[
+	       and cre_time >= #{cre_time}
+	    ]]></if>
+		<if test="upd_time != null"><![CDATA[
+	       and upd_time >= #{upd_time}
+	    ]]></if>
+
+	</sql>
+
+	<insert id="insert" parameterType="com.quick.portal.sms.commonmouldmng.CommonMouldMngDO">
+		insert into sms_common_mould (
+    		  mould_content,
+    		  mould_type,
+    		  mould_state,
+    		  cre_time,
+    		  upd_time
+		)values(
+			 #{mould_content},
+			 #{mould_type},
+			 #{mould_state},
+			 now(),
+			 now()
+			)
+	</insert>
+
+
+	<update id="update" parameterType="com.quick.portal.sms.commonmouldmng.CommonMouldMngDO">
+		update sms_common_mould
+		set 	upd_time= now()
+	    ,mould_content=#{mould_content}
+		<if test="mould_type != null"><![CDATA[
+		   ,mould_type=#{mould_type}
+		]]></if>
+		<if test="mould_state != null"><![CDATA[
+			  ,mould_state=#{mould_state}
+		]]></if>
+		where common_mould_id = #{common_mould_id}
+	</update>
+
+
+	<!--查询-->
+	<select id="select" parameterType="map" resultType="map">
+		select o.* from sms_common_mould o
+		<where>
+			<include refid="where" />
+		</where>
+		<if test="_sql_order != null and _sql_order != ''">
+			order by ${_sql_order}
+		</if>
+	</select>
+
+	<!-- 查询总记录数 -->
+	<select id="count" parameterType="map" resultType="int">
+		select count(*) from sms_common_mould
+		<where>
+			<include refid="where" />
+		</where>
+	</select>
+
+</mapper>

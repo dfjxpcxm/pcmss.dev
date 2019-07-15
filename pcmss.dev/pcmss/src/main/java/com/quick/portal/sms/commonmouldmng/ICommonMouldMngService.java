@@ -1,6 +1,6 @@
 /**
  * <h3>标题 : potal统一门户-sys_user </h3>
- * <h3>描述 : sys_user数据访问接口</h3>
+ * <h3>描述 : sys_user服务接口</h3>
  * <h3>日期 : 2018-04-13</h3>
  * <h3>版权 : Copyright (C) 北京东方金信科技有限公司</h3>
  * 
@@ -16,21 +16,15 @@
  *          
  * </p>
  */
-package com.quick.portal.sms.mouldmng;
+package com.quick.portal.sms.commonmouldmng;
 
-import com.quick.core.base.ISysBaseDao;
-import com.quick.core.base.model.PageBounds;
-import org.apache.ibatis.annotations.Param;
+import com.quick.core.base.ISysBaseService;
 
-import java.util.List;
-import java.util.Map;
 
 /**
- * sys_mould_info数据访问接口
+ * sys_mould_info服务接口
  */
-public interface IMouldMngDao<MouldMngDO> extends ISysBaseDao<MouldMngDO> {
-
-    public List<Map<String, Object>> getMouldTypeData();
+public interface ICommonMouldMngService extends ISysBaseService<CommonMouldMngDO> {
 
 
 }

@@ -16,11 +16,11 @@
  *          
  * </p>
  */
-package com.quick.portal.sms.mouldmng;
+package com.quick.portal.sms.commonmouldmng;
 
 import com.quick.core.base.ISysBaseDao;
 import com.quick.core.base.model.PageBounds;
-import org.apache.ibatis.annotations.Param;
+import com.quick.portal.sms.mouldmng.MouldMngDO;
 
 import java.util.List;
 import java.util.Map;
@@ -28,9 +28,7 @@ import java.util.Map;
 /**
  * sys_mould_info数据访问接口
  */
-public interface IMouldMngDao<MouldMngDO> extends ISysBaseDao<MouldMngDO> {
-
-    public List<Map<String, Object>> getMouldTypeData();
+public interface ICommonMouldMngDao<CommonMouldMngDO> extends ISysBaseDao<com.quick.portal.sms.commonmouldmng.CommonMouldMngDO> {
 
 
 }
