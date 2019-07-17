@@ -129,12 +129,10 @@
 
 
 	<select id="getMouldTypeContent"  parameterType="map" resultType="map">
-		select a.*,b.* from sys_mould_info a LEFT JOIN mould_type b on a.mould_type = b.mould_type_id
+		select a.mould_id,a.mould_name,a.mould_content from sys_mould_info a
 		<where>
 			<include refid="where" />
 		</where>
-		<if test="_sql_order != null and _sql_order != ''">
-			order by ${_sql_order}
-		</if>
+		order by mould_id desc
 	</select>
 </mapper>

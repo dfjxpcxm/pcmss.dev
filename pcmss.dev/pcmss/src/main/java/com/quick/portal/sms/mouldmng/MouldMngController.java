@@ -93,8 +93,10 @@ public class MouldMngController extends SysBaseController<MouldMngDO> {
     @ResponseBody
     public Object getMouldTypeContent(String mould_type) throws Exception {
         Map<String, Object> queryMap = new HashMap<String,Object>();
-        queryMap.put("mould_type",mould_type);
-        List<Map<String, Object>> list = mouldMngService.select(queryMap);
+        if (!mould_type.equals("") || mould_type != ""){
+            queryMap.put("mould_type",mould_type);
+        }
+        List<Map<String, Object>> list = mouldMngService.getMouldTypeContent(queryMap);
         return new JsonDataGrid(list.size(), list).toObj();
     }
 

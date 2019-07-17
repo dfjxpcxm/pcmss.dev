@@ -59,7 +59,6 @@ public class MouldMngDO implements java.io.Serializable {
      *模板内容
      */
     private String  mould_content;
-    private String  mould_fields;
 
     /*
     * 模板类别：验证码通知/短信通知/系统通知/推广短信/群发助手
@@ -169,14 +168,6 @@ public class MouldMngDO implements java.io.Serializable {
 
     public void setCommon_mould_id(Integer common_mould_id) {
         this.common_mould_id = common_mould_id;
-    }
-
-    public String getMould_fields() {
-        return mould_fields;
-    }
-
-    public void setMould_fields(String mould_fields) {
-        this.mould_fields = mould_fields;
     }
 
     public Integer getMould_num() {

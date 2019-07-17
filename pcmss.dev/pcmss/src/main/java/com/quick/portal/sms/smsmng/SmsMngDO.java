@@ -67,7 +67,6 @@ public class SmsMngDO implements java.io.Serializable {
     private String  sms_content;
 
     private String  mould_content;
-    private String  mould_fields;
     private String  sid;
     /*
      * 短信接受者：手机段/自定义号
@@ -201,14 +200,6 @@ public class SmsMngDO implements java.io.Serializable {
 
     public void setMould_content(String mould_content) {
         this.mould_content = mould_content;
-    }
-
-    public String getMould_fields() {
-        return mould_fields;
-    }
-
-    public void setMould_fields(String mould_fields) {
-        this.mould_fields = mould_fields;
     }
 
     public Integer getMun_id() {

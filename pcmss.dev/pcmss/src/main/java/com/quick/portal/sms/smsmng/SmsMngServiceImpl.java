@@ -189,10 +189,10 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         boolean bool = false;
         //调用指定模板单发
         List<String> params = new ArrayList<String>();
-        if(entity.getMould_fields() != null && !"".equals(entity.getMould_fields())){
+       /* if(entity.getMould_fields() != null && !"".equals(entity.getMould_fields())){
             String [] parms = entity.getMould_fields().split(",");
             params = Arrays.asList(parms);
-        }
+        }*/
         String sname = this.getSignName(entity.getSign_id());
         try{
             if(entity.getMould_ty()==1){

@@ -261,4 +261,9 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
         }
         return entity;
     }
+
+    @Override
+    public List<Map<String, Object>> getMouldTypeContent(Map<String, Object> queryMap) {
+        return dao.getMouldTypeContent(queryMap);
+    }
 }
