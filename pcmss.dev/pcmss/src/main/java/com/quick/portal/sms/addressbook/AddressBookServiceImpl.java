@@ -68,15 +68,7 @@ public class AddressBookServiceImpl extends SysBaseService<AddressBookDO> implem
     @Override
     public DataStore delete(String sysid) {
         dao.delete(sysid);
-        ArrayList<String> tplIds = new ArrayList<>();
-        tplIds.add(sysid);
-        //调用删除签名接口
-        try{
-            SmsRemoveReplyResult tplReplyResult = smsTemple.removeTempleInfo(tplIds, SmsConstants.MOD_TEMPLATE_URL);
-        }catch (Exception e){
-            System.out.println("调用删除模板接口失败！"+e.getLocalizedMessage());
-            return null;
-        }
+
         return ActionMsg.setOk("操作成功");
     }
 }

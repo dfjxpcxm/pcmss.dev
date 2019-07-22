@@ -301,6 +301,7 @@ function chosebox(nid, url,id, fn, opt){
     if(!layer.values)
         layer.values = {};
     var val = $("#"+id).val();
+    alert(""+val);
     opt = opt || {};
     var d = {
         type: 2

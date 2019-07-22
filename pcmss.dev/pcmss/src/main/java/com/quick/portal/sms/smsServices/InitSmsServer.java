@@ -40,6 +40,17 @@ public class InitSmsServer {
 	     return server;
     }
 
+
+
+    public static void main (String [] args){
+		String strPrefix = SmsConstants.PIC_BASE64_PREFIX;
+		String strSuffix = SmsConstants.PIC_BASE64_SUFFIX;
+		String str = strPrefix.concat(strSuffix);
+		System.out.println("strPrefix:"+strPrefix);
+		System.out.println("strSuffix:"+strSuffix);
+		System.out.println("str:"+str);
+	}
+
     
 
 

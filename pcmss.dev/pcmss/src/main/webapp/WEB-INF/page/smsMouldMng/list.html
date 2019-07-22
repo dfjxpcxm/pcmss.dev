@@ -150,6 +150,30 @@
 		var s= queryParm + "&IpageNum="+pageNum+"&IpageSize="+pageSize;
 		return s;
 	}
+
+	   function syncMould(){
+		   var infoBefore = "确认同步短信模板信息吗？<br/>同步后，短信模板状态将更新后显示！";
+		   var infoAfter = "同步短信模板信息成功！";
+		   var title = "同步短信模板信息";
+		   layer.confirm(
+				   infoBefore,
+				   {icon: 3, title: title, skin: 'layer-ext-moon'},
+				   function () {
+					   $.ajax({
+						   type: "post",
+						   url: quick.serverUrl + '/syncMouldInfo' ,
+						   dataType: "json",
+						   success: function (data) {
+							   layer.msg(infoAfter, {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+							    _gd["list"].refresh();
+						   },
+						   error: function (err) {
+							   layer.msg("结果异常！", {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+						   }
+					   });
+				   }
+		   );
+	   }
   </script>
   <body class="gray-bg">
   <div class="wrapper wrapper-content wrapper-content-x animated fadeInRight">
@@ -164,10 +188,22 @@
 									  <input maxlength="20" id="mould_name" name="mould_name" class="input-sm form-control"
 											 type="text" placeholder="模板名称"/>
 								  </div>
-								  <span class="input-group-btn" style="display:inline-block;"><button class="btn btn-primary " type="button" onclick="query();"> 查询</button> </span>
-								  <div class="form-group" style="width:100px;float:right;">
-									  <button type="button" class="btn btn-primary" onclick="location.href='edit';"> 新增模板
-									  </button>
+
+								  <div class="form-group" style="left: auto;width:80px;">
+                                	<span class="input-group-btn" style="display:inline-block;"><button
+										class="btn btn-primary " type="button" onclick="query();"> 查询</button> </span>
+								  </div>
+
+								  <div class="form-group" style="left: auto;width:80px;">
+                               	 <span class="input-group-btn" style="display:inline-block;"><button
+										class="btn btn-primary " type="button"
+										onclick="syncMould();"> 同步模板</button></span>
+								  </div>
+
+								  <div class="form-group" style="left: auto;width:80px;">
+                                	<span class="input-group-btn" style="display:inline-block;"><button
+										class="btn btn-primary " type="button"
+										onclick="location.href='edit';"> 新增模板</button></span>
 								  </div>
 							  </form>
 						</div>

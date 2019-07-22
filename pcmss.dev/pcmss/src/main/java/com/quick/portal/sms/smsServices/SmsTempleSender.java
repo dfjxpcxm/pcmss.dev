@@ -136,7 +136,7 @@ public class SmsTempleSender {
 	 * @throws Exception
 	 */
 	public SmsRemoveReplyResult removeTempleInfo(
-			List<String> tplIds,
+			List<Integer> tplIds,
 			String url) throws Exception {
 
 /*
@@ -163,7 +163,7 @@ public class SmsTempleSender {
 				"appkey=%s&random=%d&time=%d",
 				appkey, random, curTime)));
 		data.put("time", curTime);
-		data.put("tpl_id", util.smsParamsToJSONArray(tplIds));
+		data.put("tpl_id", util.paramsToJSONArray(tplIds));
 
 		// 与上面的 random 必须一致
 		String wholeUrl = String.format("%s?sdkappid=%d&random=%d", url, appid, random);
@@ -206,7 +206,7 @@ public class SmsTempleSender {
 	 * @throws Exception
 	 */
 	public SmsTemplePullerReplyResult getTempleStatusPullerInfoByTplId(
-			ArrayList<String>  tplIds,
+			ArrayList<Integer>  tplIds,
 			String url) throws Exception {
 
 /*
@@ -247,7 +247,7 @@ public class SmsTempleSender {
 				"appkey=%s&random=%d&time=%d",
 				appkey, random, curTime)));
 		data.put("time", curTime);
-		data.put("tpl_id", util.smsParamsToJSONArray(tplIds));
+		data.put("tpl_id", util.paramsToJSONArray(tplIds));
 		// 与上面的 random 必须一致
 		String wholeUrl = String.format("%s?sdkappid=%d&random=%d", url, appid, random);
 		HttpURLConnection conn = util.getPostHttpConn(wholeUrl);

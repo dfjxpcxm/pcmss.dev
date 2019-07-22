@@ -31,5 +31,10 @@ public interface ISignMngDao<SignMngDO> extends ISysBaseDao<SignMngDO> {
 
     public   List<Map<String, Object>> getSignTypeData();
 
+    public  List<Map<String, Object>> getSignStauteInfo();
+
+
+    public void updateReplyResult(com.quick.portal.sms.signmng.SignMngDO entity);
+
 
 }

@@ -135,4 +135,33 @@
 		</where>
 		order by mould_id desc
 	</select>
+
+
+	<select id="getMouldStauteInfo"  resultType="map">
+		select mould_num from sys_mould_info where mould_state in (1,2)
+	</select>
+
+	<update id="updateReplyResult" parameterType="com.quick.portal.sms.signmng.SignMngDO">
+		update sys_mould_info
+		set 	upd_time= now()
+		<if test="mould_name != null and mould_name != '' and !'null'.equals(mould_name)"><![CDATA[
+		   ,mould_name=#{mould_name}
+    	]]></if>
+		<if test="mould_content != null and mould_content != '' and !'null'.equals(mould_content)"><![CDATA[
+	       ,mould_content=#{mould_content}
+
+	    ]]></if>
+		<if test="mould_type != null"><![CDATA[
+		   ,mould_type=#{mould_type}
+		]]></if>
+
+		<if test="mould_state != null"><![CDATA[
+			  ,mould_state=#{mould_state}
+		]]></if>
+
+		<if test="remarks != null and remarks != '' and !'null'.equals(remarks)"><![CDATA[
+	       ,remarks=#{remarks}
+	    ]]></if>
+		where mould_num = #{mould_num}
+	</update>
 </mapper>

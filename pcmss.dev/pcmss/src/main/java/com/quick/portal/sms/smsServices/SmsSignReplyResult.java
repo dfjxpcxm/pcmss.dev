@@ -21,15 +21,19 @@ public class SmsSignReplyResult {
 		public int status;
 		public String text;
 
+		public String reply;
+
 		public String toString(){
 			return String.format(
 					"id:%d\t"
 					+"international:%d\t"
 					+"status:%d\t"
+				    +"reply:%s\n"
 					+"text:%s\n",
 					id,
 					international,
 					status,
+					reply,
 					text
 			  );
 		}

@@ -187,7 +187,12 @@ public class TempleApiController extends SysApiController {
             throw new Exception("tplIds " + tplIds + " error");
         }
         String [] ids = tplIds.split(",");
-        List<String> tplId = Arrays.asList(ids);
+        ArrayList<Integer> tplId = new ArrayList<>();
+        for(int i=0; i< ids.length;i++){
+            tplId.add(Integer.valueOf(ids[i]));
+        }
+
+ //       List<String> tplId = Arrays.asList(ids);
         String url = SmsConstants.DEL_TEMPLATE_URL;
         SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsRemoveReplyResult smsTplRemoveReplyResult = templeMng.removeTempleInfo(tplId,url);
@@ -236,7 +241,11 @@ public class TempleApiController extends SysApiController {
             throw new Exception("tplIds " + tplIds + " error");
         }
         String [] ids = tplIds.split(",");
-        ArrayList<String> tplId = (ArrayList<String>) Arrays.asList(ids);
+        ArrayList<Integer> tplId = new ArrayList<>();
+        for(int i=0; i< ids.length;i++){
+            tplId.add(Integer.valueOf(ids[i]));
+        }
+//        ArrayList<String> tplId = (ArrayList<String>) Arrays.asList(ids);
         String url = SmsConstants.GET_TEMPLATE_URL;
         SmsTempleSender templeMng = new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsTemplePullerReplyResult templePullerReplyResult = templeMng.getTempleStatusPullerInfoByTplId(tplId,url);

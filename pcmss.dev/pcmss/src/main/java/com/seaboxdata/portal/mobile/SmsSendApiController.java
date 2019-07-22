@@ -76,13 +76,13 @@ public class SmsSendApiController extends SysApiController {
      * }
      *
      * 指定模板单发
-     * @param nationCode 国家码，如 86 为中国
-     * @param phoneNumber 不带国家码的手机号
-     * @param templId 信息内容
-     * @param params 模板参数列表，如模板 {1},{2},{3}，那么需要带三个参数
-     * @param sign 签名，如果填空，系统会使用默认签名
-     * @param extend 扩展码，可填空
-     * @param ext 服务端原样返回的参数，可填空
+     * param nationCode 国家码，如 86 为中国
+     * param phoneNumber 不带国家码的手机号
+     * param templId 信息内容
+     * param params 模板参数列表，如模板 {1},{2},{3}，那么需要带三个参数
+     * param sign 签名，如果填空，系统会使用默认签名
+     * param extend 扩展码，可填空
+     * param ext 服务端原样返回的参数，可填空
      * @return
      */
     @RequestMapping(value = "/sendsms")
@@ -207,7 +207,11 @@ public class SmsSendApiController extends SysApiController {
             throw new Exception("tplIds " + tplIds + " error");
         }
         String [] ids = tplIds.split(",");
-        ArrayList<String> tplId = (ArrayList<String>) Arrays.asList(ids);
+        ArrayList<Integer> tplId = new ArrayList<>();
+        for(int i=0; i< ids.length;i++){
+            tplId.add(Integer.valueOf(ids[i]));
+        }
+//        ArrayList<String> tplId = (ArrayList<String>) Arrays.asList(ids);
         String url = SmsConstants.DEL_TEMPLATE_URL;
         SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsRemoveReplyResult smsTplRemoveReplyResult = templeMng.removeTempleInfo(tplId,url);
@@ -256,7 +260,11 @@ public class SmsSendApiController extends SysApiController {
             throw new Exception("tplIds " + tplIds + " error");
         }
         String [] ids = tplIds.split(",");
-        ArrayList<String> tplId = (ArrayList<String>) Arrays.asList(ids);
+//        ArrayList<String> tplId = (ArrayList<String>) Arrays.asList(ids);
+        ArrayList<Integer> tplId = new ArrayList<>();
+        for(int i=0; i< ids.length;i++){
+            tplId.add(Integer.valueOf(ids[i]));
+        }
         String url = SmsConstants.GET_TEMPLATE_URL;
         SmsTempleSender templeMng = new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsTemplePullerReplyResult templePullerReplyResult = templeMng.getTempleStatusPullerInfoByTplId(tplId,url);

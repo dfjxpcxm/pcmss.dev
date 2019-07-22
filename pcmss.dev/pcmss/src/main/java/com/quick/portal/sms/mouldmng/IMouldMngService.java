@@ -19,6 +19,7 @@
 package com.quick.portal.sms.mouldmng;
 
 import com.quick.core.base.ISysBaseService;
+import com.quick.core.base.model.DataStore;
 import com.quick.core.base.model.PageBounds;
 
 import java.util.List;
@@ -38,4 +39,7 @@ public interface IMouldMngService extends ISysBaseService<MouldMngDO> {
 
 
     List<Map<String, Object>> getMouldTypeContent(Map<String, Object> queryMap);
+
+
+    public DataStore syncMouldInfo();
 }

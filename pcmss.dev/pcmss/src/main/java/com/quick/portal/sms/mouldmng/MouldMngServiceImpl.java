@@ -27,8 +27,10 @@ import com.quick.core.util.common.ReflectUtil;
 import com.quick.portal.sms.signmng.SignMngDO;
 import com.quick.portal.sms.smsServices.SmsConstants;
 import com.quick.portal.sms.smsServices.SmsRemoveReplyResult;
+import com.quick.portal.sms.smsServices.SmsSignPullerReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignSender;
+import com.quick.portal.sms.smsServices.SmsTemplePullerReplyResult;
 import com.quick.portal.sms.smsServices.SmsTempleReplyResult;
 import com.quick.portal.sms.smsServices.SmsTempleSender;
 import com.quick.portal.sms.smsmng.SmsMngDO;
@@ -62,7 +64,7 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
         BaseComment = "sys_mould_info";
         PrimaryKey = "mould_id";
         NameKey = "mould_id";
-
+        smsTemple = new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         setDao(dao);
         this.dao = dao;
     }
@@ -89,7 +91,7 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
         boolean bool = false;
         //如果编号为空,新增实体对象,否则更新实体对象
         Integer keyVal = entity.getMould_id();
-        smsTemple = new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+
         int c = 0;
         if (keyVal == null || keyVal == 0) {
             entity.setMould_state(1);
@@ -100,8 +102,12 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
             bool =  sendAddTplInfo(entity,keyVal);
         } else {
             c = dao.update(entity);
-            //调用修改模板接口
-            bool =  sendModTplInfo(entity,keyVal);
+            if(null != entity.getMould_num() && entity.getMould_num()>0){
+                //调用修改模板接口
+                bool =  sendModTplInfo(entity,keyVal);
+            }else{
+                bool =  sendAddTplInfo(entity,keyVal);
+            }
         }
         if (c == 0) {
             return ActionMsg.setError("操作失败");
@@ -216,9 +222,9 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
      */
     @Override
     public DataStore delete(String sysid) {
-        String snum = getTplInfoByID(sysid);
+        Integer snum = getTplInfoByID(sysid);
         dao.delete(sysid);
-        ArrayList<String> tplNums = new ArrayList<>();
+        ArrayList<Integer> tplNums = new ArrayList<>();
         tplNums.add(snum);
         //调用删除签名接口
         try{
@@ -233,14 +239,14 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     /**
      * 通过签名ID查询签名签名编号
      */
-    public String getTplInfoByID(String sysid){
-        String snum = "";
+    public Integer getTplInfoByID(String sysid){
+        Integer snum = 0;
         Map<String, Object> map = new HashMap<>();
         map.put("mould_id",sysid);
         List<Map<String, Object>> retList = dao.select(map);
         if(null !=retList && retList.size()>0){
             Map<String, Object> mp = retList.get(0);
-            snum = mp.get("mould_num").toString();
+            snum = Integer.valueOf(mp.get("mould_num").toString());
         }
         return snum;
     }
@@ -265,5 +271,71 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     @Override
     public List<Map<String, Object>> getMouldTypeContent(Map<String, Object> queryMap) {
         return dao.getMouldTypeContent(queryMap);
+    }
+
+    @Override
+    public DataStore syncMouldInfo() {
+        //查询拒绝待审核的签名信息
+        List<Map<String, Object>> retList = dao.getMouldStauteInfo();
+        ArrayList<Integer>  tplIds = new ArrayList<>();
+        if(null != retList && retList.size()>0){
+            for(Map<String, Object> mp :retList){
+                tplIds.add(Integer.valueOf(mp.get("mould_num").toString()));
+            }
+            //短信模板状态查询
+            try{
+                SmsTemplePullerReplyResult replyRest = smsTemple.getTempleStatusPullerInfoByTplId(tplIds,SmsConstants.GET_TEMPLATE_URL);
+                ParseReplyResult(replyRest);
+            }catch (Exception e){
+                System.out.println("短信模板状态查询！"+e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+
+        }
+        return ActionMsg.setOk("同步成功");
+    }
+
+
+    /**
+     *
+     * 解析签名返回内容
+     *{
+     *     "result": 0,
+     *     "errmsg": "",
+     *     "total": 10,
+     *     "count": 1,
+     *     "data": [
+     *         {
+     *             "id": 123,
+     *             "international": 0,
+     *             "reply": "xxxxx",
+     *             "status": 0,
+     *             "text": "xxxxx",
+     *             "type": 0,
+     *             "title": "xxxxx",
+     *             "apply_time": "xxxxx",
+     *             "reply_time": "xxxxx"
+     *         }
+     *     ]
+     * }
+     * }
+     *
+     */
+    public void ParseReplyResult (SmsTemplePullerReplyResult tplReplyResult){
+        int result = tplReplyResult.result;
+        MouldMngDO entity  = new MouldMngDO();
+        if(result == 0){
+            ArrayList<SmsTemplePullerReplyResult.data> datas = tplReplyResult.datas;
+            for(SmsTemplePullerReplyResult.data dt : datas){
+                entity = new MouldMngDO();
+                entity.setMould_num(dt.id);
+                entity.setRemarks(dt.reply);
+                entity.setMould_state(dt.status);
+                entity.setMould_content(dt.text);
+                entity.setMould_type(dt.type);
+                entity.setMould_name(dt.title);
+                dao.updateReplyResult(entity);
+            }
+        }
     }
 }

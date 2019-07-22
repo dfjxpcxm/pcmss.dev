@@ -35,4 +35,9 @@ public interface IMouldMngDao<MouldMngDO> extends ISysBaseDao<MouldMngDO> {
     public List<Map<String, Object>> getMouldTypeContent(Map<String, Object> queryMap);
 
 
+    public List<Map<String, Object>> getMouldStauteInfo();
+
+    public void updateReplyResult(MouldMngDO mngDO);
+
+
 }

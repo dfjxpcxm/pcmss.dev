@@ -44,15 +44,18 @@
                             <div class="form-group">
                                 <label class="col-xs-3 lable_top" style="width:115px;"><span class="span_require">*</span>模板内容</label>
                                 <div class="col-xs-9" style="width:89%;">
-                                    <textarea style="height:72px;width:100%;resize:none;" class="form-control required" id="mould_content" placeholder="变量格式：$/{code}；示例：您的验证码为：$/{code}，该验证码 5 分钟内有效，请勿泄漏于他人。" name="mould_content"></textarea>
+                                    <textarea style="height:72px;width:100%;resize:none;" class="form-control required" id="mould_content" placeholder="模板示例：{1}为您的登录验证码，请于{2}分钟内填写。如非本人操作，请忽略本短信。&#10;（其中{数字}为可自定义的内容，须从1开始连续编号，如{1}、{2}等）" name="mould_content"></textarea>
                                     <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;">
                                         想快速获得可用模版，可使用 <button class="btn btn-default" style="padding:1px 5px;" type="button" onclick="choseboxType('mould_content', '${G.serverUrl}/chose','mould_type');">常用模版库</button></a>
                                     </div>
                                     <div class="col-xs-9" style="margin-bottom: 5px;margin-left:-30px;position: relative;font-size: 10px;">
                                         <ul>
-                                            <li>· 验证码模板只支持验证码作为变量；变量替换值<=6位数字或字母</li>
-                                            <li>· 不能发送营销/贷款/借款/中奖/抽奖类短信,不支持金融理财&房产通知类短信(验证码除外)</li>
-                                            <li>· 签名/模版申请规范 <a href="https://help.aliyun.com/document_detail/55324.html">https://help.aliyun.com/document_detail/55324.html</a> </li>
+                                            <li> 1.长度不超过500字。单条短信超过70字后，按67字/条分多条计费</li>
+                                            <li> 2.营销类短信，请在短信内容后面增加“回T退订”</li>
+                                            <li> 3.短信模板内容不能含有【】符号</li>
+                                            <li> 4.不能发送房产、移民、贷款、政治、色情暴力等违法短信 详情>></br>
+                                                模板示例：{1}为您的登录验证码，请于{2}分钟内填写。如非本人操作，请忽略本短信。</br>（其中{数字}为可自定义的内容，须从1开始连续编号，如{1}、{2}等）
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -94,7 +97,7 @@
 						    <div class="form-group">
 							    <div class="col-xs-6">
                     		        <input type="hidden" id="mould_id" name="mould_id" />
-                    		  <!--      <input type="hidden" id="common_mould_id" name="common_mould_id" />-->
+                    		        <input type="hidden" id="mould_num" name="mould_num" />
                                     <input type="hidden" id="mould_state" name="mould_state" />
                                     <input type="hidden" id="mould_author" name="mould_author" value="${mould_author}"/>
                                     <input id="submit-form" type="button" class="btn btn-primary" style="margin-left: 52px" value="保存" onclick="return thingOver();">

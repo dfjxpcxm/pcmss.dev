@@ -4,9 +4,10 @@
 	
 	<bean id="ldapSource"
 		class="org.springframework.ldap.core.support.LdapContextSource">
-		<property name="url" value="ldap://192.168.52.137:389" />
-		<property name="password" value="ldap123" />
-		
+		<property name="url" value="ldap://106.52.132.19:389" />
+	<!--	<property name="url" value="ldap://192.168.52.137:389" />-->
+		<property name="password" value="123456" />
+		<!--<property name="password" value="ldap123" />-->
 		<property name="base" value="dc=pcdomain,dc=com"/>
 		<property name="userDn" value="cn=Manager,dc=pcdomain,dc=com" />
 		<!--

@@ -25,6 +25,7 @@ import com.quick.core.util.common.DateTime;
 import com.quick.portal.appClass.AppClassDO;
 import com.quick.portal.sms.smsServices.SmsConstants;
 import com.quick.portal.sms.smsServices.SmsRemoveReplyResult;
+import com.quick.portal.sms.smsServices.SmsSignPullerReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,7 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
         BaseComment = "sys_sign_info";
         PrimaryKey = "sign_id";
         NameKey = "sign_id";
+        smsSign = new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         setDao(dao);
         this.dao = dao;
     }
@@ -71,7 +73,6 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
         boolean bool = false;
         //如果编号为空,新增实体对象,否则更新实体对象
         Integer id = entity.getSign_id();
-        smsSign = new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         int c = 0;
         if(id == null || id == 0) {
             //0：已通过, 1：待审核, 2：已拒绝
@@ -84,8 +85,13 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
         }else {
             entity.setSign_state(1);
             c = dao.update(entity);
-            //调用修改签名接口
-            bool = sendModSignInfo(entity, id);
+            if(null != entity.getSign_num() && entity.getSign_num()>0){
+                //调用修改签名接口
+                bool = sendModSignInfo(entity, id);
+            }else{
+                bool = sendAddSignInfo(entity, id);
+            }
+
         }
         if(c == 0) {
             return ActionMsg.setError("操作失败");
@@ -194,9 +200,9 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
      */
     @Override
     public DataStore delete(String sysid) {
-        String snum = getSignInfoByID(sysid);
+        Integer snum = getSignInfoByID(sysid);
         dao.delete(sysid);
-        ArrayList<String> signNums = new ArrayList<>();
+        ArrayList<Integer> signNums = new ArrayList<>();
         signNums.add(snum);
         //调用删除签名接口
         try{
@@ -212,14 +218,14 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
     /**
      * 通过签名ID查询签名签名编号
      */
-    public String getSignInfoByID(String sysid){
-        String snum = "";
+    public Integer getSignInfoByID(String sysid){
+        Integer snum = 0;
         Map<String, Object> map = new HashMap<>();
         map.put("sign_id",sysid);
         List<Map<String, Object>> retList = dao.select(map);
         if(null !=retList && retList.size()>0){
             Map<String, Object> mp = retList.get(0);
-            snum = mp.get("sign_num").toString();
+            snum = Integer.valueOf(mp.get("sign_num").toString());
         }
         return snum;
     }
@@ -238,5 +244,65 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
             sname = mp.get("sign_name").toString();
         }
         return sname;
+    }
+
+
+    @Override
+    public DataStore syncSignInfo() {
+        //查询拒绝待审核的签名信息
+        List<Map<String, Object>> retList = dao.getSignStauteInfo();
+        ArrayList<Integer>  signIds = new ArrayList<>();
+        if(null != retList && retList.size()>0){
+            for(Map<String, Object> mp :retList){
+                signIds.add(Integer.valueOf(mp.get("sign_num").toString()));
+            }
+            //短信签名状态查询
+            try{
+                SmsSignPullerReplyResult replyRest = smsSign.getSignStatusPullerInfo(signIds,SmsConstants.GET_SIGN_URL);
+                ParseReplyResult(replyRest);
+            }catch (Exception e){
+                System.out.println("短信签名状态查询！"+e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+
+        }
+        return ActionMsg.setOk("同步成功");
+
+    }
+
+    /**
+     *
+     * 解析签名返回内容
+     *
+     * {
+     *     "result": 0,
+     *     "errmsg": "",
+     *     "count": 3,
+     *     "data": [{
+     *         "id": 123,
+     *         "international": 0,
+     *         "reply": "xxxxx",
+     *         "status": 0,
+     *         "text": "xxxxx",
+     *         "apply_time": "2018-04-29 10:34:55",
+     *         "reply_time": "2018-04-29 10:39:55"
+     *     }]
+     * }
+     *
+     */
+    public void ParseReplyResult (SmsSignPullerReplyResult signReplyResult){
+        int result = signReplyResult.result;
+        SignMngDO entity = new SignMngDO();
+        if(result == 0){
+            ArrayList<SmsSignPullerReplyResult.data> datas = signReplyResult.datas;
+            for(SmsSignPullerReplyResult.data dt : datas){
+                entity = new SignMngDO();
+                entity.setSign_num(dt.id);
+                entity.setSign_name(dt.text);
+                entity.setRemarks(dt.reply);
+                entity.setSign_state(dt.status);
+                dao.updateReplyResult(entity);
+            }
+        }
     }
 }

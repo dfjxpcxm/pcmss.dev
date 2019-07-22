@@ -15,9 +15,17 @@
     
      <!--根据MENU查询一个对象-->
     <select id="searchMainFrame" parameterType="int" resultMap="mainFrameResult">
-	<![CDATA[		        
-			(SELECT
-					DISTINCT U.MENU_ID,
+	<![CDATA[
+		SELECT
+					DISTINCT c.MENU_ID,
+					c.MENU_CN_NAME,
+					c.MENU_ICON_URL,
+					c.SUPER_MENU_ID,
+					c.MENU_URL,
+					c.DISP_ORDER
+			FROM(
+			SELECT
+				    U.MENU_ID,
 					U.MENU_CN_NAME,
 					U.MENU_ICON_URL,
 					U.SUPER_MENU_ID,
@@ -35,14 +43,14 @@
 			AND U.MENU_STATE = 1
 			AND R.ROLE_STATE = 1
 			AND A.USER_ID = #{userId}
-			ORDER BY U.DISP_ORDER DESC,
-				U.MENU_ID)
-				UNION
-(SELECT a.MENU_ID,a.MENU_CN_NAME,a.MENU_ICON_URL,a.SUPER_MENU_ID,a.MENU_URL,a.DISP_ORDER FROM sys_menu a , jurisdiction_entrust b
-WHERE a.menu_id = b.menu_id
-and  b.to_user_id = #{userId})
-
-				
+			UNION
+              (SELECT a.MENU_ID,a.MENU_CN_NAME,a.MENU_ICON_URL,a.SUPER_MENU_ID,a.MENU_URL,a.DISP_ORDER FROM sys_menu a , jurisdiction_entrust b
+                WHERE a.menu_id = b.menu_id
+                and  b.to_user_id = #{userId}
+                )
+		  )c
+		  ORDER BY c.DISP_ORDER DESC,
+		  c.MENU_ID
 		]]>
 	
     </select>

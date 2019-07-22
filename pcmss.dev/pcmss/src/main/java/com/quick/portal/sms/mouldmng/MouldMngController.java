@@ -108,4 +108,14 @@ public class MouldMngController extends SysBaseController<MouldMngDO> {
         return save(model);
 
     }
+
+
+
+
+    @RequestMapping(value = "/syncMouldInfo")
+    @ResponseBody
+    public DataStore syncMouldInfo() {
+        DataStore ds = mouldMngService.syncMouldInfo();
+        return ds;
+    }
 }

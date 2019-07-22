@@ -118,6 +118,14 @@ class SmsSenderUtil {
 		}
         return smsParams;
     }
+
+	public JSONArray paramsToJSONArray(List<Integer> params) {
+		JSONArray smsParams = new JSONArray();
+		for (int i = 0; i < params.size(); i++) {
+			smsParams.put(params.get(i));
+		}
+		return smsParams;
+	}
     
     public SmsSingleSenderResult jsonToSmsSingleSenderResult(JSONObject json) {
     	SmsSingleSenderResult result = new SmsSingleSenderResult();
@@ -227,7 +235,15 @@ class SmsSenderUtil {
 			return result;
 		}
 		result.datas = new ArrayList<>();
-		JSONArray datas  = json.getJSONArray("data");
+		JSONObject datas = json.getJSONObject("data");
+		SmsSignReplyResult.data reply = result.new data();
+		reply.id = datas.getInt("id");
+		reply.international = datas.getInt("international");
+		reply.status = datas.getInt("status");
+		reply.text = datas.getString("text");
+		result.datas.add(reply);
+
+		/*JSONArray datas  = json.getJSONArray("data");
 		for(int index = 0 ; index< datas.length(); index++){
 			JSONObject reply_json = datas.getJSONObject(index);
 			SmsSignReplyResult.data reply = result.new data();
@@ -236,7 +252,7 @@ class SmsSenderUtil {
 			reply.status = reply_json.getInt("status");
 			reply.text = reply_json.getString("text");
 			result.datas.add(reply);
-		}
+		}*/
 		return result;
 	}
 
@@ -274,7 +290,20 @@ class SmsSenderUtil {
 		return result;
 	}
 
-
+	/**
+	 * {
+	 *     "result": 0,
+	 *     "errmsg": "",
+	 *     "data": {
+	 *         "id": 123,
+	 *         "international": 0,
+	 *         "status": 1,
+	 *         "text": "xxxxx",
+	 *         "type": 0
+	 *     }
+	 * }
+	 *
+	 */
 	public SmsTempleReplyResult jsonToSmsTmplReplyResult(JSONObject json) {
 		SmsTempleReplyResult result = new SmsTempleReplyResult();
 		result.result = json.getInt("result");
@@ -283,8 +312,17 @@ class SmsSenderUtil {
 			return result;
 		}
 		result.datas = new ArrayList<>();
-		JSONArray datas  = json.getJSONArray("data");
-		for(int index = 0 ; index< datas.length(); index++){
+		JSONObject datas = json.getJSONObject("data");
+		SmsTempleReplyResult.data reply = result.new data();
+		reply.id = datas.getInt("id");
+		reply.international = datas.getInt("international");
+		reply.status = datas.getInt("status");
+		reply.text = datas.getString("text");
+		reply.type = datas.getInt("type");
+		result.datas.add(reply);
+
+
+/*		for(int index = 0 ; index< datas.length(); index++){
 			JSONObject reply_json = datas.getJSONObject(index);
 			SmsTempleReplyResult.data reply = result.new data();
 			reply.id = reply_json.getInt("id");
@@ -293,7 +331,7 @@ class SmsSenderUtil {
 			reply.text = reply_json.getString("text");
 			reply.type = reply_json.getInt("type");
 			result.datas.add(reply);
-		}
+		}*/
 		return result;
 	}
 

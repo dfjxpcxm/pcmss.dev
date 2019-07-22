@@ -76,11 +76,8 @@ public class SmsSignSender {
     }
 }
 */
-		if (null == pic || "".equals(pic)) {
-			pic = SmsConstants.PIC_BASE64_PREFIX.concat(SmsConstants.PIC_BASE64_SUFFIX);
-		}else{
-			pic = SmsConstants.PIC_BASE64_PREFIX +FileCodeForBase64.getImageStr("");
-		}
+
+		pic = SmsConstants.PIC_BASE64_SUFFIX;
 
 		// 校验 international 类型
 		if (0 != international && 1 != international) {
@@ -147,7 +144,7 @@ public class SmsSignSender {
 	 * @throws Exception
 	 */
 	public SmsRemoveReplyResult removeSignInfo(
-			ArrayList<String>  signId,
+			ArrayList<Integer>  signId,
 			String url) throws Exception {
 
 /*
@@ -174,7 +171,7 @@ public class SmsSignSender {
 		data.put("sig", util.strToHash(String.format(
 				"appkey=%s&random=%d&time=%d",
 				appkey, random, curTime)));
-		data.put("sign_id", util.smsParamsToJSONArray(signId));
+		data.put("sign_id", util.paramsToJSONArray(signId));
 		data.put("time", curTime);
 
 		// 与上面的 random 必须一致
@@ -220,7 +217,7 @@ public class SmsSignSender {
 	 * @throws Exception
 	 */
 	public SmsSignPullerReplyResult getSignStatusPullerInfo(
-			ArrayList<String>  signId,
+			ArrayList<Integer>  signId,
 			String url) throws Exception {
 
 /*
@@ -256,7 +253,7 @@ public class SmsSignSender {
 		data.put("sig", util.strToHash(String.format(
 				"appkey=%s&random=%d&time=%d",
 				appkey, random, curTime)));
-		data.put("sign_id", util.smsParamsToJSONArray(signId));
+		data.put("sign_id", util.paramsToJSONArray(signId));
 		data.put("time", curTime);
 		// 与上面的 random 必须一致
 		String wholeUrl = String.format("%s?sdkappid=%d&random=%d", url, appid, random);

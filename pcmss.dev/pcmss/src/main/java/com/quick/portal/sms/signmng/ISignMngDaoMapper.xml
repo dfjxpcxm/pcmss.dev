@@ -121,4 +121,25 @@
 		order by sign_type_id
 	</select>
 
+
+	<select id="getSignStauteInfo"  resultType="map">
+		select sign_num from sys_sign_info where sign_state in (1,2)
+	</select>
+
+	<update id="updateReplyResult" parameterType="com.quick.portal.sms.signmng.SignMngDO">
+		update sys_sign_info
+		set upd_time=now()
+		<if test="sign_name != null and sign_name != ''"> <![CDATA[
+            ,sign_name=#{sign_name}
+        ]]> </if>
+		<if test="sign_state != null"><![CDATA[
+	           ,sign_state=#{sign_state}
+	    ]]></if>
+		<if test="remarks != null and remarks != ''"> <![CDATA[
+            ,remarks=#{remarks}
+        ]]> </if>
+		where sign_num = #{sign_num}
+	</update>
+
+
 </mapper>

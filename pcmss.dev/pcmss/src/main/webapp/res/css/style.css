@@ -64,6 +64,7 @@ a:focus {
 .nav.navbar-right > li > a {
     color: #ffffff;
     background: fixed;
+    top: 10px;
 }
 
 .nav > li.active > a {
@@ -7591,7 +7592,7 @@ body.skin-3 {
 .nav-close {
     padding: 15px 10px 15px 20px;
     position: absolute;
-    top: 5px;
+    top: 12px;
     font-size: 1.4em;
     cursor: pointer;
     z-index: 10;

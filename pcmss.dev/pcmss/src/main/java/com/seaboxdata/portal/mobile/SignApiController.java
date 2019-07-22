@@ -187,10 +187,15 @@ public class SignApiController extends SysApiController {
         }
         String [] ids = signIds.split(",");
 
-        ArrayList<String> signId = (ArrayList<String>) Arrays.asList(ids);
+        ArrayList<Integer> sIds = new ArrayList<>();
+        for(int i= 0; i< ids.length;i++){
+            sIds.add(Integer.valueOf(ids[i]));
+        }
+
+//        ArrayList<String> signId = (ArrayList<String>) Arrays.asList(ids);
         String url = SmsConstants.DEL_SIGN_URL;
         SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
-        SmsRemoveReplyResult signReplyResult = signMng.removeSignInfo(signId,url);
+        SmsRemoveReplyResult signReplyResult = signMng.removeSignInfo(sIds,url);
         return signReplyResult;
     }
     
@@ -234,10 +239,14 @@ public class SignApiController extends SysApiController {
             throw new Exception("signIds " + signIds + " error");
         }
         String [] ids = signIds.split(",");
-        ArrayList<String> signId = (ArrayList<String>) Arrays.asList(ids);
+        ArrayList<Integer> sIds = new ArrayList<>();
+        for(int i= 0; i< ids.length;i++){
+            sIds.add(Integer.valueOf(ids[i]));
+        }
+//        ArrayList<Integer> signId = (ArrayList<Integer>) Arrays.asList(Integer.valueOf(ids));
         String url = SmsConstants.GET_SIGN_URL;
         SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
-        SmsSignPullerReplyResult signReplyResult = signMng.getSignStatusPullerInfo(signId,url);
+        SmsSignPullerReplyResult signReplyResult = signMng.getSignStatusPullerInfo(sIds,url);
         return signReplyResult;
     }
 }
