@@ -19,15 +19,15 @@
                             <div class="form-group">
                                 <label class="col-xs-3 lable_top" style="width:115px;"><span class="span_require">*</span>模板类型</label>
                                 <div class="col-xs-9" style="width:89%;">
-                                    <label class="radio-inline">
+                                   <!-- <label class="radio-inline">
                                     <input type="radio" name="mould_type" id="mould_type0" value="0" checked="checked" />
-                                    <label for="mould_type0"></label><span>验证码</span></label>&nbsp;
+                                    <label for="mould_type0"></label><span>验证码</span></label>&nbsp;-->
+                                    <label class="radio-inline">
+                                    <input type="radio" name="mould_type" id="mould_type0"  checked="checked" value="0" />
+                                    <label for="mould_type0"></label><span>普通短信</span></label>
                                     <label class="radio-inline">
                                     <input type="radio" name="mould_type" id="mould_type1" value="1" />
-                                    <label for="mould_type1"></label><span>短信通知</span></label>
-                                    <label class="radio-inline">
-                                    <input type="radio" name="mould_type" id="mould_type2" value="2" />
-                                    <label  for="mould_type2"></label><span>推广短信</span></label>
+                                    <label  for="mould_type1"></label><span>营销短信</span></label>
                                 </div>
 
                             </div>
@@ -36,7 +36,8 @@
                         <div class="col-sm-6 form_ipt_botm">
                             <div class="form-group">
                                 <label class="col-xs-3 lable_top"><span class="span_require">*</span>模板名称</label>
-                                <div class="col-xs-9"><input type="text" id="mould_name" placeholder="请输入名称 不超过30个字符" name="mould_name" class="form-control required" /></div>
+                                <div class="col-xs-9">
+                                    <input type="text" id="mould_name" placeholder="请输入名称 不超过30个字符" name="mould_name" class="form-control required" /></div>
                             </div>
                         </div>
 
@@ -210,5 +211,7 @@
         var o = $.extend(d, opt);
         layer.open(o);
     }
+
+
 </script>
 </html>

@@ -246,7 +246,10 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
         return sname;
     }
 
-
+    /**
+     * 从腾讯云短信服务器获取签名信息同步数据库
+     * @return
+     */
     @Override
     public DataStore syncSignInfo() {
         //查询拒绝待审核的签名信息
