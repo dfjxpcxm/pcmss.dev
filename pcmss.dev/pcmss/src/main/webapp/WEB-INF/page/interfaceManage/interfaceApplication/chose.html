@@ -26,7 +26,19 @@
                     { field: 'inter_id', title: '接口ID', width: 120  },
                    { field: 'inter_name', title: '接口名称', width: 120  },
                    { field: 'inter_desc', title: '接口描述', width: 100  },
-                   { field: 'inter_state', title: '接口状态', width: 80  },
+               {
+                   field: 'inter_state',
+                   title: '接口状态',
+                   width: 80,
+                   align: 'center',
+                   formatter: function (value, row, index) {
+                       var inter_state = '<span style="color:#CFCFCF">禁用</span>';
+                       if (row.inter_state == 1) {
+                           inter_state = '<span style="color:#9ACD32">激活</span>';
+                       }
+                       return inter_state;
+                   }
+               },
                    { field: 'cre_time', title: '创建时间', width: 100  }
     	   ],onClickRow:function(row,e){
                _chosen = row;
