@@ -15,22 +15,6 @@
 	       and sms_title  like CONCAT('%',#{sms_title},'%')
 	    ]]></if>
 
-        <if test="sms_content != null and sms_content != '' and !'null'.equals(sms_content)"><![CDATA[
-	       and sms_content  like CONCAT('%',#{sms_content},'%')
-	    ]]></if>
-
-		<if test="sms_rec_obj != null and sms_rec_obj != '' and !'null'.equals(sms_rec_obj)"><![CDATA[
-	       and sms_rec_obj = #{sms_rec_obj}
-	    ]]></if>
-
-		<if test="sms_author != null"><![CDATA[
-	       and sms_author = #{sms_author}
-	    ]]></if>
-
-		<if test="sms_state != null"><![CDATA[
-	       and sms_state = #{sms_state}
-	    ]]></if>
-
 		<if test="mould_id != null"><![CDATA[
 	       and mould_id = #{mould_id}
 	    ]]></if>
@@ -51,13 +35,9 @@
 
 	<!-- 新增sys_sign_info -->
 	<insert id="insert" parameterType="com.quick.portal.sms.smsmng.SmsMngDO">
-		insert into sys_sms_info (
+		replace into sms_info (
     		  sign_id,
     		  sms_title,
-    		  sms_content,
-    		  sms_rec_obj,
-    		  sms_author,
-    		  sms_state,
     		  mould_id,
     		  file_path,
     		  cre_time,
@@ -65,10 +45,6 @@
 		)values(
 			 #{sign_id},
 			 #{sms_title},
-			 #{sms_content},
-			 #{sms_rec_obj},
-			 #{sms_author},
-			 #{sms_state},
 			 #{mould_id},
 			 #{file_path},
 			 now(),
@@ -76,18 +52,24 @@
 			)
 	</insert>
 	<insert id="insertPhoneNUmList" parameterType="java.util.List">
-		replace into sms_phone_number
-		(phone_num,full_name)
+		insert into sms_send_info
+		(sms_id,sms_rec_obj,sms_content,sms_state,sid,cre_time,upd_time)
 		values
 		<foreach item="item" index="index" collection="list" separator=",">
 			(
-			#{item.phone_num,jdbcType=VARCHAR},#{item.full_name,jdbcType=VARCHAR}
+			#{item.sms_id,jdbcType=INTEGER},
+			#{item.sms_rec_obj,jdbcType=VARCHAR},
+			#{item.sms_content,jdbcType=VARCHAR},
+			#{item.sms_state,jdbcType=INTEGER},
+			#{item.sid,jdbcType=VARCHAR},
+			now(),
+			now()
 			)
 		</foreach>
 	</insert>
 	<!-- 修改app_class -->
 	<update id="update" parameterType="com.quick.portal.sms.smsmng.SmsMngDO">
-		update sys_sms_info
+		update sms_info
 		   set  upd_time=now()
 		<if test="sign_id != null"><![CDATA[
 		   	,sign_id=#{sign_id}
@@ -95,14 +77,6 @@
 		<if test="sms_title != null and sms_title != '' and !'null'.equals(sms_title)"><![CDATA[
 			  ,sms_title=#{sms_title}
 		  ]]> </if>
-		<if test="sms_content != null and sms_content != '' and !'null'.equals(sms_content)"><![CDATA[
-			  ,sms_content=#{sms_content}
-		]]> </if>
-		<if test="sms_rec_obj != null and sms_rec_obj != '' and !'null'.equals(sms_rec_obj)"><![CDATA[
-			  ,sms_rec_obj=#{sms_rec_obj}
-		]]> </if><if test="remarks != null and remarks != '' and !'null'.equals(remarks)"><![CDATA[
-			  ,remarks=#{remarks}
-		]]> </if>
 		<if test="sms_state != null"><![CDATA[
 			  ,sms_state=#{sms_state}
 		]]> </if>
@@ -111,11 +85,12 @@
 
 	<!-- 删除 -->
 	<delete id="delete" parameterType="String">
-		delete from sys_sms_info where sms_id = #{sms_id}
+		DELETE sms_info,sms_send_info from sms_info LEFT JOIN sms_send_info ON
+		sms_info.sms_id=sms_send_info.sms_id WHERE sms_info.sms_id = #{sms_id}
 	</delete>
 	<!--查询-->
 	<select id="select" parameterType="map" resultType="map">
-		select o.*,s.sign_name as sign_name,m.mould_name as  mould_name from sys_sms_info o left join sys_sign_info s
+		select o.*,s.sign_name as sign_name,m.mould_name as  mould_name,m.mould_content as mould_content from sms_info o left join sys_sign_info s
 		on o.sign_id =s.sign_id left join sys_mould_info m on o.mould_id = m.mould_id
 		<where>
 			<include refid="where" />
@@ -142,6 +117,14 @@
 	<select id="getMouldNameData"  resultType="map">
 		select mould_content as mould_content,mould_name as mould_name from sys_mould_info
 		order by mould_id
+	</select>
+
+	<select id="getSmsSendData"  parameterType="String" resultType="map">
+		select * from sms_send_info where sms_id = #{sms_id}
+	</select>
+
+	<select id="getSmsSendIdData"  parameterType="String" resultType="map">
+		select * from sms_send_info where send_id = #{send_id}
 	</select>
 
 
