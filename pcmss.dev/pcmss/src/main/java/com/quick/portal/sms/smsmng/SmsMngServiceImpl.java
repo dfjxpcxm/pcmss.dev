@@ -21,6 +21,7 @@ package com.quick.portal.sms.smsmng;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.csvreader.CsvReader;
 import com.quick.core.base.SysBaseService;
 import com.quick.core.base.model.DataStore;
 import com.quick.portal.search.infomng.ExcelResolve;
@@ -39,11 +40,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -74,8 +74,8 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
      */
     @Autowired
     public SmsMngServiceImpl(ISmsMngDao<SmsMngDO> dao) {
-        BaseTable = "sys_sms_info";
-        BaseComment = "sys_sms_info";
+        BaseTable = "sms_info";
+        BaseComment = "sms_info";
         PrimaryKey = "sms_id";
         NameKey = "sms_id";
 
@@ -95,62 +95,117 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
     public List<Map<String, Object>> getMouldNameData() {
         return dao.getMouldNameData();
     }
+
+    @Override
+    public List<Map<String, Object>> getSmsSendData(String smsID) {
+        return dao.getSmsSendData(smsID);
+    }
+
+    @Override
+    public Map<String, Object> getSmsSendIdData(String sendId) {
+        return dao.getSmsSendIdData(sendId);
+    }
+
     private Class<SmsMngDO> entityClass;
 
 
     /**
      *   批量上传电话号码
+     * @param entity
+     * @param id
      */
-    public  List<SmsMngDO> uploadPhoneNumInfo(String fileDir) {
-        ExcelResolve excelResolve = new ExcelResolve();
-        String filePath = fileDir;
-        File f1 = new File(filePath);
+    public  List<SmsMngDO> uploadPhoneNumInfo(SmsMngDO entity, int id) {
+        String filePath = entity.getFile_path();
+        SmsMngDO smsMngDO = null;
         List<SmsMngDO> phoneNUmList = new ArrayList<SmsMngDO>();
+        CsvReader reader = null;
+        //List<String[]> dataList = new ArrayList<String[]>();
+        //正则表达式判断参数
+        String reg="\\{+[0-9]+}";
         try {
-            JSONArray array = excelResolve.readExcel(f1);
-            SmsMngDO smsMngDO = null;
-            for (int i = 0; i < array.size(); i++) {
-                JSONObject job = array.getJSONObject(i);  // 遍历 jsonarray 数组，把每一个对象转成 json 对象
-                //System.out.println(job.get("number")) ;  // 得到 每个对象中的属性值
+            reader = new CsvReader(filePath,',',Charset.forName("GBK"));
+            reader.readHeaders();
+           // String[] headArray = reader.getHeaders();//获取标题
+            Pattern pattern = Pattern.compile(reg);
+            Matcher matcher = null;
+            //System.out.println(headArray[0] + headArray[1] + headArray[2]);
+            // 逐条读取记录，直至读完
+            while (reader.readRecord()) {
+                String moudle_content=entity.getMould_content();
+                matcher = pattern.matcher(moudle_content);
+                // 读一整行
+                //System.out.println(reader.getRawRecord());
+                // 读这行的第一列
+                //System.out.println(reader.get("客户手机号"));
+                // 读这行的第二列
+                // System.out.println(reader.get(1));
+                int i = 1;
+                while(matcher.find()){
+                    moudle_content = moudle_content.replace(matcher.group(),reader.get(i));
+                    i++;
+                }
                 smsMngDO = new SmsMngDO();
-                smsMngDO.setPhone_num((String) job.get("phone_num"));
-                smsMngDO.setFull_name((String) job.get("full_name"));
+                smsMngDO.setSms_rec_obj(reader.get(0));
+                smsMngDO.setSms_content(moudle_content);
+                smsMngDO.setSms_id(id);
+                smsMngDO.setSms_state(entity.getSms_state());
+                smsMngDO.setSid(entity.getSid());
                 phoneNUmList.add(smsMngDO);
+
             }
             dao.insertPhoneNUmList(phoneNUmList);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (null != reader) {
+                reader.close();
+            }
         }
         return phoneNUmList;
     }
 
-
+    public Integer getSignInfoByTitle(String smsTitle){
+        Integer sid = 0;
+        Map<String, Object> map = new HashMap<>();
+        map.put("sms_title",smsTitle);
+        List<Map<String, Object>> retList = dao.select(map);
+        if(null !=retList && retList.size()>0){
+            Map<String, Object> mp = retList.get(0);
+            sid = Integer.valueOf(mp.get("sms_id").toString());
+        }
+        return sid;
+    }
 
     @Override
     public DataStore save(SmsMngDO entity) {
         //文件导入
         List<SmsMngDO> phoneNUmList = null;
-        if(entity.getMould_ty()==1){
             if(null == entity.getFile_path() || "".equals(entity.getFile_path())){
                 return ActionMsg.setError("上传文件路径为空");
             }
-            //批量上传电话号码
-             phoneNUmList = uploadPhoneNumInfo(entity.getFile_path());
-        }
+
         Integer keyVal = entity.getSms_id();
         MouldMngDO mngDO = this.getTplInfo(entity.getMould_id(),entity.getMould_content());
         entity.setMould_num(mngDO.getMould_num());
         entity.setMould_id(mngDO.getMould_id());
         int c = 0;
-        if (keyVal == null) {
+        /*if (keyVal == null) {
             //失败：0；成功：1；发送中:2
             entity.setSms_state(2);
-            c = dao.insert(entity);
+
+             //dao.insert(entity);
         } else {
             entity.setSms_state(2);
+            //c = dao.update(entity);
             c = dao.update(entity);
+        }*/
+        entity.setSms_state(2);
+        c = dao.insert(entity);
+        //批量上传电话号码
+        if(c == 1){
+            int id = getSignInfoByTitle(entity.getSms_title());
+            phoneNUmList = uploadPhoneNumInfo(entity,id);
         }
-
         Integer smsId = getSmsInfoByTitle(entity.getSms_title());
         boolean bool =  smsSender(entity,phoneNUmList,smsId);
         smsLogMngService.saveSmsLogInfo(smsId,entity.getSms_title());
@@ -195,7 +250,7 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         }*/
         String sname = this.getSignName(entity.getSign_id());
         try{
-            if(entity.getMould_ty()==1){
+            //if(entity.getMould_ty()==1){
                 ArrayList<String> phoneNumbers = parseList(phoneNUmList);
                 smsMultiSender =  new SmsMultiSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
                 SmsMultiSenderResult  smsReplyResult = smsMultiSender.sendWithParam(
@@ -206,13 +261,13 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
                 );
                 parseSmsReplyResult(smsReplyResult,keyVal);
                 bool = true;
-            }else if(entity.getMould_ty()==0){
-                smsSender = new SmsSingleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+             /* }else if(entity.getMould_ty()==0){
+              smsSender = new SmsSingleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
                 SmsSingleSenderResult singleReplyResult = smsSender.sendWithParam("", entity.getSms_rec_obj(), entity.getMould_num(),
                         params, sname,"","", SmsConstants.SENDSMS_URL);
                 parseSingleReplyResult(singleReplyResult,keyVal);
-                bool = true;
-            }
+                bool = true;*/
+          //  }
 
         }catch (Exception e){
             System.out.println("调用短信发送接口失败！"+e.getLocalizedMessage());
@@ -229,7 +284,7 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
     public ArrayList<String> parseList(List<SmsMngDO> phoneNUmList){
         ArrayList<String> phoneNumbers = new ArrayList<>();
         for(SmsMngDO sms:phoneNUmList){
-            phoneNumbers.add(sms.getPhone_num());
+            phoneNumbers.add(sms.getSms_rec_obj());
         }
         return phoneNumbers;
 
@@ -300,7 +355,7 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
                 entity.setSid(dt.sid);
                 entity.setSms_state(dt.result);
                 entity.setSms_id(sid);
-                entity.setPhone_num(dt.phoneNumber);
+                entity.setSms_rec_obj(dt.phoneNumber);
                 entity.setRemarks(smsReplyResult.errmsg);
                 entity.setFee(dt.fee);
                 dao.insertSmsReplyResult(entity);

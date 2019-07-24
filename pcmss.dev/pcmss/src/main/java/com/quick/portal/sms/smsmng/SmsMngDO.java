@@ -54,13 +54,12 @@ public class SmsMngDO implements java.io.Serializable {
      */
     private Integer  sign_id;
 
-    private Integer mould_ty;
+    //private Integer mould_ty;
     /**
      *短信标题
      */
     private String  sms_title;
 
-    private String  full_name;
     /**
      *短信内容
      */
@@ -106,8 +105,6 @@ public class SmsMngDO implements java.io.Serializable {
     private Date  upd_time;
 
     private Integer mun_id;
-
-    private String phone_num;
 
     private String file_path;
 
@@ -210,24 +207,6 @@ public class SmsMngDO implements java.io.Serializable {
         this.mun_id = mun_id;
     }
 
-    public String getPhone_num() {
-        return phone_num;
-    }
-
-    public void setPhone_num(String phone_num) {
-        this.phone_num = phone_num;
-    }
-
-
-
-    public Integer getMould_ty() {
-        return mould_ty;
-    }
-
-    public void setMould_ty(Integer mould_ty) {
-        this.mould_ty = mould_ty;
-    }
-
     public String getSign_name() {
         return sign_name;
     }
@@ -258,14 +237,6 @@ public class SmsMngDO implements java.io.Serializable {
 
     public void setFee(Integer fee) {
         this.fee = fee;
-    }
-
-    public String getFull_name() {
-        return full_name;
-    }
-
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
     }
 
     public Integer getMould_num() {

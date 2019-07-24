@@ -20,7 +20,7 @@
 		   $("#list").bootstrapTable("destroy");
 		   _gd["list"]=new BGrid("#list");
 		   _gd["list"].config({
-			   url:quick.serverUrl+"/getList?i=" + Math.random(),
+			   url:quick.serverUrl+"/getSmsSendData?smsId=${sms_id}&i=" + Math.random(),
 			   idField: quick.idField,
 			   sortName: quick.idField,
                cache:false,
@@ -28,14 +28,10 @@
 			   toolbar:"#formSearch",
 			   columns: [
 				   {  checkbox: true },
-				   { field: 'sms_title', title: '短信标题', width: 100  },
-				   //{ field: 'sms_content', title: '短信内容', width: 100  },
-				   { field: 'sign_name', title: '签名名称', width: 100  },
-				   { field: 'mould_name', title: '模板名称', width: 100  },
-				   { field: 'mould_content', title: '模板内容', width: 300  },
-
-				   //{ field: 'sms_rec_obj', title: '短信接受者', width: 100  },
-				   /*{ field: 'sms_state', title: '状态', width: 100 ,
+				   { field: 'sms_rec_obj', title: '手机号', width: 50  },
+				   { field: 'sms_content', title: '发送内容', width: 100  },
+				   { field: 'cre_time', title: '创建时间', width: 100  },
+				   { field: 'sms_state', title: '状态', width: 100 ,
 		   				  formatter: function (value, row, index) {
 							  if (value == 0) {
 								  return "通过";
@@ -48,12 +44,9 @@
 							  }
 						  }
 				   },
-*/
 				   { field: 'CZ',  title: '操作',width: 100, formatter:function(value,row,index){
-					   return "<button type='button' class='btn_el' onclick='dal(\""+row.sms_id+"\",\""+row.sms_title+"\")'>明细</button>| "
-							   +"<button type='button' class='btn_el' onclick='del(\""+row.sms_id+"\",\""+row.sms_title+"\")'>删除</button>";
-					   ;
-				   }}
+						   return "<button type='button' class='btn_el' onclick='edit(\""+row.send_id+"\",\""+row.sms_id+"\")'>详情</button>";
+					   }}
 			   ],onPageChange:function(number, size){
                    $("#IDS_PAGESIZE").val(size);
                    $("#IDS_PAGENUM").val(number);
@@ -72,48 +65,8 @@
                _gd["list"].init();
            }
 	   }
-
-    //删除记录
-    function del(node,name){
-       layer.confirm(
-		   "确认将删除【"+name+"】吗？<br/>删除后，所有关联数据将一并删除，且删除后不可恢复",
-		   {icon:3,title:"删除记录",skin: 'layer-ext-moon'},
-		   function(){
-			   $.ajax({
-				   type: "post",
-				   url: quick.serverUrl + '/delete?sms_id=' + node,
-				   dataType: "json",
-				   data:{ID:node},
-				   success: function(data){
-					   layer.msg('删除记录成功', {icon:1,time: 1000,skin: 'layer-ext-moon'});
-                       _gd["list"].refresh();
-				   },
-				   error:function(err){
-					   layer.msg("结果异常",{icon:1,time: 1000,skin: 'layer-ext-moon'});
-				   }
-			   });
-		   }
-       );
-    }
-    
-	//查看详细信息
-	function edit(id){
-        navAppend("编辑集成系统");/*获取父页面元素并动态赋值父页面title*/
-	    window.location.href=quick.editUrl + "?sms_id="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
-	}
-	//查看详细信息
-	function dal(id){
-        navAppend("编辑集成系统");/*获取父页面元素并动态赋值父页面title*/
-	    window.location.href=quick.serverUrl +  "/smslist?sms_id="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
-	}
 	function add(){
 		menuGoto(quick.editUrl);
-	}
-    //将url查询信息传至详细信息页面,返回时调用
-	function goDetail(obj){
-		var value = $(obj).attr("id");
-		navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
-		window.location.href=quick.editUrl + "?mode=browse&sms_id="+id + getDetailParm();
 	}
     function query(){
        _gd['list'].refresh();
@@ -145,6 +98,15 @@
 		var s= queryParm + "&IpageNum="+pageNum+"&IpageSize="+pageSize;
 		return s;
 	}
+	//查看详细信息
+	function edit(id){
+		   navAppend("编辑集成系统");/*获取父页面元素并动态赋值父页面title*/
+		   window.location.href=quick.serverUrl + "/smsedit??mode=browse&send_id="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+	   }
+	   function cancel(){
+		   var url = quick.serverUrl + '/list?&RFlag=1';
+		   window.location.href = url;
+	   }
   </script>
   <body class="gray-bg">
   <div class="wrapper wrapper-content wrapper-content-x animated fadeInRight">
@@ -156,12 +118,12 @@
 							  <form id="formSearch" class="form-inline">
                                   <div class="form-group" style="padding: 0px;width:180px;">
 									  <input maxlength="20" id="sms_title" name="sms_title" class="input-sm form-control"
-											 type="text" placeholder="短信标题"/>
+											 type="text" placeholder="手机号码"/>
 								  </div>
 
 								  <span class="input-group-btn" style="display:inline-block;"><button class="btn btn-primary " type="button" onclick="query();"> 查询</button> </span>
 								  <div class="form-group" style="width:100px;float:right;">
-									  <button type="button" class="btn btn-primary" onclick="location.href='edit';"> 新增发送
+									  <button type="button" class="btn btn-primary" onclick="cancel()"> 返回
 									  </button>
 								  </div>
 							  </form>

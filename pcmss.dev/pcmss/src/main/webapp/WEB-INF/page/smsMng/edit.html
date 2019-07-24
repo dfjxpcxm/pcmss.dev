@@ -40,7 +40,7 @@
                                                 id="sign_id">
                                         </select>
                                         <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;">
-                                            · 没有需要的签名，马上 <button class="btn btn-default" type="button"  style="padding: 2px 2px;" onclick="chosebox('mould_content', '${G.host}/smsSignMng/edit','common_mould_id');">添加签名</button></a>
+                                            · 没有需要的签名，马上 <button class="btn btn-default" type="button"  style="padding: 2px 2px;" onclick="chosebox('mould_content', '${G.host}/smsSignMng/edit','common_mould_id');">添加签名</button>
                                         </div>
                                     </div>
 
@@ -60,16 +60,15 @@
                                                 id="mould_content">
                                         </select>
                                     </div>
-                                    <div class="col-xs-6">
+                                    <!--<div class="col-xs-6">
                                         <input type="text" id="mould_fields" name="mould_fields" class="form-control required " onkeyup="setMouldFields()" />
-                                    </div>
+                                    </div>-->
                                     <div class="col-xs-9" style="margin-top: 5px;position: relative;font-size: 10px;left: 100px">
-
-                                        <div class="col-xs-9" style="position: absolute;left: 330px">
-                                            · 输入框中出现多个参数时,用“,”分割区分输入。例如：aaa,bbb,ccc
-                                        </div>
-                                        · 没有需要的模板，马上 <button class="btn btn-default" type="button" style="padding: 2px 2px;"  onclick="chosebox('mould_content', '${G.host}/smsMouldMng/edit','mould_type');">添加模板</button></a>
-                                </div>
+                                        <!-- <div class="col-xs-9" style="position: absolute;left: 330px">
+                                             · 输入框中出现多个参数时,用“,”分割区分输入。例如：aaa,bbb,ccc
+                                         </div>-->
+                                        · 没有需要的模板，马上 <button class="btn btn-default" type="button" style="padding: 2px 2px;"  onclick="chosebox('mould_content', '${G.host}/smsMouldMng/edit','mould_type');">添加模板</button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-sm-6 form_ipt_botm" style="width:100%;">
@@ -87,23 +86,23 @@
                                     <div class="col-xs-9">
                                         <!--<input type="text" id="sms_rec_obj" name="sms_rec_obj"  />-->
                                         <div class="input-group">
-                                            <input type="text" style="" id="sms_rec_obj" name="sms_rec_obj"  class="form-control"/>
-                                            <input type="file" style="display:none;" id="prefile" accept=".xls,.xlsx" name="prefile"  onchange="previeFile(this);" />
-                                            <input type="text" style="display:none;"  id="file_path" name="file_path" class="form-control"/>
+                                            <!--<input type="text" style="" id="sms_rec_obj" name="sms_rec_obj"  class="form-control"/>-->
+                                            <input type="file" style="display: none" id="prefile" accept=".csv" name="prefile"  onchange="previeFile(this);" />
+                                            <input type="text" style=""  id="file_path" name="file_path" class="form-control required"/>
                                             <span class="input-group-btn">
-                                                <a roleDO="button" style="display: none" id="upload_button" class="btn btn-default" type="button" onclick="$('#prefile').click();">
+                                                <a roleDO="button" style="" id="upload_button" class="btn btn-default" type="button" onclick="$('#prefile').click();">
                                                     <i class="fa fa-upload"></i>
                                                 </a>
                                             </span>
                                         </div>
                                     </div>
                                     <div class="col-xs-9" style="width:80%;left:100px;">
-                                        <label class="radio-inline">
+                                       <!-- <label class="radio-inline">
                                             <input type="radio" name="mould_ty" id="mould_ty0" value="0" checked="checked" />
                                             <label for="mould_ty0"></label><span>手动输入</span></label>&nbsp;
                                         <label class="radio-inline">
-                                            <input type="radio" name="mould_ty" id="mould_ty1" value="1" />
-                                            <label for="mould_ty1"></label><span>文件导入</span></label>
+                                            <input type="radio" name="mould_ty" id="mould_ty1" value="1" checked="checked"/>
+                                            <label for="mould_ty1"></label><span>文件导入</span></label>-->
                                         <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;width: 500px;left: -50px;">
                                             <ul>
                                                 <li>· 请上传xlsx格式，“变量模版”号码文件<button id ="bt" class="btn btn-default" style="padding: 2px 2px;" type="button"><a id ="dt" style="font-size: 12px;">模板下载</a></button>，什么是变量模板</li>
@@ -120,7 +119,7 @@
                                     <label class="col-xs-3 lable_top"></label>
                                     <div class="col-xs-9">
                                         <input type="hidden" id="sms_id" name="sms_id" />
-                                        <input type="hidden" id="sms_author" name="sms_author" value="${sms_author}"/>
+                                        <!--<input type="hidden" id="sms_author" name="sms_author" value="${sms_author}"/>-->
                                         <input type="hidden" id="sms_state" name="sms_state" value="2"/>
                                         <input type="hidden" id="sign_name" name="sign_name" />
                                         <input type="hidden" id="mould_name" name="mould_name" />
@@ -192,7 +191,7 @@
                 $("#sms_title").val(data.sms_title);
                 $("#sms_state").val(data.sms_state);
                 $("#sign_id").val(data.sign_id);
-                $("#sms_rec_obj").val(data.sms_rec_obj);
+                //$("#sms_rec_obj").val(data.sms_rec_obj);
                 //$("#mould_content").val(data.mould_content);
                 $("#sms_content").val(data.sms_content);
                 /*var reg = /\$\{+[a-zA-Z]+}/g;
@@ -204,45 +203,60 @@
                 }
             });
         }
-
-
-
     }
     /*完成*/
     var isdone = true;
+    var phnum = 0;
     function thingOver(){
         if(!isdone) {
             return false;
         }
         isdone = false;
-       if(!$("#form").valid()){
+        if(!$("#form").valid()){
+            isdone = true;
             return false;
         }
-        var t =$('input:radio[name="mould_ty"]:checked').val();
-
-       if(t ==1){
-
-           var p = $("#file_path").val();
-           if(p ==null ||p.length ==0){
-               layer.msg('上传文件不能空',{icon:1,time: 1500,skin: 'layer-ext-moon'})
-               return false;
-           }
-       }else{
-           var p = $("#sms_rec_obj").val();
-           if(p ==null ||p.length ==0){
-               layer.msg('短信接受者不能空',{icon:1,time: 1500,skin: 'layer-ext-moon'})
-               return false;
-           }
-       }
-
-        clearPlaceHodler();
-        //$("#sms_content").val($(".summernote").code());
-        $('#form').ajaxSubmit(function() {
-            layer.msg('保存成功',{icon:1,time: 1500,skin: 'layer-ext-moon'}, function(){
-                cancel();
-            });
+        var p = $("#file_path").val();
+        if(p ==null ||p.length ==0){
+            layer.msg('上传文件不能空',{icon:1,time: 1500,skin: 'layer-ext-moon'})
             isdone = true;
-        });
+            return false;
+        }
+        clearPlaceHodler();
+
+        var str =
+            '<div class="form-group" style="margin-top: 20px">'+
+                '<label class="col-xs-3" style="font-size:12px;color:#888;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;" >模板内容</label>'+
+                '<div class="col-xs-9">'+
+                    '<textarea style="height:99px;font-size:13px;width:100%;resize:none;"  readonly="readonly" class="form-control">'+$("#mould_content").val()+'</textarea>'+
+            '<label class="col-xs-3 " style="font-size:12px;color:#f00;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;">(模板内容预览)</label>'+
+                '</div>'+
+            '</div><br>'+
+            '<div class="form-group" style="margin-top: 135px;">'+
+                '<label class="col-xs-3 " style="font-size:12px;color:#888;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;">发送用户数</label>'+
+                '<div class="col-xs-9">' +
+                '<span id="phnum" style="font-size:12px;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;color:#f00;">'+phnum+'</span></div>'+
+            '</div><br/>';
+        layer.open({
+            type: 1,
+            title: "<label>短信发送</label>",
+            fix: false,
+            shadeClose: false,
+            maxmin: true,
+            zIndex: layer.zIndex,
+            area: ['343px', '332px'],/*宽，高*/
+            content:str,
+            btn:['确定发送','取消发送'],
+            yes:function(){
+                $('#form').ajaxSubmit(function() {
+                    layer.msg('保存成功',{icon:1,time: 1500,skin: 'layer-ext-moon'}, function(){
+                        cancel();
+                    });
+                    isdone = true;
+                });
+            }
+        })
+        isdone = true;
     }
 
     function thingSend(){
@@ -251,6 +265,7 @@
         }
         isdone = false;
         if(!$("#form").valid()){
+            isdone = true;
             return false;
         }
         clearPlaceHodler();
@@ -289,7 +304,7 @@
     }
     function selectMouldContentData(mould_type) {
         $("#mould_content").empty();
-        $("#mould_fields").empty();
+        //$("#mould_fields").empty();
         $.ajax({
             type: "get",
             url: quick.baseUrl + "/smsMouldMng/getMouldTypeContent?mould_type="+mould_type,
@@ -338,9 +353,9 @@
         //  var content = options.val();
         var mould_content = options.val();
         // $("#sms_content").val(content);
-        var reg = /\$\{+[a-zA-Z]+}/g;
+        /*var reg = /\$\{+[a-zA-Z]+}/g;
         var s= mould_content == null ?"" : mould_content.match(reg);
-        $("#mould_fields").val(s);
+        $("#mould_fields").val(s);*/
         setMouldFields();
     });
 
@@ -349,44 +364,62 @@
 
         var mould_content = $("#mould_content").val();
         // $("#sms_content").val(content);
-        var reg = /\$\{+[a-zA-Z]+}/g;
+        //var reg = /\$\{+[a-zA-Z]+}/g;
         // var s= mould_content.match(reg);
         //var s= mould_content.replace(reg, 12)
-        var mould_fields=$("#mould_fields").val().split(",");
-        var newStr=mould_content == null?"" : mould_content.replace(reg,'Fieldsname=');
-        var newArr=newStr.split('Fieldsname=');
-        var html='';
-        for(var i=0;i<newArr.length;i++){
+       // var mould_fields=$("#mould_fields").val().split(",");
+        //var newStr=mould_content == null?"" : mould_content.replace(reg,'Fieldsname=');
+       // var newArr=newStr.split('Fieldsname=');
+        //var html='';
+       /* for(var i=0;i<newArr.length;i++){
             if (i == newArr.length - 1){
                 html+=newArr[i];
             }else{
                 html+=newArr[i]+mould_fields[i];
             }
 
-        }
-        $("#sms_content").val(html);
+        }*/
+        //$("#sms_content").val(html);
+        $("#sms_content").val(mould_content);
     }
-    $(':radio').click(function (){
+    /*$(':radio').click(function (){
         var val=$('input:radio[name="mould_ty"]:checked').val();
         if(val==0){
-            $("#upload_button").hide();
-            $("#sms_rec_obj").show();
-            $("#file_path").hide();
+            //$("#upload_button").hide();
+           // $("#sms_rec_obj").show();
+            //$("#file_path").hide();
         }
         if(val==1)
         {
-            $("#upload_button").show();
-            $("#sms_rec_obj").hide();
-            $("#file_path").show();
+            //$("#upload_button").show();
+            //$("#sms_rec_obj").hide();
+            //$("#file_path").show();
 
         }
-    });
+    });*/
     function previeFile(f){
         if (f.files && f.files[0]){
+            var file_obj = f.files[0];
+            var fd = new FormData();
+            fd.set('file_path', file_obj);
            // $("#file_path").val('').attr("placeholder", f.files[0].name);
             $("#file_path").val(f.files[0].name);
+        $.ajax({
+                url:quick.baseUrl + "/smsMng/uploadFileAnaly/",
+                type:'POST',
+                data:fd,
+                processData:false,  //tell jQuery not to process the data
+                contentType: false,  //tell jQuery not to set contentType
+                //这儿的三个参数其实就是XMLHttpRequest里面带的信息。
+                success:function (data) {
+                    //console.log(data);
+                    phnum = data +"(已过滤掉重复的号码)";
+                }
+
+            })
         }
     }
+
 
 </script>
 </html>

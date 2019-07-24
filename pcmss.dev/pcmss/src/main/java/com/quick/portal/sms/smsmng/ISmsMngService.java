@@ -34,4 +34,8 @@ public interface ISmsMngService extends ISysBaseService<SmsMngDO> {
     public List<Map<String, Object>> getMouldNameData();
 
 
+    List<Map<String, Object>> getSmsSendData(String smsID);
+
+    Map<String, Object> getSmsSendIdData(String sendId);
+
 }

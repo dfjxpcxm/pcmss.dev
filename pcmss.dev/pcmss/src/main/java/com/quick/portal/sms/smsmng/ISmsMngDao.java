@@ -25,12 +25,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * sys_sms_info数据访问接口
+ * sms_info数据访问接口
  */
 public interface ISmsMngDao<SysConfMngDO> extends ISysBaseDao<SysConfMngDO> {
     public List<Map<String, Object>> getSignNameData();
 
     public List<Map<String, Object>> getMouldNameData();
+
+    public List<Map<String, Object>> getSmsSendData(String smsID);
+
+    public Map<String, Object> getSmsSendIdData(String sendID);
 
     int insertPhoneNUmList(List<SmsMngDO> smsMngDO);
 
