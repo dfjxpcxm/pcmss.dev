@@ -240,7 +240,7 @@ public class SmsMultiSender {
         data.put("tel", util.phoneNumbersToJSONArray(nationCode, phoneNumbers));                
         data.put("sign", sign);
         data.put("tpl_id", templId);
-        data.put("params", util.smsParamsToJSONArray(params));
+        data.put("params", util.pmsToJSONArray(params));
         data.put("sig", util.calculateSigForTempl(appkey, random, curTime, phoneNumbers));
         data.put("time", curTime);
         data.put("extend", extend);

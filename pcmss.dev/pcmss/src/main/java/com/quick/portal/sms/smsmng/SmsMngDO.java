@@ -110,6 +110,8 @@ public class SmsMngDO implements java.io.Serializable {
 
     private String sign_name;
 
+    private String params;
+
 
     public Integer getSms_id() {
         return sms_id;
@@ -253,5 +255,13 @@ public class SmsMngDO implements java.io.Serializable {
 
     public void setFile_path(String file_path) {
         this.file_path = file_path;
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
     }
 }

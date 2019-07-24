@@ -40,6 +40,7 @@
     		  sms_title,
     		  mould_id,
     		  file_path,
+    		  sms_state,
     		  cre_time,
     		  upd_time
 		)values(
@@ -47,6 +48,7 @@
 			 #{sms_title},
 			 #{mould_id},
 			 #{file_path},
+			 #{sms_state},
 			 now(),
 			 now()
 			)
@@ -109,14 +111,14 @@
 
 
 	<select id="getSignNameData"  resultType="map">
-		select sign_id  as sign_id,sign_name as sign_name from sys_sign_info
-		order by sign_id
+		select sign_id  as sign_id,sign_name as sign_name from sys_sign_info where sign_type=0
+		order by upd_time desc
 	</select>
 
 
 	<select id="getMouldNameData"  resultType="map">
-		select mould_content as mould_content,mould_name as mould_name from sys_mould_info
-		order by mould_id
+		select mould_content as mould_content,mould_name as mould_name from sys_mould_info where mould_type=0
+		order by upd_time desc
 	</select>
 
 	<select id="getSmsSendData"  parameterType="String" resultType="map">

@@ -110,14 +110,52 @@ class SmsSenderUtil {
 
         return tel;
     }
-    
-    public JSONArray smsParamsToJSONArray(List<String> params) {
-        JSONArray smsParams = new JSONArray();        
+
+	/**
+	 * params": [
+	 * 			{"1234",
+	 * 	         "4"
+	 * 	         }
+	 * 		{"1234",
+	 * 	      "4"}
+
+	 *     ],
+	 *
+	 * @param params
+	 * @return
+	 */
+	public JSONArray smsParamsToJSONArray(List<String> params) {
+        JSONArray smsParams = new JSONArray();
+		/*int i = 0;
+		do {
+			JSONObject telElement = new JSONObject();
+			telElement.put("nationcode", nationCode);
+			telElement.put("mobile", phoneNumbers.get(i));
+			smsParams.put(telElement);
+		} while (++i < phoneNumbers.size());
+
+*/
+
+		String param = "";
         for (int i = 0; i < params.size(); i++) {
-        	smsParams.put(params.get(i));	
+			param = params.get(i);
+			String [] pas = param.split("#");
+			for(int j=0; j<pas.length;j++){
+				smsParams.put(pas[j]);
+			}
+
+ //       	smsParams.put(params.get(i));
 		}
         return smsParams;
     }
+
+	public JSONArray pmsToJSONArray(List<String> params) {
+		JSONArray smsParams = new JSONArray();
+		for (int i = 0; i < params.size(); i++) {
+			smsParams.put(params.get(i));
+		}
+		return smsParams;
+	}
 
 	public JSONArray paramsToJSONArray(List<Integer> params) {
 		JSONArray smsParams = new JSONArray();

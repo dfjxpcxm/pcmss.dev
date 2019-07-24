@@ -193,17 +193,14 @@ public class SmsSingleSender {
 		
 		long random = util.getRandom();
 		long curTime = System.currentTimeMillis()/1000;
-
 		JSONObject data = new JSONObject();
-
         JSONObject tel = new JSONObject();
         tel.put("nationcode", nationCode);
         tel.put("mobile", phoneNumber);
-
         data.put("tel", tel);
         data.put("sig", util.calculateSigForTempl(appkey, random, curTime, phoneNumber));
         data.put("tpl_id", templId);
-        data.put("params", util.smsParamsToJSONArray(params));
+        data.put("params", util.pmsToJSONArray(params));
         data.put("sign", sign);
         data.put("time", curTime);
         data.put("extend", extend);
@@ -211,7 +208,6 @@ public class SmsSingleSender {
 
 		String wholeUrl = String.format("%s?sdkappid=%d&random=%d", url, appid, random);
         HttpURLConnection conn = util.getPostHttpConn(wholeUrl);
-
         OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), "utf-8");
         wr.write(data.toString());
         wr.flush();
@@ -234,7 +230,6 @@ public class SmsSingleSender {
         	result.result = httpRspCode;
         	result.errmsg = "http error " + httpRspCode + " " + conn.getResponseMessage();
         }
-        
         return result;
 	}
 

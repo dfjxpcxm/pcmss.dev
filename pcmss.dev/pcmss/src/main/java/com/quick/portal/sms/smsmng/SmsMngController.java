@@ -112,7 +112,6 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
     @ResponseBody
     public DataStore saveAction(SmsMngDO model) {
         String filePath = FileUploadUtils.getImgUploadPath(request);
-
         model.setFile_path(filePath);
         return super.save(model);
 
@@ -198,7 +197,7 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
         }
         return array;
     }*/
-    private final static String TMPL_DOWNLOAD_PATH = "/upload/contentRule/a62e330f32ee66d0d68a9b77583bb765.xlsx";
+    private final static String TMPL_DOWNLOAD_PATH = "/upload/contentRule/smstpl20190720.cvs";
 
 
 }

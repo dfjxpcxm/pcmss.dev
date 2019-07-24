@@ -19,12 +19,9 @@
  */
 package com.quick.portal.sms.smsmng;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.csvreader.CsvReader;
 import com.quick.core.base.SysBaseService;
 import com.quick.core.base.model.DataStore;
-import com.quick.portal.search.infomng.ExcelResolve;
 import com.quick.portal.sms.mouldmng.IMouldMngService;
 import com.quick.portal.sms.mouldmng.MouldMngDO;
 import com.quick.portal.sms.signmng.ISignMngService;
@@ -39,9 +36,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -140,8 +140,10 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
                 // 读这行的第二列
                 // System.out.println(reader.get(1));
                 int i = 1;
+                String params = "";
                 while(matcher.find()){
                     moudle_content = moudle_content.replace(matcher.group(),reader.get(i));
+                    params += reader.get(i).concat("#");
                     i++;
                 }
                 smsMngDO = new SmsMngDO();
@@ -150,6 +152,14 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
                 smsMngDO.setSms_id(id);
                 smsMngDO.setSms_state(entity.getSms_state());
                 smsMngDO.setSid(entity.getSid());
+                String param = "";
+                if(params.endsWith("#")){
+                    param = params.substring(0,params.length()-1);
+                }else{
+                    param = params;
+                }
+
+                smsMngDO.setParams(param);
                 phoneNUmList.add(smsMngDO);
 
             }
@@ -202,12 +212,12 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         entity.setSms_state(2);
         c = dao.insert(entity);
         //批量上传电话号码
-        if(c == 1){
+ //       if(c == 1){
             int id = getSignInfoByTitle(entity.getSms_title());
             phoneNUmList = uploadPhoneNumInfo(entity,id);
-        }
+ //       }
         Integer smsId = getSmsInfoByTitle(entity.getSms_title());
-        boolean bool =  smsSender(entity,phoneNUmList,smsId);
+        boolean bool = smsSender(entity,phoneNUmList,smsId);
         smsLogMngService.saveSmsLogInfo(smsId,entity.getSms_title());
         if (c == 0) {
             return ActionMsg.setError("操作失败");
@@ -233,6 +243,15 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         return smsId;
     }
 
+    public List<String>  parseParamList(String params){
+        List<String> pms = new ArrayList<>();
+        if(params != null && !"".equals(params)){
+            String [] parms = params.split("#");
+            pms = Arrays.asList(parms);
+        }
+        return pms;
+    }
+
 
     /**
      * 短信发送
@@ -242,53 +261,36 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
      */
     public boolean smsSender(SmsMngDO entity,List<SmsMngDO> phoneNUmList,Integer keyVal){
         boolean bool = false;
-        //调用指定模板单发
-        List<String> params = new ArrayList<String>();
-       /* if(entity.getMould_fields() != null && !"".equals(entity.getMould_fields())){
-            String [] parms = entity.getMould_fields().split(",");
-            params = Arrays.asList(parms);
-        }*/
         String sname = this.getSignName(entity.getSign_id());
         try{
-            //if(entity.getMould_ty()==1){
-                ArrayList<String> phoneNumbers = parseList(phoneNUmList);
-                smsMultiSender =  new SmsMultiSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
-                SmsMultiSenderResult  smsReplyResult = smsMultiSender.sendWithParam(
-                        "",
-                        phoneNumbers,
-                        entity.getMould_num(),
-                        params, sname,"","", SmsConstants.SENDMULTISMS_URL
-                );
-                parseSmsReplyResult(smsReplyResult,keyVal);
-                bool = true;
-             /* }else if(entity.getMould_ty()==0){
+              String smsRes = "";
+              List<String> pms = new ArrayList<>();
               smsSender = new SmsSingleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
-                SmsSingleSenderResult singleReplyResult = smsSender.sendWithParam("", entity.getSms_rec_obj(), entity.getMould_num(),
-                        params, sname,"","", SmsConstants.SENDSMS_URL);
-                parseSingleReplyResult(singleReplyResult,keyVal);
-                bool = true;*/
-          //  }
-
+              for(SmsMngDO m :phoneNUmList){
+                  smsRes = m.getSms_rec_obj();
+                  pms = parseParamList(m.getParams());
+                  SmsSingleSenderResult singleReplyResult = smsSender.sendWithParam("", smsRes, entity.getMould_num(),
+                          pms, sname,"","", SmsConstants.SENDSMS_URL);
+                  parseSingleReplyResult(singleReplyResult,keyVal);
+                  bool = true;
+              }
         }catch (Exception e){
             System.out.println("调用短信发送接口失败！"+e.getLocalizedMessage());
             return false;
         }
         return  bool;
-
     }
 
 
-
-
-
-    public ArrayList<String> parseList(List<SmsMngDO> phoneNUmList){
+    public ArrayList<String> parseNumbersList(List<SmsMngDO> phoneNUmList){
         ArrayList<String> phoneNumbers = new ArrayList<>();
         for(SmsMngDO sms:phoneNUmList){
             phoneNumbers.add(sms.getSms_rec_obj());
         }
         return phoneNumbers;
-
     }
+
+
 
     /**
      *
@@ -307,7 +309,7 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         SmsMngDO entity = new SmsMngDO();
         if(result == 0){
                 entity.setSid(singleReplyResult.sid);
-                entity.setSms_state(1);
+                entity.setSms_state(0);
                 entity.setSms_id(id);
                 dao.update(entity);
 
