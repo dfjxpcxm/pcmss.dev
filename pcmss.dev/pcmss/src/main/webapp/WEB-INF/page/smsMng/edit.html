@@ -51,13 +51,13 @@
                                 <div class="form-group">
                                     <label class="col-xs-2 lable_top" style=" margin-left: -10px;text-align: left;width: 113px;"><span class="span_require">*</span>短信模板</label>
                                     <div class="col-xs-2">
-                                        <select name="mould_id" class="input-group form-control form-control-green select_change" style="width: 150px;left: -15px;"
-                                                id="mould_id">
+                                        <select name="mould_type" class="input-group form-control form-control-green select_change" style="width: 150px;left: -15px;"
+                                                id="mould_type">
                                         </select>
                                     </div>
                                     <div class="col-xs-2">
-                                        <select name="mould_content" class="input-group form-control required form-control-green select_change" style="width: 150px"
-                                                id="mould_content">
+                                        <select name="mould_id" class="input-group form-control required form-control-green select_change" style="width: 150px"
+                                                id="mould_id">
                                         </select>
                                     </div>
                                     <!--<div class="col-xs-6">
@@ -75,7 +75,7 @@
                                 <div class="form-group">
                                     <label class="col-xs-3 lable_top" style="width:115px;"><span class="span_require">*</span>短信内容</label>
                                     <div class="col-xs-9" style="width:89%;">
-                                        <textarea style="height:72px;width:100%;resize:none;"  readonly="readonly" class="form-control required" id="sms_content" name="sms_content"></textarea>
+                                        <textarea style="height:72px;width:100%;resize:none;"  readonly="readonly" class="form-control required" id="mould_content" name="mould_content"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +122,6 @@
                                         <!--<input type="hidden" id="sms_author" name="sms_author" value="${sms_author}"/>-->
                                         <input type="hidden" id="sms_state" name="sms_state" value="1"/>
                                         <input type="hidden" id="sign_name" name="sign_name" />
-                                        <input type="hidden" id="mould_name" name="mould_name" />
                                         <input id="submit-form" type="button" class="btn btn-primary" value="发送" onclick="return thingOver();">
                                         <!--<input id="send-form" type="button" class="btn btn-primary" value="发送" onclick="return thingSend();">-->
                                     </div>
@@ -180,77 +179,91 @@
         var sysid=$.request.queryString["sms_id"];
         if(sysid){
             $.post(quick.serverUrl + '/getObj?sms_id=' + sysid + "&i=" + Math.random(), function(data){
-                setForm(data);
+               // setForm(data);
                 $("#sms_id").val(data.sms_id);
                 $("#sms_title").val(data.sms_title);
                 $("#sms_state").val(data.sms_state);
                 $("#sign_id").val(data.sign_id);
-                //$("#sms_rec_obj").val(data.sms_rec_obj);
-                //$("#mould_content").val(data.mould_content);
-                $("#sms_content").val(data.sms_content);
-                /*var reg = /\$\{+[a-zA-Z]+}/g;
-                var str = $("#mould_content").val();
-                var s = str == null ?"" :str.match(reg);
-                $("#mould_fields").val(s);*/
+                $("#mould_content").val(data.mould_content);
+                $("#mould_type").val(data.mould_type);
+                selectMouldContentData($("#mould_type").val());
+                $("#mould_id").val(data.mould_id);
+                $("#file_path").val(data.file_path);
                 if(mode == "browse"){
                     viewRead();
                 }
             });
         }
+
     }
     /*完成*/
     var isdone = true;
-    var phnum = 0;
+    var phFileNum = 0; //总数
+    var phFiltNum = 0; //过滤重复数
     function thingOver(){
-        if(!isdone) {
-            return false;
-        }
-        isdone = false;
-        if(!$("#form").valid()){
-            isdone = true;
-            return false;
-        }
-        var p = $("#file_path").val();
-        if(p ==null ||p.length ==0){
-            layer.msg('上传文件不能空',{icon:1,time: 1500,skin: 'layer-ext-moon'})
-            isdone = true;
-            return false;
-        }
-        clearPlaceHodler();
+        var mode = $.request.queryString["mode"];
+        if(mode == "browse"){
+            $('#form').ajaxSubmit(function() {
+                layer.msg('保存成功',{icon:1,time: 1500,skin: 'layer-ext-moon'}, function(){
+                    cancel();
+                });
+                isdone = true;
+            });
+        }else{
+            if(!isdone) {
+                return false;
+            }
+            isdone = false;
+            if(!$("#form").valid()){
+                isdone = true;
+                return false;
+            }
+            var p = $("#file_path").val();
+            if(p ==null ||p.length ==0){
+                layer.msg('上传文件不能空',{icon:1,time: 1500,skin: 'layer-ext-moon'})
+                isdone = true;
+                return false;
+            }
 
-        var str =
-            '<div class="form-group" style="margin-top: 20px">'+
+            clearPlaceHodler();
+
+            var str =
+                '<div class="form-group" style="margin-top: 20px">'+
                 '<label class="col-xs-3" style="font-size:12px;color:#888;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;" >模板内容</label>'+
                 '<div class="col-xs-9">'+
-                    '<textarea style="height:99px;font-size:13px;width:100%;resize:none;"  readonly="readonly" class="form-control">'+$("#mould_content").val()+'</textarea>'+
-            '<label class="col-xs-3 " style="font-size:12px;color:#f00;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;">(模板内容预览)</label>'+
+                '<textarea style="height:99px;font-size:13px;width:100%;resize:none;"  readonly="readonly" class="form-control">'+$("#mould_content").val()+'</textarea>'+
+                '<label class="col-xs-3 " style="font-size:12px;color:#f00;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;">(模板内容预览)</label>'+
                 '</div>'+
-            '</div><br>'+
-            '<div class="form-group" style="margin-top: 135px;">'+
+                '</div><br>'+
+                '<div class="form-group" style="margin-top: 126px;">'+
                 '<label class="col-xs-3 " style="font-size:12px;color:#888;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;">发送用户数</label>'+
+                '<div class="col-xs-9" style="margin-top: -12px;">' +
+                '<span style="font-size:12px;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;color:#f00;">'+phFileNum+'</span></div>'+
                 '<div class="col-xs-9">' +
-                '<span id="phnum" style="font-size:12px;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;color:#f00;">'+phnum+'</span></div>'+
-            '</div><br/>';
-        layer.open({
-            type: 1,
-            title: "<label>短信发送</label>",
-            fix: false,
-            shadeClose: false,
-            maxmin: true,
-            zIndex: layer.zIndex,
-            area: ['343px', '332px'],/*宽，高*/
-            content:str,
-            btn:['确定发送','取消发送'],
-            yes:function(){
-                $('#form').ajaxSubmit(function() {
-                    layer.msg('保存成功',{icon:1,time: 1500,skin: 'layer-ext-moon'}, function(){
-                        cancel();
+                '<span style="font-size:12px;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;color:#f00;">'+phFiltNum+'</span></div>'+
+                '</div><br/>';
+            layer.open({
+                type: 1,
+                title: "<label>短信发送</label>",
+                fix: false,
+                shadeClose: false,
+                maxmin: true,
+                zIndex: layer.zIndex,
+                area: ['343px', '332px'],/*宽，高*/
+                content:str,
+                btn:['确定发送','取消发送'],
+                yes:function(){
+                    $('#form').ajaxSubmit(function() {
+                        layer.msg('保存成功',{icon:1,time: 1500,skin: 'layer-ext-moon'}, function(){
+                            cancel();
+                        });
+                        isdone = true;
                     });
-                    isdone = true;
-                });
-            }
-        })
-        isdone = true;
+                }
+            })
+            isdone = true;
+        }
+
     }
 
     function thingSend(){
@@ -296,8 +309,9 @@
             }
         });
     }
+    var mouldContentArry = new Array();
     function selectMouldContentData(mould_type) {
-        $("#mould_content").empty();
+        $("#mould_id").empty();
         //$("#mould_fields").empty();
         $.ajax({
             type: "get",
@@ -305,10 +319,12 @@
             async: false,
             dataType: "json",
             success: function (data) {
-                $("#mould_content").append("<option  value=" + "" + "> " + "选择模板" + "</option>");
+                //("<option selected hidden value=''>选择签名名称</option><option value= ''>选择签名名称</option>")
+                mouldContentArry = data.rows;
+                $("#mould_id").append("<option  selected hidden value=''>选择模板</option><option value= ''>选择模板</option>");
                 for (var i = 0; i < data.rows.length; i++) {
                     var item = data.rows[i];
-                    $("#mould_content").append("<option  value=" + item.mould_content + "> " + item.mould_name + "</option>");
+                    $("#mould_id").append("<option  value=" + item.mould_id + "> " + item.mould_name + "</option>");
                 }
             }
         });
@@ -323,40 +339,36 @@
             async: false,
             dataType: "json",
             success: function (data) {
-                $("#mould_id").append("<option selected hidden value=''>全部</option><option value= ''>全部</option>");
+                $("#mould_type").append("<option selected hidden value=''>全部</option><option value= ''>全部</option>");
                 for (var i = 0; i < data.rows.length; i++) {
                     var item = data.rows[i];
-                    $("#mould_id").append("<option  value=" + item.mould_type + ">" + item.mould_name + "</option>");
+                    $("#mould_type").append("<option  value=" + item.mould_type + ">" + item.mould_name + "</option>");
                 }
             }
         });
 
     }
 
-    $("#mould_id").change(function(){
-        var options=$("#mould_id option:selected");
-        //  var content = options.val();
+    $("#mould_type").change(function(){
+        var options=$("#mould_type option:selected");
         var mould_type = options.val();
-        // $("#sms_content").val(content);
         selectMouldContentData(mould_type);
-        //$("#mould_content").change();
     });
 
-    $("#mould_content").change(function(){
-        var options=$("#mould_content option:selected");
-        //  var content = options.val();
-        var mould_content = options.val();
-        // $("#sms_content").val(content);
-        /*var reg = /\$\{+[a-zA-Z]+}/g;
-        var s= mould_content == null ?"" : mould_content.match(reg);
-        $("#mould_fields").val(s);*/
-        setMouldFields();
+    $("#mould_id").change(function(){
+        var options=$("#mould_id option:selected");
+        var mould_id = options.val();
+       var mouldArry = mouldContentArry.filter(function(p){
+           return p.mould_id == mould_id;
+       });
+       $("#mould_content").val(mouldArry[0].mould_content);
+       // setMouldFields();
     });
 
 
     function setMouldFields(){
-
-        var mould_content = $("#mould_content").val();
+        var mould_content = $("#mould_id").val();
+        $("#mould_content").val(mould_content);
         // $("#sms_content").val(content);
         //var reg = /\$\{+[a-zA-Z]+}/g;
         // var s= mould_content.match(reg);
@@ -374,7 +386,7 @@
 
         }*/
         //$("#sms_content").val(html);
-        $("#sms_content").val(mould_content);
+
     }
     /*$(':radio').click(function (){
         var val=$('input:radio[name="mould_ty"]:checked').val();
@@ -406,8 +418,8 @@
                 contentType: false,  //tell jQuery not to set contentType
                 //这儿的三个参数其实就是XMLHttpRequest里面带的信息。
                 success:function (data) {
-                    //console.log(data);
-                    phnum = data +"(已过滤掉重复的号码)";
+                    phFileNum = "总号码数为:" + data.filePhCnt ;
+                    phFiltNum = "过滤重复后的号码数:" + data.filtPhCnt ;
                 }
 
             })

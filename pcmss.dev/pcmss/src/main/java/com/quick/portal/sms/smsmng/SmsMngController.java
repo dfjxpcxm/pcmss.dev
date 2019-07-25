@@ -19,17 +19,13 @@
  */
 package com.quick.portal.sms.smsmng;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.quick.core.base.ISysBaseService;
 import com.quick.core.base.SysBaseController;
 import com.quick.core.base.model.DataStore;
 import com.quick.core.base.model.JsonDataGrid;
 import com.quick.core.util.common.QCookie;
-import com.quick.core.util.common.QRequest;
 import com.quick.portal.search.infomng.FileUploadUtils;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -41,10 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -111,7 +104,13 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
     @RequestMapping(value = "/save")
     @ResponseBody
     public DataStore saveAction(SmsMngDO model) {
-        String filePath = FileUploadUtils.getImgUploadPath(request);
+
+        String filePath = null;
+        if (FileUploadUtils.getImgUploadPath(request).equals("")){
+            filePath = model.getFile_path();
+        }else{
+            filePath = FileUploadUtils.getImgUploadPath(request);
+        }
         model.setFile_path(filePath);
         return super.save(model);
 
@@ -129,7 +128,7 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
         return new JsonDataGrid(list.size(), list).toObj();
     }
     /**
-     * 获取发送短信单个查看信息
+     * 获取发送短信,查看单条详细信息
      * @return
      * @throws Exception
      */
@@ -148,7 +147,7 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
      */
     @RequestMapping(value = "/uploadFileAnaly")
     @ResponseBody
-    public int uploadFileAnaly( @RequestParam("file_path") MultipartFile uploadFile) throws Exception {
+    public JSONObject uploadFileAnaly(@RequestParam("file_path") MultipartFile uploadFile) throws Exception {
         // 统计总数
         if (!uploadFile.isEmpty()) {
             InputStreamReader isr = null;
@@ -158,11 +157,17 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
                 br = new BufferedReader(isr);
                 String line = null;
                 HashSet<List<String>> strs = new HashSet<List<String>>();
+                List<List<String>> strsL = new ArrayList<>();
                 while ((line = br.readLine()) != null) {
+                    strsL.add(Arrays.asList(line.split(",")[0]));//用于统计全部号码。
+
                     strs.add(Arrays.asList(line.split(",")[0]));//用于统计过滤重复的手机号！
                 }
                 //JSONArray array = toJsonArray(strs);//因为改为了HashSet无序集合，所以该方法不可用。需将HashSet改为List即可
-                return strs.size()-1;
+                JSONObject array = new JSONObject();
+                array.put("filePhCnt",strsL.size()-1);//减一目的是减去标题所占有的数量
+                array.put("filtPhCnt",strs.size()-1);//减一目的是减去标题所占有的数量
+                return array;
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -178,7 +183,7 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
                 }
             }
         }
-        return 0;
+        return null;
     }
 
     /**
@@ -197,7 +202,7 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
         }
         return array;
     }*/
-    private final static String TMPL_DOWNLOAD_PATH = "/upload/contentRule/smstpl20190720.cvs";
+    private final static String TMPL_DOWNLOAD_PATH = "/upload/contentRule/a62e330f32ee66d0d68a9b77583bb765.xlsx";
 
 
 }

@@ -32,7 +32,7 @@
 				   //{ field: 'sms_content', title: '短信内容', width: 100  },
 				   { field: 'sign_name', title: '签名名称', width: 100  },
 				   { field: 'mould_name', title: '模板名称', width: 100  },
-				   { field: 'mould_content', title: '模板内容', width: 300  },
+				   { field: 'mould_content', title: '模板内容', width: 100  },
 
 				   //{ field: 'sms_rec_obj', title: '短信接受者', width: 100  },
 				   /*{ field: 'sms_state', title: '状态', width: 100 ,
@@ -50,7 +50,9 @@
 				   },
 */
 				   { field: 'CZ',  title: '操作',width: 100, formatter:function(value,row,index){
-					   return "<button type='button' class='btn_el' onclick='dal(\""+row.sms_id+"\",\""+row.sms_title+"\")'>明细</button>| "
+
+					   return  "<button type='button' class='btn_el' onclick='edit(\""+row.sms_id+"\",\""+row.sms_title+"\")'>重新发送</button>| "
+						       +"<button type='button' class='btn_el' onclick='dal(\""+row.sms_id+"\",\""+row.sms_title+"\")'>明细</button>| "
 							   +"<button type='button' class='btn_el' onclick='del(\""+row.sms_id+"\",\""+row.sms_title+"\")'>删除</button>";
 					   ;
 				   }}
@@ -98,8 +100,8 @@
     
 	//查看详细信息
 	function edit(id){
-        navAppend("编辑集成系统");/*获取父页面元素并动态赋值父页面title*/
-	    window.location.href=quick.editUrl + "?sms_id="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+        navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
+	    window.location.href=quick.editUrl + "?mode=browse&sms_id="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
 	}
 	//查看详细信息
 	function dal(id){
@@ -108,6 +110,9 @@
 	}
 	function add(){
 		menuGoto(quick.editUrl);
+	}
+	function resend(id,title) {
+		window.location.href=quick.serverUrl +  "/reSend?title="+title;
 	}
     //将url查询信息传至详细信息页面,返回时调用
 	function goDetail(obj){

@@ -194,10 +194,10 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
                 return ActionMsg.setError("上传文件路径为空");
             }
 
-        Integer keyVal = entity.getSms_id();
+        /*Integer keyVal = entity.getSms_id();
         MouldMngDO mngDO = this.getTplInfo(entity.getMould_id(),entity.getMould_content());
         entity.setMould_num(mngDO.getMould_num());
-        entity.setMould_id(mngDO.getMould_id());
+        entity.setMould_id(mngDO.getMould_id());*/
         int c = 0;
         /*if (keyVal == null) {
             //失败：0；成功：1；发送中:2
@@ -212,7 +212,11 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         entity.setSms_state(2);
         c = dao.insert(entity);
         //批量上传电话号码
+<<<<<<< Updated upstream
  //       if(c == 1){
+=======
+        if(c == 1 || c == 2){
+>>>>>>> Stashed changes
             int id = getSignInfoByTitle(entity.getSms_title());
             phoneNUmList = uploadPhoneNumInfo(entity,id);
  //       }
@@ -383,6 +387,5 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         MouldMngDO mngDO = mouldMngService.getTplInfo(mtype,content);
         return mngDO;
     }
-
 
 }
