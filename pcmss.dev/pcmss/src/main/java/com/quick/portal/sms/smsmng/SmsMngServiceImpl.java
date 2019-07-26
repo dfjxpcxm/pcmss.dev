@@ -174,18 +174,6 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         return phoneNUmList;
     }
 
-    public Integer getSignInfoByTitle(String smsTitle){
-        Integer sid = 0;
-        Map<String, Object> map = new HashMap<>();
-        map.put("sms_title",smsTitle);
-        List<Map<String, Object>> retList = dao.select(map);
-        if(null !=retList && retList.size()>0){
-            Map<String, Object> mp = retList.get(0);
-            sid = Integer.valueOf(mp.get("sms_id").toString());
-        }
-        return sid;
-    }
-
     @Override
     public DataStore save(SmsMngDO entity) {
         //文件导入
@@ -212,14 +200,11 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         entity.setSms_state(2);
         c = dao.insert(entity);
         //批量上传电话号码
-<<<<<<< Updated upstream
  //       if(c == 1){
-=======
         if(c == 1 || c == 2){
->>>>>>> Stashed changes
-            int id = getSignInfoByTitle(entity.getSms_title());
+            int id = getSmsInfoByTitle(entity.getSms_title());
             phoneNUmList = uploadPhoneNumInfo(entity,id);
- //       }
+       }
         Integer smsId = getSmsInfoByTitle(entity.getSms_title());
         boolean bool = smsSender(entity,phoneNUmList,smsId);
         smsLogMngService.saveSmsLogInfo(smsId,entity.getSms_title());
