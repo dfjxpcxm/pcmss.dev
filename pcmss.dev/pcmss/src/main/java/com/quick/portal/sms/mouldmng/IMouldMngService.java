@@ -35,7 +35,7 @@ public interface IMouldMngService extends ISysBaseService<MouldMngDO> {
 
 
     //获取模板编号
-    public MouldMngDO getTplInfo(Integer mtype,String content);
+    public MouldMngDO getTplInfo(Integer id);
 
 
     List<Map<String, Object>> getMouldTypeContent(Map<String, Object> queryMap);

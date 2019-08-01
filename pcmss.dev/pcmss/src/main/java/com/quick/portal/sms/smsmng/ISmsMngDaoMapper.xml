@@ -53,6 +53,17 @@
 			 now()
 			)
 	</insert>
+
+	<!-- 修改app_class -->
+	<update id="updateInfo" parameterType="com.quick.portal.sms.smsmng.SmsMngDO">
+		update sms_send_info
+		set  upd_time = now()
+		<if test="sms_state != null"><![CDATA[
+			  ,sms_state=#{sms_state}
+		]]> </if>
+		where sms_id = #{sms_id}
+	</update>
+
 	<insert id="insertPhoneNUmList" parameterType="java.util.List">
 		insert into sms_send_info
 		(sms_id,sms_rec_obj,sms_content,sms_state,sid,cre_time,upd_time)
@@ -87,12 +98,11 @@
 
 	<!-- 删除 -->
 	<delete id="delete" parameterType="String">
-		DELETE sms_info,sms_send_info from sms_info LEFT JOIN sms_send_info ON
-		sms_info.sms_id=sms_send_info.sms_id WHERE sms_info.sms_id = #{sms_id}
+		DELETE  from sms_info WHERE sms_id = #{sms_id}
 	</delete>
 	<!--查询-->
 	<select id="select" parameterType="map" resultType="map">
-		select o.*,s.sign_name as sign_name,m.mould_name as  mould_name,m.mould_content as mould_content from sms_info o left join sys_sign_info s
+		select o.*,s.sign_name as sign_name,m.mould_name as  mould_name,m.mould_type,	m.mould_content as mould_content from sms_info o left join sys_sign_info s
 		on o.sign_id =s.sign_id left join sys_mould_info m on o.mould_id = m.mould_id
 		<where>
 			<include refid="where" />

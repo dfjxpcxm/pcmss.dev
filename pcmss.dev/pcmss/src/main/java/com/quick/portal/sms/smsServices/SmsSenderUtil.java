@@ -155,7 +155,6 @@ class SmsSenderUtil {
     
     public SmsSingleSenderResult jsonToSmsSingleSenderResult(JSONObject json) {
     	SmsSingleSenderResult result = new SmsSingleSenderResult();
-    	
     	result.result = json.getInt("result");
     	result.errmsg = json.getString("errmsg");
     	if (0 == result.result) {

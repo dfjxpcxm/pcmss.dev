@@ -158,10 +158,8 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
                 }else{
                     param = params;
                 }
-
                 smsMngDO.setParams(param);
                 phoneNUmList.add(smsMngDO);
-
             }
             dao.insertPhoneNUmList(phoneNUmList);
         } catch (Exception e) {
@@ -177,37 +175,18 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
     @Override
     public DataStore save(SmsMngDO entity) {
         //文件导入
-        List<SmsMngDO> phoneNUmList = null;
-            if(null == entity.getFile_path() || "".equals(entity.getFile_path())){
-                return ActionMsg.setError("上传文件路径为空");
-            }
-
-        /*Integer keyVal = entity.getSms_id();
-        MouldMngDO mngDO = this.getTplInfo(entity.getMould_id(),entity.getMould_content());
+        if(null == entity.getFile_path() || "".equals(entity.getFile_path())){
+            return ActionMsg.setError("上传文件路径为空");
+        }
+        MouldMngDO mngDO = this.getTplInfo(entity.getMould_id());
         entity.setMould_num(mngDO.getMould_num());
-        entity.setMould_id(mngDO.getMould_id());*/
-        int c = 0;
-        /*if (keyVal == null) {
-            //失败：0；成功：1；发送中:2
-            entity.setSms_state(2);
-
-             //dao.insert(entity);
-        } else {
-            entity.setSms_state(2);
-            //c = dao.update(entity);
-            c = dao.update(entity);
-        }*/
         entity.setSms_state(2);
-        c = dao.insert(entity);
+        Integer c = dao.insert(entity);
+        int id = getSmsInfoByTitle(entity.getSms_title());
         //批量上传电话号码
- //       if(c == 1){
-        if(c == 1 || c == 2){
-            int id = getSmsInfoByTitle(entity.getSms_title());
-            phoneNUmList = uploadPhoneNumInfo(entity,id);
-       }
-        Integer smsId = getSmsInfoByTitle(entity.getSms_title());
-        boolean bool = smsSender(entity,phoneNUmList,smsId);
-        smsLogMngService.saveSmsLogInfo(smsId,entity.getSms_title());
+        List<SmsMngDO> phoneNUmList = uploadPhoneNumInfo(entity,id);
+        boolean bool = smsSender(entity,phoneNUmList,id);
+        smsLogMngService.saveSmsLogInfo(id,entity.getSms_title());
         if (c == 0) {
             return ActionMsg.setError("操作失败");
         }
@@ -232,11 +211,13 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         return smsId;
     }
 
-    public List<String>  parseParamList(String params){
-        List<String> pms = new ArrayList<>();
+    public ArrayList<String>  parseParamList(String params){
+        ArrayList<String> pms = new ArrayList<>();
         if(params != null && !"".equals(params)){
-            String [] parms = params.split(",");
-            pms = Arrays.asList(parms);
+            String [] parms = params.split("#");
+            for(String pm : parms){
+                pms.add(pm);
+            }
         }
         return pms;
     }
@@ -301,7 +282,7 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
                 entity.setSms_state(0);
                 entity.setSms_id(id);
                 dao.update(entity);
-
+                dao.updateInfo(entity);
         }else{
             entity.setSms_state(4);
             entity.setRemarks(singleReplyResult.errmsg);
@@ -368,8 +349,8 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
 
 
     //通过签名ID查询签名名称
-    public MouldMngDO getTplInfo(Integer mtype,String content){
-        MouldMngDO mngDO = mouldMngService.getTplInfo(mtype,content);
+    public MouldMngDO getTplInfo(Integer id){
+        MouldMngDO mngDO = mouldMngService.getTplInfo(id);
         return mngDO;
     }
 

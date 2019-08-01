@@ -19,6 +19,7 @@
 package com.quick.portal.sms.smsmng;
 
 import com.quick.core.base.ISysBaseDao;
+import com.quick.portal.security.sysconfmng.SysConfMngDO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.Map;
 /**
  * sms_info数据访问接口
  */
-public interface ISmsMngDao<SysConfMngDO> extends ISysBaseDao<SysConfMngDO> {
+public interface ISmsMngDao<SmsMngDO> extends ISysBaseDao<com.quick.portal.sms.smsmng.SmsMngDO> {
     public List<Map<String, Object>> getSignNameData();
 
     public List<Map<String, Object>> getMouldNameData();
@@ -40,4 +41,7 @@ public interface ISmsMngDao<SysConfMngDO> extends ISysBaseDao<SysConfMngDO> {
 
 
     public void insertSmsReplyResult(SmsMngDO sms);
+
+
+    public void updateInfo(SmsMngDO sms);
 }

@@ -251,10 +251,9 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     /**
      * 获取模板编号
      */
-    public MouldMngDO getTplInfo(Integer mtype,String content){
+    public MouldMngDO getTplInfo(Integer id){
         Map<String, Object> map = new HashMap<>();
-        map.put("mould_type",mtype);
-        map.put("mould_content",content);
+        map.put("mould_id",id);
         List<Map<String, Object>> retList = dao.select(map);
         MouldMngDO entity = new MouldMngDO();
         if(null !=retList && retList.size()>0){
