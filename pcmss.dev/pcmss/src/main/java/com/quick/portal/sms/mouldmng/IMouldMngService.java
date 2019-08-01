@@ -41,5 +41,5 @@ public interface IMouldMngService extends ISysBaseService<MouldMngDO> {
     List<Map<String, Object>> getMouldTypeContent(Map<String, Object> queryMap);
 
 
-    public DataStore syncMouldInfo();
+    public DataStore syncMouldInfo(Integer id);
 }

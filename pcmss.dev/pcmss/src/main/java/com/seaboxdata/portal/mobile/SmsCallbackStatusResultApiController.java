@@ -24,6 +24,9 @@ import com.quick.portal.sms.smsServices.SmsConstants;
 import com.quick.portal.sms.smsServices.SmsMultiSender;
 import com.quick.portal.sms.smsServices.SmsMultiSenderResult;
 import com.quick.portal.sms.smsServices.SmsPullCallbackStatusReplyResult;
+import com.quick.portal.sms.smsServices.SmsPullSendStatus;
+import com.quick.portal.sms.smsServices.SmsPullSendStatusResult;
+import com.quick.portal.sms.smsServices.SmsStatusPullerResult;
 import com.quick.portal.sms.smslogmng.ISmsLogMngService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -61,7 +64,7 @@ public class SmsCallbackStatusResultApiController extends SysApiController {
      */
     @RequestMapping(value = "/getSmsCallbackStatusInfo")
     @ResponseBody
-    public Object getSmsCallbackStatusInfo(String stdate,String eddate)throws Exception{
+    public Object getSmsCallbackStatusInfo(int stdate,int eddate)throws Exception{
     /*
 请求包体
     {
@@ -88,15 +91,48 @@ public class SmsCallbackStatusResultApiController extends SysApiController {
     "result": 0
 }
 */
-        if(null == stdate || "".equals(stdate)){
-            throw new Exception("stdate " + stdate + " error");
-        }
-        if(null == eddate || "".equals(eddate)){
-            throw new Exception("eddate " + eddate + " error");
-        }
         SearchSmsPullCallbackStatusResult smsCallbackRest = new SearchSmsPullCallbackStatusResult(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.PULLCALLBACKSTATUS_URL;
-        SmsPullCallbackStatusReplyResult smsCallbackResult = smsCallbackRest.getCallbackStatusResult( stdate, eddate, url);
+        SmsPullCallbackStatusReplyResult smsCallbackResult = smsCallbackRest.getCallbackStatusResult(stdate, eddate, url);
+        return smsCallbackResult;
+    }
+
+
+
+    /**
+     *  https://yun.tim.qq.com/v5/tlssmssvr/pullsendstatus
+     *  发送数据统计
+     * 拉取一段时间内的短信发送状态，包括发送量、成功量以及计费条数。
+     * @param stdate 开始时间，yyyymmddhh 需要拉取的起始时间,精确到小时
+     * @param eddate 结束时间，yyyymmddhh 需要拉取的截止时间,精确到小时
+     * @return
+     */
+    @RequestMapping(value = "/getSmsPullSendStatus")
+    @ResponseBody
+    public Object getSmsPullSendStatus(int stdate,int eddate)throws Exception{
+    /*
+请求包体
+    {
+
+    "begin_date": 2016090800,
+    "end_date": 2016090823,
+    "sig": "c13e54f047ed75e821e698730c72d030dc30e5b510b3f8a0fb6fb7605283d7df",
+    "time": 1457336869
+    }
+应答包体
+{
+      "result": 0,
+    "errmsg": "OK",
+    "data": {
+        "bill_number": 120,
+        "request": 101,
+        "success": 100
+    }
+}
+*/
+
+        SmsPullSendStatus smsCallbackRest = new SmsPullSendStatus(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+        SmsPullSendStatusResult smsCallbackResult = smsCallbackRest.pullSendStatus(stdate, eddate);
         return smsCallbackResult;
     }
 

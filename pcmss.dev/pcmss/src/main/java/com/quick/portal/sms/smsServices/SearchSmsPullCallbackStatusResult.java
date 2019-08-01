@@ -31,14 +31,12 @@ public class SearchSmsPullCallbackStatusResult {
 	 *     POST https://yun.tim.qq.com/v5/tlssmssvr/pullcallbackstatus?sdkappid=xxxxx&random=xxxx
 	 * @param begin_date 开始时间，yyyymmddhh 需要拉取的起始时间,精确到小时
 	 * @param end_date 结束时间，yyyymmddhh 需要拉取的截止时间,精确到小时
-	 * @param sig App 凭证，"sig" 字段根据公式 sha256（appkey=$appkey&random=$random&time=$time）
-	 * @param time 请求发起时间，UNIX 时间戳，如果和系统时间相差超过 10 分钟则会返回失败
 	 * @return {@link}SmsSignReplyResult
 	 * @throws Exception
 	 */
 	public SmsPullCallbackStatusReplyResult getCallbackStatusResult(
-			String begin_date,
-			String end_date,
+			int begin_date,
+			int end_date,
 			String url) throws Exception {
 /*
 请求包体
@@ -68,7 +66,7 @@ public class SearchSmsPullCallbackStatusResult {
 */
 
 		// 校验 begin_date 类型
-		DateTime sdt = new DateTime();
+/*		DateTime sdt = new DateTime();
 		if (null == begin_date || "".equals(begin_date) ) {
 			throw new Exception("begin_date " + begin_date + " error");
 		}else{
@@ -79,14 +77,14 @@ public class SearchSmsPullCallbackStatusResult {
 			throw new Exception("end_date " + end_date + " error");
 		}else{
 			edt = DateTime.parseExact(end_date, "yyyyMMdd HH");
-		}
+		}*/
 
 		// 按照协议组织 post 请求包体
         long random = util.getRandom();
         long curTime = System.currentTimeMillis()/1000;
 		JSONObject data = new JSONObject();
-        data.put("begin_date", sdt);
-        data.put("end_date", edt);
+        data.put("begin_date", begin_date);
+        data.put("end_date", end_date);
         data.put("sig", util.strToHash(String.format(
         		"appkey=%s&random=%d&time=%d",
         		appkey, random, curTime)));
@@ -103,6 +101,7 @@ public class SearchSmsPullCallbackStatusResult {
         StringBuilder sb = new StringBuilder();
         int httpRspCode = conn.getResponseCode();
 		SmsPullCallbackStatusReplyResult result;
+//		SmsStatusPullerResult result;
         if (httpRspCode == HttpURLConnection.HTTP_OK) {
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
             String line = null;

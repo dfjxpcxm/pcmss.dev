@@ -76,18 +76,16 @@ public class SmsSignSender {
     }
 }
 */
-
-		pic = SmsConstants.PIC_BASE64_SUFFIX;
-
+		if (null == pic || "".equals(pic)) {
+			pic = SmsConstants.PIC_BASE64_SUFFIX;
+		}
 		// 校验 international 类型
 		if (0 != international && 1 != international) {
 			throw new Exception("international " + international + " error");
 		}
 		if (null == remark) {
 			remark = "";
-		}		
-
-
+		}
 		// 按照协议组织 post 请求包体
         long random = util.getRandom();
         long curTime = System.currentTimeMillis()/1000;
@@ -107,7 +105,6 @@ public class SmsSignSender {
         // 与上面的 random 必须一致
 		String wholeUrl = String.format("%s?sdkappid=%d&random=%d", url, appid, random);
         HttpURLConnection conn = util.getPostHttpConn(wholeUrl);
-
         OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), "utf-8");
         wr.write(data.toString());
         wr.flush();
@@ -274,7 +271,7 @@ public class SmsSignSender {
 			}
 			br.close();
 			JSONObject json = new JSONObject(sb.toString());
-			result = util.jsonToSignPullerReplyResul(json);
+			result = util.jsonToSmsSignPullerReplyResult(json);
 		} else {
 			result = new SmsSignPullerReplyResult();
 			result.result = httpRspCode;
@@ -284,17 +281,7 @@ public class SmsSignSender {
 	}
 
 
-/*	public static void main(String[] args) throws Exception{
-		SmsSignSender sms = new SmsSignSender(1400224160,
-				"de43291c7169027322f84c821517182c");
-		sms.send(
-		0,
-		"86",
-		"13691186443",
-		"通知：2019-06-29请到浦城数字中心开会",
-		"",
-		"");
-	}*/
+
 
 
 }

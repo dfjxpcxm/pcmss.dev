@@ -158,7 +158,7 @@ public class SmsMultiSender {
 			String nationCode,
 			ArrayList<String> phoneNumbers,
 			int templId,
-			List<String> params,
+			ArrayList<String> params,
 			String sign,
 			String extend,
 			String ext,

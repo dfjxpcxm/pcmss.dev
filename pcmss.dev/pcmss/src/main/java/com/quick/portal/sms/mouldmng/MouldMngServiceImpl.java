@@ -21,29 +21,22 @@ package com.quick.portal.sms.mouldmng;
 
 import com.quick.core.base.SysBaseService;
 import com.quick.core.base.model.DataStore;
-import com.quick.core.base.model.PageBounds;
-import com.quick.core.util.common.DateTime;
-import com.quick.core.util.common.ReflectUtil;
-import com.quick.portal.sms.signmng.SignMngDO;
 import com.quick.portal.sms.smsServices.SmsConstants;
 import com.quick.portal.sms.smsServices.SmsRemoveReplyResult;
-import com.quick.portal.sms.smsServices.SmsSignPullerReplyResult;
-import com.quick.portal.sms.smsServices.SmsSignReplyResult;
-import com.quick.portal.sms.smsServices.SmsSignSender;
 import com.quick.portal.sms.smsServices.SmsTemplePullerReplyResult;
 import com.quick.portal.sms.smsServices.SmsTempleReplyResult;
 import com.quick.portal.sms.smsServices.SmsTempleSender;
+import com.quick.portal.sms.smslogmng.ISmsLogMngService;
 import com.quick.portal.sms.smsmng.SmsMngDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -53,6 +46,8 @@ import java.util.regex.Pattern;
 @Service("mouldMngService")
 public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements IMouldMngService {
 
+    @Resource(name = "smsLogMngService")
+    private ISmsLogMngService smsLogMngService;
 
     public  SmsTempleSender smsTemple;
     /**
@@ -100,13 +95,16 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
             keyVal = getTplInfoByName(entity.getMould_name());
             //调用创建模板接口
             bool =  sendAddTplInfo(entity,keyVal);
+            smsLogMngService.saveSmsLogInfo(keyVal,"新增短信模板："+"["+entity.getMould_name()+"]" );
         } else {
             c = dao.update(entity);
             if(null != entity.getMould_num() && entity.getMould_num()>0){
                 //调用修改模板接口
                 bool =  sendModTplInfo(entity,keyVal);
+                smsLogMngService.saveSmsLogInfo(keyVal,"修改短信模板："+"["+entity.getMould_name()+"]" );
             }else{
                 bool =  sendAddTplInfo(entity,keyVal);
+                smsLogMngService.saveSmsLogInfo(keyVal,"新增短信模板："+"["+entity.getMould_name()+"]" );
             }
         }
         if (c == 0) {
@@ -195,8 +193,7 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
         int result = tplReplyResult.result;
         MouldMngDO entity  = new MouldMngDO();
         if(result == 0){
-            ArrayList<SmsTempleReplyResult.data> datas = tplReplyResult.datas;
-            for(SmsTempleReplyResult.data dt : datas){
+            SmsTempleReplyResult.data dt = (SmsTempleReplyResult.data)tplReplyResult.getData();
                 entity = new MouldMngDO();
                 entity.setMould_num(dt.id);
                 entity.setMould_state(dt.status);
@@ -204,7 +201,6 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
                 entity.setMould_type(dt.type);
                 entity.setMould_id(sid);
                 dao.update(entity);
-            }
         }else{
             entity.setMould_state(4);
             entity.setRemarks(tplReplyResult.errmsg);
@@ -224,6 +220,7 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     public DataStore delete(String sysid) {
         Integer snum = getTplInfoByID(sysid);
         dao.delete(sysid);
+        smsLogMngService.saveSmsLogInfo(Integer.valueOf(sysid),"删除短信模板："+"模板编号：" +sysid);
         ArrayList<Integer> tplNums = new ArrayList<>();
         tplNums.add(snum);
         //调用删除签名接口
@@ -274,27 +271,40 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     }
 
     @Override
-    public DataStore syncMouldInfo() {
-        //查询拒绝待审核的签名信息
-        List<Map<String, Object>> retList = dao.getMouldStauteInfo();
+    public DataStore syncMouldInfo(Integer id) {
         ArrayList<Integer>  tplIds = new ArrayList<>();
-        if(null != retList && retList.size()>0){
-            for(Map<String, Object> mp :retList){
-                tplIds.add(Integer.valueOf(mp.get("mould_num").toString()));
-            }
+        if(null != id && id >0){
+            tplIds.add(id);
+        }else{
+            tplIds = getMouldIds();
+        }
+        if(!tplIds.isEmpty() && tplIds.size()>0){
             //短信模板状态查询
             try{
                 SmsTemplePullerReplyResult replyRest = smsTemple.getTempleStatusPullerInfoByTplId(tplIds,SmsConstants.GET_TEMPLATE_URL);
-                ParseReplyResult(replyRest);
+                parseReplyResult(replyRest,id);
             }catch (Exception e){
                 System.out.println("短信模板状态查询！"+e.getLocalizedMessage());
                 e.printStackTrace();
+                return ActionMsg.setOk("同步失败");
             }
-
+            return ActionMsg.setOk("同步成功");
         }
-        return ActionMsg.setOk("同步成功");
+        return ActionMsg.setOk("无短信签名数据同步");
     }
 
+
+        public ArrayList<Integer> getMouldIds() {
+            //查询拒绝待审核的签名信息
+            List<Map<String, Object>> retList = dao.getMouldStauteInfo();
+            ArrayList<Integer> tplIds = new ArrayList<>();
+            if (null != retList && retList.size() > 0) {
+                for (Map<String, Object> mp : retList) {
+                    tplIds.add(Integer.valueOf(mp.get("mould_num").toString()));
+                }
+            }
+            return tplIds;
+        }
 
     /**
      *
@@ -321,7 +331,7 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
      * }
      *
      */
-    public void ParseReplyResult (SmsTemplePullerReplyResult tplReplyResult){
+    public void parseReplyResult(SmsTemplePullerReplyResult tplReplyResult,Integer id){
         int result = tplReplyResult.result;
         MouldMngDO entity  = new MouldMngDO();
         if(result == 0){
@@ -334,7 +344,14 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
                 entity.setMould_content(dt.text);
                 entity.setMould_type(dt.type);
                 entity.setMould_name(dt.title);
-                dao.updateReplyResult(entity);
+                if(null != id && id >0){
+                    entity.setApply_causes(dt.title);
+                    entity.setMould_author(1);
+                    dao.insert(entity);
+                }else{
+                    dao.updateReplyResult(entity);
+                }
+
             }
         }
     }

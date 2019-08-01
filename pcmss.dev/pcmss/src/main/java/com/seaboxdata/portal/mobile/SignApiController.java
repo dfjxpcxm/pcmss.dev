@@ -27,6 +27,7 @@ import com.quick.portal.sms.smsServices.SmsRemoveReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignPullerReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignSender;
+import com.quick.portal.sms.smsServices.SmsTempleReplyResult;
 import com.quick.portal.sms.smslogmng.ISmsLogMngService;
 import com.quick.portal.web.home.IHomeService;
 import com.quick.portal.web.model.DataResult;
@@ -62,7 +63,7 @@ public class SignApiController extends SysApiController {
 
 
     /**
-     *   api https://cloud.tencent.com/document/product/382/6038
+     *   api http://127.0.0.1:8080/pcmss/mobile/sign/addSign
      * 添加短信签名
      *  请求参数
      * {
@@ -74,14 +75,14 @@ public class SignApiController extends SysApiController {
      *     "time": 1457336869
      * }
      *
-     * @param international 0表示国内短信，1表示海外短信，默认为0
+     * @param pic   base64加密
      * @param remark  签名备注，比如申请原因，使用场景等
      * @param text    签名内容，不带【】，例如：【腾讯科技】这个签名，这里填"腾讯科技"
      * @return
      */
     @RequestMapping(value = "/addSign")
     @ResponseBody
-    public Object addSign(int international,String remark,String text)throws Exception{
+    public Object addSign(String pic,String text,String remark)throws Exception{
     /*
 请求包体
 {
@@ -106,12 +107,11 @@ public class SignApiController extends SysApiController {
 }
 */
         SmsSignSender signMng = new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
-        String pic = SmsConstants.PIC_BASE64_PREFIX.concat(SmsConstants.PIC_BASE64_SUFFIX);
         String url = SmsConstants.ADD_SIGN_URL;
-        SmsSignReplyResult signReplyResult = signMng.sendSignInfo(pic, international, remark, text,0, url);
+        SmsSignReplyResult signReplyResult = signMng.sendSignInfo(pic, 0, remark, text,0, url);
 
-
-
+        SmsSignReplyResult.data dt = (SmsSignReplyResult.data)signReplyResult.getData();
+        smsLogMngService.saveSmsLogInfo(dt.id,"外部系统调用新增短信签名："+"["+text+"]" );
         return signReplyResult;
     }
 
@@ -126,7 +126,7 @@ public class SignApiController extends SysApiController {
      */
     @RequestMapping(value = "/modSign")
     @ResponseBody
-    public Object modSign(String remark,int signId,String text) throws Exception{
+    public Object modSign(String pic,int signId,String text,String remark) throws Exception{
         /*
 请求包体
 {
@@ -152,9 +152,10 @@ public class SignApiController extends SysApiController {
 */
 
         SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
-        String pic = SmsConstants.PIC_BASE64_PREFIX.concat(SmsConstants.PIC_BASE64_SUFFIX);
+
         String url = SmsConstants.MOD_SIGN_URL;
         SmsSignReplyResult signReplyResult = signMng.sendSignInfo(pic, 0, remark, text, signId,url);
+        smsLogMngService.saveSmsLogInfo(signId,"外部系统调用修改短信签名："+"["+text+"]" );
         return signReplyResult;
     }
     
@@ -186,16 +187,15 @@ public class SignApiController extends SysApiController {
             throw new Exception("signIds " + signIds + " error");
         }
         String [] ids = signIds.split(",");
-
         ArrayList<Integer> sIds = new ArrayList<>();
         for(int i= 0; i< ids.length;i++){
             sIds.add(Integer.valueOf(ids[i]));
         }
 
-//        ArrayList<String> signId = (ArrayList<String>) Arrays.asList(ids);
         String url = SmsConstants.DEL_SIGN_URL;
         SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsRemoveReplyResult signReplyResult = signMng.removeSignInfo(sIds,url);
+        smsLogMngService.saveSmsLogInfo(Integer.valueOf(ids[0]),"外部系统调用删除短信签名："+"签名编号：" +signIds);
         return signReplyResult;
     }
     

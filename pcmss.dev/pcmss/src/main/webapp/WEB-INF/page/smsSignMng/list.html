@@ -14,7 +14,7 @@
 							  <form id="formSearch" class="form-inline">
                                   <div class="form-group" style="padding: 0px;width:180px;">
 									  <input maxlength="20" id="sign_name" name="sign_name" class="input-sm form-control"
-											 type="text" placeholder="签名名称"/>
+											 type="text" placeholder="签名名称或编号"/>
 								  </div>
 
 								  <div class="form-group" style="left: auto;width:80px;">
@@ -202,13 +202,23 @@
 		  var infoBefore = "确认同步短信签名信息吗？<br/>同步后，短信签名状态将更新后显示！";
 		  var infoAfter = "同步短信签名信息成功！";
 		  var title = "同步短信签名信息";
+		  var s = $("#sign_name").val();
+		  var url = quick.serverUrl + '/syncSignInfo';
+		  if(s != null && s.length>0){
+			  var reg = new RegExp("^[0-9]*$");
+			  if(!reg.test(s)){
+				  alert("请输入数字!");
+				  return false;
+			  }
+			  url = quick.serverUrl + '/syncSignInfo?id='+s;
+		  }
 		  layer.confirm(
 				  infoBefore,
 				  {icon: 3, title: title, skin: 'layer-ext-moon'},
 				  function () {
 					  $.ajax({
 						  type: "post",
-						  url: quick.serverUrl + '/syncSignInfo' ,
+						  url: url ,
 						  dataType: "json",
 						  success: function (data) {
 							  layer.msg(infoAfter, {icon: 1, time: 1000, skin: 'layer-ext-moon'});
@@ -221,6 +231,11 @@
 				  }
 		  );
 	  }
+
+	  function validate(){
+
+	  }
+
   </script>
 
   </body>

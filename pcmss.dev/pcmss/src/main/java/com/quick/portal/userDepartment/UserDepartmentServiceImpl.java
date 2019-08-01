@@ -23,6 +23,7 @@ import com.quick.core.base.SysBaseService;
 import com.quick.core.base.model.DataStore;
 import com.quick.core.util.common.DateTime;
 import com.quick.portal.ldapmng.IOrgLdapMngDao;
+import com.quick.portal.security.authority.metric.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,20 +72,20 @@ public class UserDepartmentServiceImpl extends SysBaseService<UserDepartmentDO> 
         Integer val = entity.getDep_id();
         int c = 0;
         Date now = DateTime.Now().getTime();
-        //名称不能重复
-      /*  if(exist("dep_name", entity.getDep_name(), val))
-            return ActionMsg.setError("名称已存在，请换一个");*/
+        String ldapState = PropertiesUtil.getPropery("ldap.auth.set");
         if(val == null || val == 0) {
             entity.setCre_time( now );  //新增时间
 			entity.setUpd_time( now );  //修改时间
-
             c = dao.insert(entity);
-            orgLdapMngDao.saveOrgLdapInfo(entity);
+            if("true".equals(ldapState)){
+                orgLdapMngDao.saveOrgLdapInfo(entity);
+            }
         }else {
             entity.setUpd_time( now );  //修改时间
-
             c = dao.update(entity);
-            orgLdapMngDao.updateOrgLdapInfo(entity);
+            if("true".equals(ldapState)){
+                orgLdapMngDao.updateOrgLdapInfo(entity);
+            }
         }
         if(c == 0)
             return ActionMsg.setError("操作失败");
@@ -107,7 +108,10 @@ public class UserDepartmentServiceImpl extends SysBaseService<UserDepartmentDO> 
            mp =retList.get(0);
         }
         String depId = mp.get("dep_global_id").toString();
-        orgLdapMngDao.removeOrgLdapInfo(depId);
+        String ldapState = PropertiesUtil.getPropery("ldap.auth.set");
+        if("true".equals(ldapState)){
+            orgLdapMngDao.removeOrgLdapInfo(depId);
+        }
         dao.delete(sysid);
         return ActionMsg.setOk("操作成功");
     }
@@ -116,25 +120,28 @@ public class UserDepartmentServiceImpl extends SysBaseService<UserDepartmentDO> 
 
     public DataStore syncOrgLdap(String orgids){
         int oid = Integer.valueOf(orgids);
-        List<Map<String, Object>> retList = dao.getOrgInfoByIds(oid);
-        int cnt = 0;
-        if(null !=retList && !retList.isEmpty()){
-            UserDepartmentDO depDO = null;
-            for(Map<String, Object> mp:retList){
-                depDO = new UserDepartmentDO();
-                depDO.setDep_global_id(mp.get("dep_global_id").toString());
-                depDO.setDep_name(mp.get("dep_name")==null?"":mp.get("dep_name").toString());
-                depDO.setDep_state(mp.get("dep_state")==null?0:Integer.valueOf(mp.get("dep_state").toString()));
-                depDO.setSup_dep_global_id(mp.get("sup_dep_global_id")==null?"":mp.get("sup_dep_global_id").toString());
-                cnt = orgLdapMngDao.searchOrgLdapCnt(depDO);
-                if(cnt == 0){
-                    orgLdapMngDao.saveOrgLdapInfo(depDO);
-                }else{
-                    orgLdapMngDao.updateOrgLdapInfo(depDO);
+        String ldapState = PropertiesUtil.getPropery("ldap.auth.set");
+        if("true".equals(ldapState)){
+            List<Map<String, Object>> retList = dao.getOrgInfoByIds(oid);
+            int cnt = 0;
+            if(null !=retList && !retList.isEmpty()){
+                UserDepartmentDO depDO = null;
+                for(Map<String, Object> mp:retList){
+                    depDO = new UserDepartmentDO();
+                    depDO.setDep_global_id(mp.get("dep_global_id").toString());
+                    depDO.setDep_name(mp.get("dep_name")==null?"":mp.get("dep_name").toString());
+                    depDO.setDep_state(mp.get("dep_state")==null?0:Integer.valueOf(mp.get("dep_state").toString()));
+                    depDO.setSup_dep_global_id(mp.get("sup_dep_global_id")==null?"":mp.get("sup_dep_global_id").toString());
+                    cnt = orgLdapMngDao.searchOrgLdapCnt(depDO);
+                    if(cnt == 0){
+                        orgLdapMngDao.saveOrgLdapInfo(depDO);
+                    }else{
+                        orgLdapMngDao.updateOrgLdapInfo(depDO);
+                    }
                 }
-
             }
         }
+
         return ActionMsg.setOk("同步LDAP用户成功");
     }
 

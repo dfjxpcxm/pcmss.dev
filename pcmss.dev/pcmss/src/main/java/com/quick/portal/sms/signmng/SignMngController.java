@@ -86,8 +86,8 @@ public class SignMngController extends SysBaseController<SignMngDO> {
 
     @RequestMapping(value = "/syncSignInfo")
     @ResponseBody
-    public DataStore syncSignInfo() {
-        DataStore ds = signMngService.syncSignInfo();
+    public DataStore syncSignInfo(Integer id) {
+        DataStore ds = signMngService.syncSignInfo(id);
         return ds;
     }
 

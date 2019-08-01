@@ -21,9 +21,7 @@ package com.seaboxdata.portal.mobile;
 import com.quick.core.base.SysApiController;
 import com.quick.portal.sms.smsServices.SmsConstants;
 import com.quick.portal.sms.smsServices.SmsRemoveReplyResult;
-import com.quick.portal.sms.smsServices.SmsSignPullerReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignReplyResult;
-import com.quick.portal.sms.smsServices.SmsSignSender;
 import com.quick.portal.sms.smsServices.SmsTemplePullerReplyResult;
 import com.quick.portal.sms.smsServices.SmsTempleReplyResult;
 import com.quick.portal.sms.smsServices.SmsTempleSender;
@@ -35,8 +33,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 短信模板接口类
@@ -71,7 +67,6 @@ public class TempleApiController extends SysApiController {
      *
      * 添加短信模板
      * @param remark 模板备注，比如申请原因，使用场景等
-     * @param international 0表示国内短信，1表示海外短信，默认为0
      * @param text 模板内容
      * @param title 模板名称
      * @param type 短信类型，Enum{0：普通短信, 1：营销短信}
@@ -79,7 +74,7 @@ public class TempleApiController extends SysApiController {
      */
     @RequestMapping(value = "/addTemplate")
     @ResponseBody
-    public Object addTemplate(String remark,int international,String text,String title,int type)throws Exception{
+    public Object addTemplate(String remark,String text,String title,int type)throws Exception{
     /*
 请求包体
 {
@@ -108,7 +103,10 @@ public class TempleApiController extends SysApiController {
 
         SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.ADD_TEMPLATE_URL;
-        SmsTempleReplyResult templeReplyResult = templeMng.sendTempleInfo(remark, international, text, title,0, type,url);
+        SmsTempleReplyResult templeReplyResult = templeMng.sendTempleInfo(remark, 0, text, title,0, type,url);
+
+        SmsTempleReplyResult.data dt = (SmsTempleReplyResult.data)templeReplyResult.getData();
+        smsLogMngService.saveSmsLogInfo(dt.id,"外部系统调用新增短信模板："+"["+text+"]" );
         return templeReplyResult;
     }
 
@@ -155,6 +153,7 @@ public class TempleApiController extends SysApiController {
         SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.MOD_TEMPLATE_URL;
         SmsTempleReplyResult templeReplyResult = templeMng.sendTempleInfo(remark, 0, text, title,tplId, type,url);
+        smsLogMngService.saveSmsLogInfo(tplId,"外部系统调用修改短信模板："+"["+text+"]" );
         return templeReplyResult;
 
     }
@@ -192,7 +191,8 @@ public class TempleApiController extends SysApiController {
             tplId.add(Integer.valueOf(ids[i]));
         }
 
- //       List<String> tplId = Arrays.asList(ids);
+        smsLogMngService.saveSmsLogInfo(Integer.valueOf(ids[0]),"外部系统调用删除短信模板："+"模板编号：" +tplIds);
+
         String url = SmsConstants.DEL_TEMPLATE_URL;
         SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsRemoveReplyResult smsTplRemoveReplyResult = templeMng.removeTempleInfo(tplId,url);
@@ -245,7 +245,6 @@ public class TempleApiController extends SysApiController {
         for(int i=0; i< ids.length;i++){
             tplId.add(Integer.valueOf(ids[i]));
         }
-//        ArrayList<String> tplId = (ArrayList<String>) Arrays.asList(ids);
         String url = SmsConstants.GET_TEMPLATE_URL;
         SmsTempleSender templeMng = new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsTemplePullerReplyResult templePullerReplyResult = templeMng.getTempleStatusPullerInfoByTplId(tplId,url);
@@ -255,14 +254,14 @@ public class TempleApiController extends SysApiController {
 
     /**
      * 查询申请的短信模板状态
-     * @param  num 一次拉取的条数，最多50
-     * @param  stNum 拉取的偏移量，初始为0，如果要多次拉取，需赋值为上一次的 offset 与 max 字段的和
+     * @param  max 一次拉取的条数，最多50
+     * @param  offset 拉取的偏移量，初始为0，如果要多次拉取，需赋值为上一次的 offset 与 max 字段的和
      * @throws Exception
      * @return
      */
     @RequestMapping(value = "/getTempleInfoByPageNo")
     @ResponseBody
-    public Object getTempleInfoByPageNo(int num,int stNum) throws Exception{
+    public Object getTempleInfoByPageNo(int max,int offset) throws Exception{
 /*
 请求包体
 {
@@ -292,7 +291,8 @@ public class TempleApiController extends SysApiController {
 }
 */      String url = SmsConstants.GET_TEMPLATE_URL;
         SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
-        SmsTemplePullerReplyResult templePullerReplyResult = templeMng.getTempleStatusPullerInfoByPageNo(stNum,num,url);
+        SmsTemplePullerReplyResult templePullerReplyResult = templeMng.getTempleStatusPullerInfoByPageNo(offset,max,url);
         return templePullerReplyResult;
     }
+
 }

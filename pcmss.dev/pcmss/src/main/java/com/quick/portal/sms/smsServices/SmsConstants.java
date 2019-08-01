@@ -32,6 +32,12 @@ public class SmsConstants {
 
     //拉取短信状态
     public static final String PULLSTATUS_URL ="https://yun.tim.qq.com/v5/tlssmssvr/pullstatus";
+
+
+    //发送数据统计
+    public static final String PULL_SEND_STATUS_URL ="https://yun.tim.qq.com/v5/tlssmssvr/pullsendstatus";
+
+
     //0: 短信下发状态
     public static final int PULL_STATUS_TYPE = 0 ;
     //1: 短信回复

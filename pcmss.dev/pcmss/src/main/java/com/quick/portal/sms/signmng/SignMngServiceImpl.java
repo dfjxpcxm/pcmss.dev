@@ -28,10 +28,12 @@ import com.quick.portal.sms.smsServices.SmsRemoveReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignPullerReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignSender;
+import com.quick.portal.sms.smslogmng.ISmsLogMngService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,6 +47,9 @@ import java.util.Map;
 @Transactional
 @Service("signMngService")
 public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISignMngService {
+
+    @Resource(name = "smsLogMngService")
+    private ISmsLogMngService smsLogMngService;
 
     public  SmsSignSender smsSign;
     /**
@@ -82,14 +87,17 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
             id = getSignInfoByName(entity.getSign_name());
             //调用创建签名接口
             bool = sendAddSignInfo(entity, id);
+            smsLogMngService.saveSmsLogInfo(id,"新增短信签名："+"["+entity.getSign_name()+"]" );
         }else {
             entity.setSign_state(1);
             c = dao.update(entity);
             if(null != entity.getSign_num() && entity.getSign_num()>0){
                 //调用修改签名接口
                 bool = sendModSignInfo(entity, id);
+                smsLogMngService.saveSmsLogInfo(id,"修改短信签名："+"["+entity.getSign_name()+"]" );
             }else{
                 bool = sendAddSignInfo(entity, id);
+                smsLogMngService.saveSmsLogInfo(id,"新增短信签名："+"["+entity.getSign_name()+"]" );
             }
 
         }
@@ -169,15 +177,13 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
         int result = signReplyResult.result;
         SignMngDO entity  = new SignMngDO();
         if(result == 0){
-            ArrayList<SmsSignReplyResult.data> datas = signReplyResult.datas;
-            for(SmsSignReplyResult.data dt : datas){
-                entity = new SignMngDO();
+            SmsSignReplyResult.data dt = (SmsSignReplyResult.data)signReplyResult.getData();
+               entity = new SignMngDO();
                 entity.setSign_num(dt.id);
                 entity.setSign_name(dt.text);
                 entity.setSign_state(dt.status);
                 entity.setSign_id(sid);
                 dao.update(entity);
-            }
         }else{
             entity.setSign_state(4);
             entity.setRemarks(signReplyResult.errmsg);
@@ -202,6 +208,7 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
     public DataStore delete(String sysid) {
         Integer snum = getSignInfoByID(sysid);
         dao.delete(sysid);
+        smsLogMngService.saveSmsLogInfo(Integer.valueOf(sysid),"删除短信签名："+"签名编号：" +sysid);
         ArrayList<Integer> signNums = new ArrayList<>();
         signNums.add(snum);
         //调用删除签名接口
@@ -251,27 +258,41 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
      * @return
      */
     @Override
-    public DataStore syncSignInfo() {
-        //查询拒绝待审核的签名信息
-        List<Map<String, Object>> retList = dao.getSignStauteInfo();
+    public DataStore syncSignInfo(Integer id) {
         ArrayList<Integer>  signIds = new ArrayList<>();
-        if(null != retList && retList.size()>0){
-            for(Map<String, Object> mp :retList){
-                signIds.add(Integer.valueOf(mp.get("sign_num").toString()));
-            }
-            //短信签名状态查询
+        if(null != id && id >0){
+            signIds.add(id);
+        }else{
+            signIds = getSignIds();
+        }
+        if(!signIds.isEmpty() && signIds.size()>0){
             try{
                 SmsSignPullerReplyResult replyRest = smsSign.getSignStatusPullerInfo(signIds,SmsConstants.GET_SIGN_URL);
-                ParseReplyResult(replyRest);
+                parseReplyResult(replyRest,id);
             }catch (Exception e){
                 System.out.println("短信签名状态查询！"+e.getLocalizedMessage());
                 e.printStackTrace();
+                return ActionMsg.setOk("同步失败");
             }
-
+            return ActionMsg.setOk("同步成功");
         }
-        return ActionMsg.setOk("同步成功");
-
+        //短信签名状态查询
+        return ActionMsg.setOk("无短信签名数据同步");
     }
+
+
+    public ArrayList<Integer> getSignIds(){
+        //查询拒绝待审核的签名信息
+        List<Map<String, Object>> retList = dao.getSignStauteInfo();
+        ArrayList<Integer>  signIds = new ArrayList<>();
+        if(null != retList && retList.size()>0) {
+            for (Map<String, Object> mp : retList) {
+                signIds.add(Integer.valueOf(mp.get("sign_num").toString()));
+            }
+        }
+        return signIds;
+    }
+
 
     /**
      *
@@ -293,7 +314,7 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
      * }
      *
      */
-    public void ParseReplyResult (SmsSignPullerReplyResult signReplyResult){
+    public void parseReplyResult (SmsSignPullerReplyResult signReplyResult,Integer id){
         int result = signReplyResult.result;
         SignMngDO entity = new SignMngDO();
         if(result == 0){
@@ -304,7 +325,15 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
                 entity.setSign_name(dt.text);
                 entity.setRemarks(dt.reply);
                 entity.setSign_state(dt.status);
-                dao.updateReplyResult(entity);
+                if(null != id && id >0){
+                    entity.setSign_type(0);
+                    entity.setSign_author(1);
+                    entity.setApply_causes(dt.text);
+                    dao.insert(entity);
+                }else{
+                    dao.updateReplyResult(entity);
+                }
+
             }
         }
     }

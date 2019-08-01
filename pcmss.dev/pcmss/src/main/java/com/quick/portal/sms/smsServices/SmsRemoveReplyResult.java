@@ -12,8 +12,8 @@ public class SmsRemoveReplyResult {
 	}
 	 */
 
-	int result;
-	String errmsg;
+	public int result;
+	public String errmsg;
 
 	
 	public String toString() {

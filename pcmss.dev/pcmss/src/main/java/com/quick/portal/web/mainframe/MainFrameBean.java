@@ -134,6 +134,8 @@ public class MainFrameBean implements Serializable {
 	private boolean parent;
 	
 	private List<MainFrameBean> children;
+
+
 	
 	public MainFrameBean() {
 		super();
@@ -201,5 +203,6 @@ public class MainFrameBean implements Serializable {
 		this.depth = depth;
 	}
 
-	
+
+
 }

@@ -28,20 +28,10 @@
 			   toolbar:"#formSearch",
 			   columns: [
 				   {  checkbox: true },
-				   { field: 'mould_type', title: '模板类型', width: 100  ,
-					   formatter: function (value, row, index) {
-						    if (value == 0) {
-							   return "普通短信";
-						   }  else if (value == 1) {
-							   return "营销短信";
-						   } else {
-							   return "-";
-
-						   }
-					   }},
+				   { field: 'mould_num', title: '模板编号', width: 100  },
 				   { field: 'mould_name', title: '模板名称', width: 100  },
 				   { field: 'mould_content', title: '模板内容', width: 100  },
-				   { field: 'apply_causes', title: '申请说明', width: 100  },
+				 /*  { field: 'apply_causes', title: '申请说明', width: 100  },*/
 				  /* { field: 'mould_type_name', title: '模板类别', width: 100  },*/
 				   { field: 'mould_state', title: '状态', width: 100 ,
 					   formatter: function (value, row, index) {
@@ -56,6 +46,17 @@
 						   }
 					   }
 				   },
+				   { field: 'mould_type', title: '模板类型', width: 100  ,
+					   formatter: function (value, row, index) {
+						   if (value == 0) {
+							   return "普通短信";
+						   }  else if (value == 1) {
+							   return "营销短信";
+						   } else {
+							   return "-";
+
+						   }
+					   }},
 
 				   { field: 'CZ',  title: '操作',width: '15%', formatter:function(value,row,index){
 					if(row.mould_state ==0){
@@ -158,13 +159,23 @@
 		   var infoBefore = "确认同步短信模板信息吗？<br/>同步后，短信模板状态将更新后显示！";
 		   var infoAfter = "同步短信模板信息成功！";
 		   var title = "同步短信模板信息";
+		   var s = $("#mould_name").val();
+		   var url = quick.serverUrl + '/syncMouldInfo';
+		   if(s != null && s.length>0){
+			   var reg = new RegExp("^[0-9]*$");
+			   if(!reg.test(s)){
+				   alert("请输入数字!");
+				   return false;
+			   }
+			   url = quick.serverUrl + '/syncMouldInfo?id='+s;
+		   }
 		   layer.confirm(
 				   infoBefore,
 				   {icon: 3, title: title, skin: 'layer-ext-moon'},
 				   function () {
 					   $.ajax({
 						   type: "post",
-						   url: quick.serverUrl + '/syncMouldInfo' ,
+						   url: url ,
 						   dataType: "json",
 						   success: function (data) {
 							   layer.msg(infoAfter, {icon: 1, time: 1000, skin: 'layer-ext-moon'});
@@ -189,7 +200,7 @@
 
 								  <div class="form-group" style="padding: 0px;width:180px;">
 									  <input maxlength="20" id="mould_name" name="mould_name" class="input-sm form-control"
-											 type="text" placeholder="模板名称"/>
+											 type="text" placeholder="模板名称或编号"/>
 								  </div>
 
 								  <div class="form-group" style="left: auto;width:80px;">

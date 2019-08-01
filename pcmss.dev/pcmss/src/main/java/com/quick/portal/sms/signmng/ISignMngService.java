@@ -37,7 +37,7 @@ public interface ISignMngService extends ISysBaseService<SignMngDO> {
     public String getSignInfoById(Integer sid);
 
 
-    public DataStore syncSignInfo();
+    public DataStore syncSignInfo(Integer id);
 
 
 

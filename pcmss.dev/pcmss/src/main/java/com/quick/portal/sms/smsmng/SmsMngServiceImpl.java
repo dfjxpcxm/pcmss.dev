@@ -235,7 +235,7 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
     public List<String>  parseParamList(String params){
         List<String> pms = new ArrayList<>();
         if(params != null && !"".equals(params)){
-            String [] parms = params.split("#");
+            String [] parms = params.split(",");
             pms = Arrays.asList(parms);
         }
         return pms;

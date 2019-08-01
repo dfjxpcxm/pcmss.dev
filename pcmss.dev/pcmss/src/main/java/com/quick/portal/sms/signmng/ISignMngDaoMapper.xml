@@ -9,15 +9,11 @@
 	       and sign_id = #{sign_id}
 	    ]]></if>
 		<if test="sign_name != null and sign_name != '' and !'null'.equals(sign_name)"><![CDATA[
-	       and sign_name  like CONCAT('%',#{sign_name},'%')
+	       and ( sign_name  like CONCAT('%',#{sign_name},'%') or sign_num =#{sign_name})
 	    ]]></if>
 
 		<if test="sign_type != null"><![CDATA[
 	       and sign_type = #{sign_type}
-	    ]]></if>
-
-		<if test="sign_author != null"><![CDATA[
-	       and sign_author = #{sign_author}
 	    ]]></if>
 
 		<if test="sign_state != null"><![CDATA[
@@ -102,9 +98,7 @@
 		<where>
 			<include refid="where" />
 		</where>
-		<if test="_sql_order != null and _sql_order != ''">
-			order by ${_sql_order}
-		</if>
+		order by upd_time desc
 	</select>
 
 	<!-- 查询总记录数 -->

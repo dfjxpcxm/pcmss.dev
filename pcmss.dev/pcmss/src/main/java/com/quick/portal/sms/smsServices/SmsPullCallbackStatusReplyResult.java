@@ -2,7 +2,8 @@ package com.quick.portal.sms.smsServices;
 
 import java.util.ArrayList;
 
-public class SmsPullCallbackStatusReplyResult {
+public class SmsPullCallbackStatusReplyResult implements java.io.Serializable{
+	private static final long serialVersionUID = 1L;
 	/*
 {
     "data": {
@@ -21,15 +22,15 @@ public class SmsPullCallbackStatusReplyResult {
 }
 	 */
 	public class data{
-		long status ;
-		long status_fail;
-		long status_fail_0;
-		long status_fail_1;
-		long status_fail_2;
-		long status_fail_3;
-		long status_fail_4;
-		long status_success ;
-		long success ;
+		public long status ;
+		public long status_fail;
+		public long status_fail_0;
+		public long status_fail_1;
+		public long status_fail_2;
+		public long status_fail_3;
+		public long status_fail_4;
+		public long status_success ;
+		public long success ;
 		public String toString(){
 			return String.format(
 					"status:%d\t"
@@ -54,25 +55,19 @@ public class SmsPullCallbackStatusReplyResult {
 		}
 	}
 	
-	int result;
-	String errmsg;
-	ArrayList<data> datas;
-	
-	public String toString() {
-		if (0 == result) {
-			return String.format("SmsPullCallbackStatusReplyResult:\n"
-							+ "result:%d\n"
-							+ "errmsg:%s\n"
-							+ "datas:%s\n",
-					result,
-					errmsg,
-					datas.toString()
-			);
-		} else {
-			return String.format("SmsPullCallbackStatusReplyResult:\n"
-							+ "result:%d\n"
-							+ "errmsg:%s\n", result, errmsg);
-		}
+	public int result;
+	public String errmsg;
+	public Object data;
+
+
+
+	public Object getData() {
+		return data;
 	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
 }
 

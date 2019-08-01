@@ -126,25 +126,13 @@ class SmsSenderUtil {
 	 */
 	public JSONArray smsParamsToJSONArray(List<String> params) {
         JSONArray smsParams = new JSONArray();
-		/*int i = 0;
-		do {
-			JSONObject telElement = new JSONObject();
-			telElement.put("nationcode", nationCode);
-			telElement.put("mobile", phoneNumbers.get(i));
-			smsParams.put(telElement);
-		} while (++i < phoneNumbers.size());
-
-*/
-
 		String param = "";
         for (int i = 0; i < params.size(); i++) {
 			param = params.get(i);
-			String [] pas = param.split("#");
+			String [] pas = param.split(",");
 			for(int j=0; j<pas.length;j++){
 				smsParams.put(pas[j]);
 			}
-
- //       	smsParams.put(params.get(i));
 		}
         return smsParams;
     }
@@ -268,35 +256,31 @@ class SmsSenderUtil {
 	public SmsSignReplyResult jsonToSmsSignReplyResult(JSONObject json) {
 		SmsSignReplyResult result = new SmsSignReplyResult();
 		result.result = json.getInt("result");
+		if(result.result >0){
+			result.errmsg = json.getString("msg");
+			return result;
+		}
 		result.errmsg = json.getString("errmsg");
 		if (true == json.isNull("data")) {
 			return result;
 		}
-		result.datas = new ArrayList<>();
 		JSONObject datas = json.getJSONObject("data");
 		SmsSignReplyResult.data reply = result.new data();
 		reply.id = datas.getInt("id");
 		reply.international = datas.getInt("international");
 		reply.status = datas.getInt("status");
 		reply.text = datas.getString("text");
-		result.datas.add(reply);
-
-		/*JSONArray datas  = json.getJSONArray("data");
-		for(int index = 0 ; index< datas.length(); index++){
-			JSONObject reply_json = datas.getJSONObject(index);
-			SmsSignReplyResult.data reply = result.new data();
-			reply.id = reply_json.getInt("id");
-			reply.international = reply_json.getInt("international");
-			reply.status = reply_json.getInt("status");
-			reply.text = reply_json.getString("text");
-			result.datas.add(reply);
-		}*/
+		result.setData(reply);
 		return result;
 	}
 
 	public SmsRemoveReplyResult jsonToSmsRemoveReplyResult(JSONObject json) {
 		SmsRemoveReplyResult result = new SmsRemoveReplyResult();
 		result.result = json.getInt("result");
+		if(result.result >0){
+			result.errmsg = json.getString("msg");
+			return result;
+		}
 		result.errmsg = json.getString("errmsg");
 		if (true == json.isNull("data")) {
 			return result;
@@ -305,22 +289,60 @@ class SmsSenderUtil {
 	}
 
 
-	public SmsSignPullerReplyResult jsonToSignPullerReplyResul(JSONObject json) {
+	public SmsSignPullerReplyResult jsonToSmsSignPullerReplyResult(JSONObject json) {
 		SmsSignPullerReplyResult result = new SmsSignPullerReplyResult();
 		result.result = json.getInt("result");
+		if(result.result >0){
+			result.errmsg = json.getString("msg");
+			return result;
+		}
 		result.errmsg = json.getString("errmsg");
 		if (true == json.isNull("data")) {
 			return result;
 		}
 		result.datas = new ArrayList<>();
 		JSONArray datas  = json.getJSONArray("data");
+		result.count = datas.length();
 		for(int index = 0 ; index< datas.length(); index++){
 			JSONObject reply_json = datas.getJSONObject(index);
 			SmsSignPullerReplyResult.data reply = result.new data();
 			reply.id = reply_json.getInt("id");
 			reply.international = reply_json.getInt("international");
+			reply.reply = reply_json.getString("reply");
 			reply.status = reply_json.getInt("status");
 			reply.text = reply_json.getString("text");
+			reply.apply_time = reply_json.getString("apply_time");
+			reply.reply_time = reply_json.getString("reply_time");
+			result.datas.add(reply);
+		}
+		return result;
+	}
+
+
+	public SmsTemplePullerReplyResult jsonToTemplePullerReplyResult(JSONObject json) {
+		SmsTemplePullerReplyResult result = new SmsTemplePullerReplyResult();
+		result.result = json.getInt("result");
+		if(result.result >0){
+			result.errmsg = json.getString("msg");
+			return result;
+		}
+		result.errmsg = json.getString("errmsg");
+
+		if (true == json.isNull("data")) {
+			return result;
+		}
+		result.datas = new ArrayList<>();
+		JSONArray datas  = json.getJSONArray("data");
+		result.count = datas.length();
+		for(int index = 0 ; index< datas.length(); index++){
+			JSONObject reply_json = datas.getJSONObject(index);
+			SmsTemplePullerReplyResult.data reply = result.new data();
+			reply.id = reply_json.getInt("id");
+			reply.international = reply_json.getInt("international");
+			reply.reply  = reply_json.getString("reply");
+			reply.status = reply_json.getInt("status");
+			reply.text = reply_json.getString("text");
+			reply.title  = reply_json.getString("title");
 			reply.apply_time = reply_json.getString("apply_time");
 			reply.reply_time = reply_json.getString("reply_time");
 			result.datas.add(reply);
@@ -345,11 +367,14 @@ class SmsSenderUtil {
 	public SmsTempleReplyResult jsonToSmsTmplReplyResult(JSONObject json) {
 		SmsTempleReplyResult result = new SmsTempleReplyResult();
 		result.result = json.getInt("result");
+		if(result.result >0){
+			result.errmsg = json.getString("msg");
+			return result;
+		}
 		result.errmsg = json.getString("errmsg");
 		if (true == json.isNull("data")) {
 			return result;
 		}
-		result.datas = new ArrayList<>();
 		JSONObject datas = json.getJSONObject("data");
 		SmsTempleReplyResult.data reply = result.new data();
 		reply.id = datas.getInt("id");
@@ -357,43 +382,7 @@ class SmsSenderUtil {
 		reply.status = datas.getInt("status");
 		reply.text = datas.getString("text");
 		reply.type = datas.getInt("type");
-		result.datas.add(reply);
-
-
-/*		for(int index = 0 ; index< datas.length(); index++){
-			JSONObject reply_json = datas.getJSONObject(index);
-			SmsTempleReplyResult.data reply = result.new data();
-			reply.id = reply_json.getInt("id");
-			reply.international = reply_json.getInt("international");
-			reply.status = reply_json.getInt("status");
-			reply.text = reply_json.getString("text");
-			reply.type = reply_json.getInt("type");
-			result.datas.add(reply);
-		}*/
-		return result;
-	}
-
-
-	public SmsTemplePullerReplyResult jsonToTemplePullerReplyResul(JSONObject json) {
-		SmsTemplePullerReplyResult result = new SmsTemplePullerReplyResult();
-		result.result = json.getInt("result");
-		result.errmsg = json.getString("errmsg");
-		if (true == json.isNull("data")) {
-			return result;
-		}
-		result.datas = new ArrayList<>();
-		JSONArray datas  = json.getJSONArray("data");
-		for(int index = 0 ; index< datas.length(); index++){
-			JSONObject reply_json = datas.getJSONObject(index);
-			SmsTemplePullerReplyResult.data reply = result.new data();
-			reply.id = reply_json.getInt("id");
-			reply.international = reply_json.getInt("international");
-			reply.status = reply_json.getInt("status");
-			reply.text = reply_json.getString("text");
-			reply.apply_time = reply_json.getString("apply_time");
-			reply.reply_time = reply_json.getString("reply_time");
-			result.datas.add(reply);
-		}
+		result.setData(reply);
 		return result;
 	}
 
@@ -401,13 +390,49 @@ class SmsSenderUtil {
 	public SmsPullCallbackStatusReplyResult jsonToSmsPullCallbackStatusReplyResult(JSONObject json) {
 		SmsPullCallbackStatusReplyResult result = new SmsPullCallbackStatusReplyResult();
 		result.result = json.getInt("result");
+		if(result.result >0){
+			result.errmsg = json.getString("msg");
+			return result;
+		}
 		result.errmsg = json.getString("errmsg");
 		if (true == json.isNull("data")) {
 			return result;
 		}
-		result.datas = new ArrayList<>();
-		JSONArray datas  = json.getJSONArray("data");
-		for(int index = 0 ; index< datas.length(); index++){
+		JSONObject data  = json.getJSONObject("data");
+		SmsPullCallbackStatusReplyResult.data reply = result.new data();
+		reply.status = data.getLong("status");
+		reply.status_fail = data.getLong("status_fail");
+		reply.status_fail_0 = data.getLong("status_fail_0");
+		reply.status_fail_1 = data.getLong("status_fail_1");
+		reply.status_fail_2 = data.getLong("status_fail_2");
+		reply.status_fail_3 = data.getLong("status_fail_3");
+		reply.status_fail_4 = data.getLong("status_fail_4");
+		reply.status_success = data.getLong("status_success");
+		reply.success = data.getLong("success");
+		result.setData(reply);
+		return result;
+	}
+
+	public SmsStatusPullerResult jsonToSmsStatusPullerResult(JSONObject json) {
+		SmsStatusPullerResult result = new SmsStatusPullerResult();
+		result.result = json.getInt("result");
+		result.errmsg = json.getString("errmsg");
+		if (true == json.isNull("data")) {
+			return result;
+		}
+		JSONObject datas  = json.getJSONObject("data");
+		SmsStatusPullerResult.Data reply = result.new Data();
+		reply.status = datas.getLong("status");
+		reply.status_fail = datas.getLong("status_fail");
+		reply.status_fail_0 = datas.getLong("status_fail_0");
+		reply.status_fail_1 = datas.getLong("status_fail_1");
+		reply.status_fail_2 = datas.getLong("status_fail_2");
+		reply.status_fail_3 = datas.getLong("status_fail_3");
+		reply.status_fail_4 = datas.getLong("status_fail_4");
+		reply.status_success = datas.getLong("status_success");
+		reply.success = datas.getLong("success");
+
+	/*	for(int index = 0 ; index< datas.length(); index++){
 			JSONObject reply_json = datas.getJSONObject(index);
 			SmsPullCallbackStatusReplyResult.data reply = result.new data();
 			reply.status = reply_json.getLong("status");
@@ -420,7 +445,40 @@ class SmsSenderUtil {
 			reply.status_success = reply_json.getLong("status_success");
 			reply.success = reply_json.getLong("success");
 			result.datas.add(reply);
-		}
+		}*/
 		return result;
 	}
+
+	public SmsPullSendStatusResult jsonToSmsPullSendStatusResult(JSONObject json) {
+		SmsPullSendStatusResult result = new SmsPullSendStatusResult();
+		result.result = json.getInt("result");
+		result.errmsg = json.getString("errmsg");
+		if (true == json.isNull("data")) {
+			return result;
+		}
+		JSONObject datas  = json.getJSONObject("data");
+		SmsPullSendStatusResult.Data reply = result.new Data();
+		reply.bill_number = datas.getLong("bill_number");
+		reply.request = datas.getLong("request");
+		reply.success = datas.getLong("success");
+		result.setData(reply);
+
+
+	/*	for(int index = 0 ; index< datas.length(); index++){
+			JSONObject reply_json = datas.getJSONObject(index);
+			SmsPullCallbackStatusReplyResult.data reply = result.new data();
+			reply.status = reply_json.getLong("status");
+			reply.status_fail = reply_json.getLong("status_fail");
+			reply.status_fail_0 = reply_json.getLong("status_fail_0");
+			reply.status_fail_1 = reply_json.getLong("status_fail_1");
+			reply.status_fail_2 = reply_json.getLong("status_fail_2");
+			reply.status_fail_3 = reply_json.getLong("status_fail_3");
+			reply.status_fail_4 = reply_json.getLong("status_fail_4");
+			reply.status_success = reply_json.getLong("status_success");
+			reply.success = reply_json.getLong("success");
+			result.datas.add(reply);
+		}*/
+		return result;
+	}
+
 }

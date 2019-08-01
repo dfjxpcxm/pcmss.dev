@@ -2,15 +2,15 @@ package com.quick.portal.sms.smsServices;
 
 public class SmsStatusPullerResult {
 	public class Data {
-		int success;
-		int status;
-		int status_success;
-		int status_fail;
-		int status_fail_0;
-		int status_fail_1;
-		int status_fail_2;
-		int status_fail_3;
-		int status_fail_4;
+		long success;
+		long status;
+		long status_success;
+		long status_fail;
+		long status_fail_0;
+		long status_fail_1;
+		long status_fail_2;
+		long status_fail_3;
+		long status_fail_4;
 	}
 
 	int result;

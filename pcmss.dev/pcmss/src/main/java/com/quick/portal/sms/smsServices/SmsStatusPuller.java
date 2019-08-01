@@ -64,7 +64,7 @@ public class SmsStatusPuller {
 	/**
 	 * 拉取回执结果
 	 * @param max 最大条数 最多100
-	 * @param url url
+	 * @param  url
 	 * @return {@link}pullCallback
 	 * @throws Exception
 	 */

@@ -102,7 +102,6 @@ public class SmsTempleSender {
         wr.write(data.toString());
         wr.flush();
         System.out.println(data.toString());
-
         // 显示 POST 请求返回的内容
         StringBuilder sb = new StringBuilder();
         int httpRspCode = conn.getResponseCode();
@@ -268,7 +267,7 @@ public class SmsTempleSender {
 			}
 			br.close();
 			JSONObject json = new JSONObject(sb.toString());
-			result = util.jsonToTemplePullerReplyResul(json);
+			result = util.jsonToTemplePullerReplyResult(json);
 		} else {
 			result = new SmsTemplePullerReplyResult();
 			result.result = httpRspCode;
@@ -358,7 +357,7 @@ public class SmsTempleSender {
 			}
 			br.close();
 			JSONObject json = new JSONObject(sb.toString());
-			result = util.jsonToTemplePullerReplyResul(json);
+			result = util.jsonToTemplePullerReplyResult(json);
 		} else {
 			result = new SmsTemplePullerReplyResult();
 			result.result = httpRspCode;

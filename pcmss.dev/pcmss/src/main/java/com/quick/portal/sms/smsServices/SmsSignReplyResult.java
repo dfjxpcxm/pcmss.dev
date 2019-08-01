@@ -1,63 +1,40 @@
 package com.quick.portal.sms.smsServices;
 
-import java.util.ArrayList;
+
 
 public class SmsSignReplyResult {
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
 	/*
-	{
-    "result": 0,
-    "errmsg": "",
-    "data": {
-        "id": 123,
-        "international": 0,
-        "status": 1,
-        "text": "xxxxx"
+        {
+        "result": 0,
+        "errmsg": "",
+        "data": {
+            "id": 123,
+            "international": 0,
+            "status": 1,
+            "text": "xxxxx"
+        }
     }
-}
-	 */
+         */
 	public class data{
 		public int id;
 		public int international;
 		public int status;
 		public String text;
 
-		public String reply;
-
-		public String toString(){
-			return String.format(
-					"id:%d\t"
-					+"international:%d\t"
-					+"status:%d\t"
-				    +"reply:%s\n"
-					+"text:%s\n",
-					id,
-					international,
-					status,
-					reply,
-					text
-			  );
-		}
 	}
 	
 	public  int result;
 	public String errmsg;
-	public ArrayList<data> datas;
+	public Object data;
 	
-	public String toString() {
-		if (0 == result) {
-			return String.format("SmsSignReplyResult:\n"
-							+ "result:%d\n"
-							+ "errmsg:%s\n"
-							+ "datas:%s\n",
-					result,
-					errmsg,
-					datas.toString()
-			);
-		} else {
-			return String.format("SmsSignReplyResult:\n"
-							+ "result:%d\n"
-							+ "errmsg:%s\n", result, errmsg);
-		}
-	}
+
 }
 
