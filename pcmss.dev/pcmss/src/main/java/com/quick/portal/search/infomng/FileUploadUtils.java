@@ -13,6 +13,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import com.quick.core.util.common.QCommon;
+import com.quick.core.util.common.SysCommon;
 import com.quick.portal.security.authority.metric.PropertiesUtil;
 import com.quick.portal.sms.smsServices.SmsConstants;
 import org.apache.commons.fileupload.FileItem;
@@ -264,9 +265,8 @@ public class FileUploadUtils {
     public static String getImgUploadPath(HttpServletRequest request) {
         //将request变成多部分request
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-        //创建文件夹
-        //       String baseDir = PropertiesUtil.getPropery("file.dir");
-        String baseDir  = SmsConstants.TARGE_UPLOAD_PATH;
+
+        String baseDir  = SysCommon.getFilePath();
  //       String baseDir  = request.getSession().getServletContext().getRealPath("/WEB-INF/upload/contentRule");
         File dirPath = new File(baseDir + SmsConstants.SRC_UPLOAD_PATH);
 

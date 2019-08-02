@@ -106,12 +106,19 @@ public class SignApiController extends SysApiController {
     }
 }
 */
+        if(null == pic || "".equals(pic)){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 1001;
+            signReplyResult.errmsg = "sig 校验失败";
+            return signReplyResult;
+        }
         SmsSignSender signMng = new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.ADD_SIGN_URL;
         SmsSignReplyResult signReplyResult = signMng.sendSignInfo(pic, 0, remark, text,0, url);
-
-        SmsSignReplyResult.data dt = (SmsSignReplyResult.data)signReplyResult.getData();
-        smsLogMngService.saveSmsLogInfo(dt.id,"外部系统调用新增短信签名："+"["+text+"]" );
+        if(signReplyResult.result == 0){
+            SmsSignReplyResult.data dt = (SmsSignReplyResult.data)signReplyResult.getData();
+            smsLogMngService.saveSmsLogInfo(dt.id,"外部系统调用新增短信签名："+"["+text+"]" );
+        }
         return signReplyResult;
     }
 
@@ -150,9 +157,13 @@ public class SignApiController extends SysApiController {
     }
 }
 */
-
+        if(null == pic || "".equals(pic)){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 1001;
+            signReplyResult.errmsg = "sig 校验失败";
+            return signReplyResult;
+        }
         SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
-
         String url = SmsConstants.MOD_SIGN_URL;
         SmsSignReplyResult signReplyResult = signMng.sendSignInfo(pic, 0, remark, text, signId,url);
         smsLogMngService.saveSmsLogInfo(signId,"外部系统调用修改短信签名："+"["+text+"]" );
@@ -184,14 +195,16 @@ public class SignApiController extends SysApiController {
     "errmsg": ""
 }
 */      if(null == signIds || "".equals(signIds)){
-            throw new Exception("signIds " + signIds + " error");
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "签名ID为空";
+            return signReplyResult;
         }
         String [] ids = signIds.split(",");
         ArrayList<Integer> sIds = new ArrayList<>();
         for(int i= 0; i< ids.length;i++){
             sIds.add(Integer.valueOf(ids[i]));
         }
-
         String url = SmsConstants.DEL_SIGN_URL;
         SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsRemoveReplyResult signReplyResult = signMng.removeSignInfo(sIds,url);
@@ -236,14 +249,16 @@ public class SignApiController extends SysApiController {
     }]
 }
 */      if(null == signIds || "".equals(signIds)){
-            throw new Exception("signIds " + signIds + " error");
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "签名ID为空";
+            return signReplyResult;
         }
         String [] ids = signIds.split(",");
         ArrayList<Integer> sIds = new ArrayList<>();
         for(int i= 0; i< ids.length;i++){
             sIds.add(Integer.valueOf(ids[i]));
         }
-//        ArrayList<Integer> signId = (ArrayList<Integer>) Arrays.asList(Integer.valueOf(ids));
         String url = SmsConstants.GET_SIGN_URL;
         SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsSignPullerReplyResult signReplyResult = signMng.getSignStatusPullerInfo(sIds,url);

@@ -23,6 +23,7 @@ import com.quick.core.base.ISysBaseService;
 import com.quick.core.base.SysBaseController;
 import com.quick.core.base.model.DataStore;
 import com.quick.core.util.common.QCommon;
+import com.quick.core.util.common.SysCommon;
 import com.quick.core.util.type.TypeUtil;
 import com.quick.portal.appClassRela.AppClassRelaDO;
 import com.quick.portal.appClassRela.IAppClassRelaService;
@@ -164,7 +165,7 @@ public class ApplicationController extends SysBaseController<ApplicationDO> {
                     String fname = QCommon.getUUID() + suffix;
                     File uploadFile = new File(dirPath + File.separator + fname);
                     FileCopyUtils.copy(file.getBytes(), uploadFile);
-                    String url = TARGE_UPLOAD_PATH + fname;
+                    String url = SysCommon.getFilePath()+ fname;
                     return url;
                 }
             }
