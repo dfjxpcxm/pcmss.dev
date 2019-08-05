@@ -52,7 +52,7 @@
 
 
 	<select id="select" parameterType="map" resultType="map">
-		select g.sms_id,g.sms_log_title,o.sms_state as sms_state,o.sms_content as sms_log_content,o.sms_author,o.sms_rec_obj from sys_sms_log g inner join sms_info o on g.sms_id=o.sms_id
+		select g.sms_id,g.sms_log_title,o.sms_state as sms_state,o.sms_content as sms_log_content,o.sms_rec_obj from sys_sms_log g inner join sms_send_info o on g.sms_id=o.sms_id
 		<where>
 			<include refid="where" />
 		</where>

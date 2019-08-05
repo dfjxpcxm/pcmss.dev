@@ -269,14 +269,13 @@
     }
     //模板信息
     function addMould(){
-        alert(quick.baseUrl);
         navAppend("模板信息");/*获取父页面元素并动态赋值父页面title*/
-        window.location.href=quick.baseUrl + "/smsMouldMng/list";//跳转到另一个页面，并且还在当前框架
+        window.location.href=quick.baseUrl + "/smsMouldMng/list?stu=sms";//跳转到另一个页面，并且还在当前框架
     }
     //签名信息
     function addSign(){
         navAppend("签名信息");/*获取父页面元素并动态赋值父页面title*/
-        window.location.href=quick.baseUrl + "/smsSignMng/list";//跳转到另一个页面，并且还在当前框架
+        window.location.href=quick.baseUrl + "/smsSignMng/list?stu=sms";//跳转到另一个页面，并且还在当前框架
     }
     function thingSend(){
         if(!isdone) {
