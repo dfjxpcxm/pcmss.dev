@@ -40,7 +40,7 @@
                                                 id="sign_id">
                                         </select>
                                         <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;">
-                                            · 没有需要的签名，马上 <button class="btn btn-default" type="button"  style="padding: 2px 2px;" onclick="chosebox('mould_content', '${G.host}/smsSignMng/edit','common_mould_id');">添加签名</button>
+                                            · 没有需要的签名，马上 <button class="btn btn-default" type="button"  style="padding: 2px 2px;" onclick="addSign()">添加签名</button>
                                         </div>
                                     </div>
 
@@ -67,7 +67,7 @@
                                         <!-- <div class="col-xs-9" style="position: absolute;left: 330px">
                                              · 输入框中出现多个参数时,用“,”分割区分输入。例如：aaa,bbb,ccc
                                          </div>-->
-                                        · 没有需要的模板，马上 <button class="btn btn-default" type="button" style="padding: 2px 2px;"  onclick="chosebox('mould_content', '${G.host}/smsMouldMng/edit','mould_type');">添加模板</button>
+                                        · 没有需要的模板，马上 <button class="btn btn-default" type="button" style="padding: 2px 2px;"  onclick="addMould()">添加模板</button>
                                     </div>
                                 </div>
                             </div>
@@ -203,7 +203,7 @@
     function thingOver(){
         var mode = $.request.queryString["mode"];
         if(mode == "browse"){
-            $('#form').ajaxSubmit(function() {
+           $('#form').ajaxSubmit(function() {
                 layer.msg('保存成功',{icon:1,time: 1500,skin: 'layer-ext-moon'}, function(){
                     cancel();
                 });
@@ -241,6 +241,8 @@
                 '<span style="font-size:12px;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;color:#f00;">'+phFileNum+'</span></div>'+
                 '<div class="col-xs-9">' +
                 '<span style="font-size:12px;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;color:#f00;">'+phFiltNum+'</span></div>'+
+                '<div class="col-xs-9">' +
+                '<span style="font-size:12px;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;color:#f00;margin-left: 78px;">（若出现重复号码时将会重复发送多条短信）</span></div>'+
                 '</div><br/>';
             layer.open({
                 type: 1,
@@ -253,7 +255,7 @@
                 content:str,
                 btn:['确定发送','取消发送'],
                 yes:function(){
-                    $('#form').ajaxSubmit(function() {
+                   $('#form').ajaxSubmit(function() {
                         layer.msg('保存成功',{icon:1,time: 1500,skin: 'layer-ext-moon'}, function(){
                             cancel();
                         });
@@ -265,7 +267,17 @@
         }
 
     }
-
+    //模板信息
+    function addMould(){
+        alert(quick.baseUrl);
+        navAppend("模板信息");/*获取父页面元素并动态赋值父页面title*/
+        window.location.href=quick.baseUrl + "/smsMouldMng/list";//跳转到另一个页面，并且还在当前框架
+    }
+    //签名信息
+    function addSign(){
+        navAppend("签名信息");/*获取父页面元素并动态赋值父页面title*/
+        window.location.href=quick.baseUrl + "/smsSignMng/list";//跳转到另一个页面，并且还在当前框架
+    }
     function thingSend(){
         if(!isdone) {
             return false;
@@ -361,7 +373,7 @@
        var mouldArry = mouldContentArry.filter(function(p){
            return p.mould_id == mould_id;
        });
-       $("#mould_content").val(mouldArry[0].mould_content);
+       $("#mould_content").val(mouldArry == null ?" ":mouldArry[0].mould_content);
        // setMouldFields();
     });
 

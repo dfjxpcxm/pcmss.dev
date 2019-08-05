@@ -16,7 +16,7 @@
 		   quick.editUrl = "${G.editUrl}";
 		   quick.objName = "${G.objName}";
 		   quick.idField = "${G.idField}";
-           
+		   quick.baseUrl = "${G.host}";
 		   $("#list").bootstrapTable("destroy");
 		   _gd["list"]=new BGrid("#list");
 		   _gd["list"].config({
@@ -118,6 +118,10 @@
 	function add(){
 		menuGoto(quick.editUrl);
 	}
+	function backSms(){
+		navAppend("短信发送");/*获取父页面元素并动态赋值父页面title*/
+		window.location.href=quick.baseUrl + "/smsMng/list";//跳转到另一个页面，并且还在当前框架
+	   }
     //将url查询信息传至详细信息页面,返回时调用
 	function goDetail(obj){
 		var value = $(obj).attr("id");
@@ -219,6 +223,12 @@
 										class="btn btn-primary " type="button"
 										onclick="location.href='edit';"> 新增模板</button></span>
 								  </div>
+								  <div class="form-group" style="left: auto;width:80px;">
+                                	<span class="input-group-btn" style="display:inline-block;"><button
+										class="btn btn-primary " type="button"
+										onclick="backSms();"> 返回短信发送</button></span>
+								  </div>
+
 							  </form>
 						</div>
 					  <div style ="margin:5px;">
