@@ -316,6 +316,7 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
      */
     public void parseReplyResult (SmsSignPullerReplyResult signReplyResult,Integer id){
         int result = signReplyResult.result;
+        Integer num = 0 ;
         SignMngDO entity = new SignMngDO();
         if(result == 0){
             ArrayList<SmsSignPullerReplyResult.data> datas = signReplyResult.datas;
@@ -325,7 +326,8 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
                 entity.setSign_name(dt.text);
                 entity.setRemarks(dt.reply);
                 entity.setSign_state(dt.status);
-                if(null != id && id >0){
+                num = getSignInfoByNum(dt.id);
+                if(null == num  || num ==0){
                     entity.setSign_type(0);
                     entity.setSign_author(1);
                     entity.setApply_causes(dt.text);
@@ -336,5 +338,18 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
 
             }
         }
+    }
+
+
+    public Integer getSignInfoByNum(Integer sid){
+        Integer sname = 0;
+        Map<String, Object> map = new HashMap<>();
+        map.put("sign_num",sid);
+        List<Map<String, Object>> retList = dao.select(map);
+        if(null !=retList && retList.size()>0){
+            Map<String, Object> mp = retList.get(0);
+            sname = Integer.valueOf(mp.get("sign_num").toString());
+        }
+        return sname;
     }
 }

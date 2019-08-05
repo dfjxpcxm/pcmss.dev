@@ -26,6 +26,7 @@ import com.quick.portal.sms.smsServices.SmsMultiSenderResult;
 import com.quick.portal.sms.smsServices.SmsPullCallbackStatusReplyResult;
 import com.quick.portal.sms.smsServices.SmsPullSendStatus;
 import com.quick.portal.sms.smsServices.SmsPullSendStatusResult;
+import com.quick.portal.sms.smsServices.SmsSignReplyResult;
 import com.quick.portal.sms.smsServices.SmsStatusPullerResult;
 import com.quick.portal.sms.smslogmng.ISmsLogMngService;
 import org.springframework.context.annotation.Scope;
@@ -90,7 +91,19 @@ public class SmsCallbackStatusResultApiController extends SysApiController {
     "errmsg": "OK",
     "result": 0
 }
-*/
+*/      if(stdate <1){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "开始时间为空,开始时间，yyyymmddhh 需要拉取的起始时间,精确到小时";
+            return signReplyResult;
+        }
+
+        if(eddate <1){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "结束时间为空,开始时间，yyyymmddhh 需要拉取的起始时间,精确到小时";
+            return signReplyResult;
+        }
         SearchSmsPullCallbackStatusResult smsCallbackRest = new SearchSmsPullCallbackStatusResult(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.PULLCALLBACKSTATUS_URL;
         SmsPullCallbackStatusReplyResult smsCallbackResult = smsCallbackRest.getCallbackStatusResult(stdate, eddate, url);
@@ -130,7 +143,19 @@ public class SmsCallbackStatusResultApiController extends SysApiController {
     }
 }
 */
+        if(stdate <1){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "开始时间为空,开始时间，yyyymmddhh 需要拉取的起始时间,精确到小时";
+            return signReplyResult;
+        }
 
+        if(eddate <1){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "结束时间为空,开始时间，yyyymmddhh 需要拉取的起始时间,精确到小时";
+            return signReplyResult;
+        }
         SmsPullSendStatus smsCallbackRest = new SmsPullSendStatus(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsPullSendStatusResult smsCallbackResult = smsCallbackRest.pullSendStatus(stdate, eddate);
         return smsCallbackResult;

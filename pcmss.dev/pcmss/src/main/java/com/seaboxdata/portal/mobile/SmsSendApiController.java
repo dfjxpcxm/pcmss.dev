@@ -23,6 +23,7 @@ import com.quick.portal.sms.smsServices.SmsConstants;
 import com.quick.portal.sms.smsServices.SmsMultiSender;
 import com.quick.portal.sms.smsServices.SmsMultiSenderResult;
 import com.quick.portal.sms.smsServices.SmsRemoveReplyResult;
+import com.quick.portal.sms.smsServices.SmsSignReplyResult;
 import com.quick.portal.sms.smsServices.SmsSingleSender;
 import com.quick.portal.sms.smsServices.SmsSingleSenderResult;
 import com.quick.portal.sms.smsServices.SmsTemplePullerReplyResult;
@@ -120,7 +121,22 @@ public class SmsSendApiController extends SysApiController {
 }
 */
         if(null == params || "".equals(params)){
-            throw new Exception("params " + params + " error");
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "模板参数列表为空";
+            return signReplyResult;
+        }
+        if(tplId <1){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "模板编号为空";
+            return signReplyResult;
+        }
+        if(null == mobile || "".equals(mobile)){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "手机号为空";
+            return signReplyResult;
         }
         String [] parms = params.split(",");
         ArrayList<String>  parmStr = new ArrayList<>();
@@ -204,7 +220,22 @@ public class SmsSendApiController extends SysApiController {
 }
 */
         if(null == params || "".equals(params)){
-            throw new Exception("params " + params + " error");
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "模板参数列表为空";
+            return signReplyResult;
+        }
+        if(tplId <1){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "模板编号为空";
+            return signReplyResult;
+        }
+        if(null == mobiles || "".equals(mobiles)){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "手机号为空";
+            return signReplyResult;
         }
         String [] parms = params.split(",");
         ArrayList<String>  paramStr = new ArrayList<>();
@@ -212,9 +243,7 @@ public class SmsSendApiController extends SysApiController {
             paramStr.add(str);
         }
 
-        if(null == mobiles || "".equals(mobiles)){
-            throw new Exception("mobiles " + mobiles + " error");
-        }
+
         String [] tels = mobiles.split(",");
         ArrayList<String>  telStr = new ArrayList<>();
         for(String tel:tels) {

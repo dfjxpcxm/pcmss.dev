@@ -19,6 +19,10 @@
 		<if test="mould_type != null "><![CDATA[
 	       and mould_type = #{mould_type}
 	    ]]></if>
+		<if test="mould_num != null "><![CDATA[
+	       and mould_num = #{mould_num}
+	    ]]></if>
+
 
 		<if test="mould_author != null"><![CDATA[
 	       and mould_author= #{mould_author}

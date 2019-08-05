@@ -332,6 +332,7 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
      */
     public void parseReplyResult(SmsTemplePullerReplyResult tplReplyResult,Integer id){
         int result = tplReplyResult.result;
+        Integer mnum = 0;
         MouldMngDO entity  = new MouldMngDO();
         if(result == 0){
             ArrayList<SmsTemplePullerReplyResult.data> datas = tplReplyResult.datas;
@@ -343,7 +344,8 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
                 entity.setMould_content(dt.text);
                 entity.setMould_type(dt.type);
                 entity.setMould_name(dt.title);
-                if(null != id && id >0){
+                mnum = getTplInfoByNum(dt.id);
+                if(null == mnum || mnum == 0){
                     entity.setApply_causes(dt.title);
                     entity.setMould_author(1);
                     dao.insert(entity);
@@ -353,5 +355,17 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
 
             }
         }
+    }
+
+    public Integer getTplInfoByNum(Integer id){
+        Integer snum = 0;
+        Map<String, Object> map = new HashMap<>();
+        map.put("mould_num",id);
+        List<Map<String, Object>> retList = dao.select(map);
+        if(null !=retList && retList.size()>0){
+            Map<String, Object> mp = retList.get(0);
+            snum = Integer.valueOf(mp.get("mould_num").toString());
+        }
+        return snum;
     }
 }

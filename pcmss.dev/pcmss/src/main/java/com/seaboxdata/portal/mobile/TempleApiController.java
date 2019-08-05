@@ -100,6 +100,12 @@ public class TempleApiController extends SysApiController {
     }
 }
 */
+        if(null == text || "".equals(text)){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "模板内容为空";
+            return signReplyResult;
+        }
 
         SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.ADD_TEMPLATE_URL;
@@ -123,7 +129,7 @@ public class TempleApiController extends SysApiController {
      */
     @RequestMapping(value = "/modTemplate")
     @ResponseBody
-    public Object modTemplate(String remark,int tplId,String text, String title,int type) throws Exception{
+    public Object modTemplate(String remark,Integer tplId,String text, String title,int type) throws Exception{
         /*
 请求包体
 {
@@ -149,7 +155,12 @@ public class TempleApiController extends SysApiController {
     }
 }
 */
-
+        if(tplId <1){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "模板ID为空";
+            return signReplyResult;
+        }
         SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.MOD_TEMPLATE_URL;
         SmsTempleReplyResult templeReplyResult = templeMng.sendTempleInfo(remark, 0, text, title,tplId, type,url);
@@ -183,16 +194,17 @@ public class TempleApiController extends SysApiController {
     "errmsg": ""
 }
 */      if(null == tplIds || "".equals(tplIds)){
-            throw new Exception("tplIds " + tplIds + " error");
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "模板ID为空";
+            return signReplyResult;
         }
         String [] ids = tplIds.split(",");
         ArrayList<Integer> tplId = new ArrayList<>();
         for(int i=0; i< ids.length;i++){
             tplId.add(Integer.valueOf(ids[i]));
         }
-
         smsLogMngService.saveSmsLogInfo(Integer.valueOf(ids[0]),"外部系统调用删除短信模板："+"模板编号：" +tplIds);
-
         String url = SmsConstants.DEL_TEMPLATE_URL;
         SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsRemoveReplyResult smsTplRemoveReplyResult = templeMng.removeTempleInfo(tplId,url);
@@ -237,8 +249,11 @@ public class TempleApiController extends SysApiController {
         }
     ]
 }
-*/      if(null == tplIds || "".equals(tplIds)){
-            throw new Exception("tplIds " + tplIds + " error");
+*/     if(null == tplIds || "".equals(tplIds)){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "模板ID为空";
+            return signReplyResult;
         }
         String [] ids = tplIds.split(",");
         ArrayList<Integer> tplId = new ArrayList<>();

@@ -20,6 +20,10 @@
 	       and sign_state = #{sign_state}
 	    ]]></if>
 
+		<if test="sign_num != null"><![CDATA[
+	       and sign_num = #{sign_num}
+	    ]]></if>
+
 		<if test="upd_time != null"><![CDATA[
 	       and upd_time >= #{upd_time}
 	    ]]></if>

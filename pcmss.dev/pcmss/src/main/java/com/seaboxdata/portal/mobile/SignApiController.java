@@ -112,6 +112,13 @@ public class SignApiController extends SysApiController {
             signReplyResult.errmsg = "sig 校验失败";
             return signReplyResult;
         }
+        if(null == text || "".equals(text)){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "签名内容";
+            return signReplyResult;
+        }
+
         SmsSignSender signMng = new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.ADD_SIGN_URL;
         SmsSignReplyResult signReplyResult = signMng.sendSignInfo(pic, 0, remark, text,0, url);
@@ -161,6 +168,13 @@ public class SignApiController extends SysApiController {
             SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 1001;
             signReplyResult.errmsg = "sig 校验失败";
+            return signReplyResult;
+        }
+
+        if(signId>0){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "签名ID为空";
             return signReplyResult;
         }
         SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
