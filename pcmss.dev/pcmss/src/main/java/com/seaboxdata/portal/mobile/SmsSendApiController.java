@@ -120,12 +120,12 @@ public class SmsSendApiController extends SysApiController {
     "sid": "xxxxxxx"
 }
 */
-        if(null == params || "".equals(params)){
+/*        if(null == params || "".equals(params)){
             SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
             signReplyResult.errmsg = "模板参数列表为空";
             return signReplyResult;
-        }
+        }*/
         if(tplId <1){
             SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
@@ -138,11 +138,14 @@ public class SmsSendApiController extends SysApiController {
             signReplyResult.errmsg = "手机号为空";
             return signReplyResult;
         }
-        String [] parms = params.split(",");
         ArrayList<String>  parmStr = new ArrayList<>();
-        for(String str:parms) {
-            parmStr.add(str);
+        if(null != params && !"".equals(params)){
+            String [] parms = params.split(",");
+            for(String str:parms) {
+                parmStr.add(str);
+            }
         }
+
         SmsSingleSender smsSingleSender = new SmsSingleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.SENDSMS_URL;
         String nationCode = SmsConstants.NATION_CODE;
@@ -219,12 +222,12 @@ public class SmsSendApiController extends SysApiController {
     ]
 }
 */
-        if(null == params || "".equals(params)){
-            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
-            signReplyResult.result = 9999;
-            signReplyResult.errmsg = "模板参数列表为空";
-            return signReplyResult;
-        }
+//        if(null == params || "".equals(params)){
+//            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+//            signReplyResult.result = 9999;
+//            signReplyResult.errmsg = "模板参数列表为空";
+//            return signReplyResult;
+//        }
         if(tplId <1){
             SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
@@ -237,12 +240,13 @@ public class SmsSendApiController extends SysApiController {
             signReplyResult.errmsg = "手机号为空";
             return signReplyResult;
         }
-        String [] parms = params.split(",");
         ArrayList<String>  paramStr = new ArrayList<>();
-        for(String str:parms) {
-            paramStr.add(str);
+        if(null != params && !"".equals(params)){
+            String [] parms = params.split(",");
+            for(String str:parms) {
+                paramStr.add(str);
+            }
         }
-
 
         String [] tels = mobiles.split(",");
         ArrayList<String>  telStr = new ArrayList<>();

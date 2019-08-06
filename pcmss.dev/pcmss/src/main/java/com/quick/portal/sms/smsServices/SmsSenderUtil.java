@@ -337,6 +337,7 @@ class SmsSenderUtil {
 			JSONObject reply_json = datas.getJSONObject(index);
 			SmsTemplePullerReplyResult.data reply = result.new data();
 			reply.id = reply_json.getInt("id");
+			reply.type = reply_json.getInt("type");
 			reply.international = reply_json.getInt("international");
 			reply.reply  = reply_json.getString("reply");
 			reply.status = reply_json.getInt("status");
