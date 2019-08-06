@@ -32,7 +32,7 @@ public class SmsLogMngDO implements java.io.Serializable {
 
     public SmsLogMngDO(SmsLogMngDO u){
         setSms_log_id(u.getSms_log_id());
-        setSms_id(u.getSms_id());
+        setSend_id(u.getSend_id());
         setSms_log_title(u.getSms_log_title());
         setSms_log_content(u.getSms_log_content());
         setSms_author(u.getSms_author());
@@ -51,7 +51,7 @@ public class SmsLogMngDO implements java.io.Serializable {
     /*
      * 短信编号
      */
-    private Integer  sms_id;
+    private Integer  send_id;
     /**
      *短信日志标题
      */
@@ -93,12 +93,12 @@ public class SmsLogMngDO implements java.io.Serializable {
         this.sms_log_id = sms_log_id;
     }
 
-    public Integer getSms_id() {
-        return sms_id;
+    public Integer getSend_id() {
+        return send_id;
     }
 
-    public void setSms_id(Integer sms_id) {
-        this.sms_id = sms_id;
+    public void setSend_id(Integer send_id) {
+        this.send_id = send_id;
     }
 
     public String getSms_log_title() {

@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,8 +75,8 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
      */
     @Autowired
     public SmsMngServiceImpl(ISmsMngDao<SmsMngDO> dao) {
-        BaseTable = "sms_info";
-        BaseComment = "sms_info";
+        BaseTable = "sys_sms_task";
+        BaseComment = "sys_sms_task";
         PrimaryKey = "sms_id";
         NameKey = "sms_id";
 
@@ -186,7 +187,11 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         //批量上传电话号码
         List<SmsMngDO> phoneNUmList = uploadPhoneNumInfo(entity,id);
         boolean bool = smsSender(entity,phoneNUmList,id);
-        smsLogMngService.saveSmsLogInfo(id,entity.getSms_title());
+        List<Integer> sendIds = this.getSendInfoById(id);
+        for(Integer sid :sendIds){
+            smsLogMngService.saveSmsLogInfo(sid,entity.getSms_title());
+        }
+
         if (c == 0) {
             return ActionMsg.setError("操作失败");
         }
@@ -195,6 +200,20 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         }
         ActionMsg.setValue(entity);
         return ActionMsg.setOk("操作成功");
+    }
+
+
+
+    public List<Integer> getSendInfoById(int id){
+        List<Integer> sendIds = new ArrayList<>();
+        List<Map<String, Object>> retList = dao.getSendInfoById(id);
+        if(null != retList &&retList.size()>0){
+            for(Map<String, Object> mp:retList){
+                sendIds.add(Integer.valueOf(mp.get("send_id").toString()));
+            }
+        }
+       return sendIds;
+
     }
     /**
      * 通过短信标题查询短信信息
