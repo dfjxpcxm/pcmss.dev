@@ -5,8 +5,11 @@
 	<!--查询条件-->
 	<sql id="where">
 		1=1
-		<if test="sms_id != null "><![CDATA[
-	       and sms_id = #{sms_id}
+		<if test="send_id != null "><![CDATA[
+	       and send_id = #{send_id}
+	    ]]></if>
+		<if test="sms_log_id != null "><![CDATA[
+	       and sms_log_id = #{sms_log_id}
 	    ]]></if>
 		<if test="sms_log_title != null and sms_log_title != '' and !'null'.equals(sms_log_title)"><![CDATA[
 	       and sms_log_title = #{sms_log_title}
@@ -38,12 +41,12 @@
 	<!-- 新增sys_sms_log -->
 	<insert id="saveSmsLogInfo" parameterType="com.quick.portal.sms.smslogmng.SmsLogMngDO">
 		insert into sys_sms_log (
-    		  sms_id,
+    		  send_id,
     		  sms_log_title,
     		  cre_time,
     		  upd_time
 		)values(
-			 #{sms_id},
+			 #{send_id},
 			 #{sms_log_title},
 			 now(),
 			 now()
@@ -52,7 +55,7 @@
 
 
 	<select id="select" parameterType="map" resultType="map">
-		select g.sms_id,g.sms_log_title,o.sms_state as sms_state,o.sms_content as sms_log_content,o.sms_rec_obj from sys_sms_log g inner join sms_send_info o on g.sms_id=o.sms_id
+		select g.sms_log_id,g.send_id,g.sms_log_title,o.sms_state as sms_state,o.sms_content as sms_log_content,o.sms_rec_obj from sys_sms_log g inner join sys_sms_info o on  g.send_id = o.send_id
 		<where>
 			<include refid="where" />
 		</where>

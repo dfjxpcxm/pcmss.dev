@@ -35,7 +35,7 @@
 
 	<!-- 新增sys_sign_info -->
 	<insert id="insert" parameterType="com.quick.portal.sms.smsmng.SmsMngDO">
-		replace into sms_info (
+		replace into sys_sms_task (
     		  sign_id,
     		  sms_title,
     		  mould_id,
@@ -56,7 +56,7 @@
 
 	<!-- 修改app_class -->
 	<update id="updateInfo" parameterType="com.quick.portal.sms.smsmng.SmsMngDO">
-		update sms_send_info
+		update sys_sms_info
 		set  upd_time = now()
 		<if test="sms_state != null"><![CDATA[
 			  ,sms_state=#{sms_state}
@@ -65,7 +65,7 @@
 	</update>
 
 	<insert id="insertPhoneNUmList" parameterType="java.util.List">
-		insert into sms_send_info
+		insert into sys_sms_info
 		(sms_id,sms_rec_obj,sms_content,sms_state,sid,cre_time,upd_time)
 		values
 		<foreach item="item" index="index" collection="list" separator=",">
@@ -82,7 +82,7 @@
 	</insert>
 	<!-- 修改app_class -->
 	<update id="update" parameterType="com.quick.portal.sms.smsmng.SmsMngDO">
-		update sms_info
+		update sys_sms_task
 		   set  upd_time=now()
 		<if test="sign_id != null"><![CDATA[
 		   	,sign_id=#{sign_id}
@@ -98,11 +98,11 @@
 
 	<!-- 删除 -->
 	<delete id="delete" parameterType="String">
-		DELETE  from sms_info WHERE sms_id = #{sms_id}
+		DELETE  from sys_sms_task WHERE sms_id = #{sms_id}
 	</delete>
 	<!--查询-->
 	<select id="select" parameterType="map" resultType="map">
-		select o.*,s.sign_name as sign_name,m.mould_name as  mould_name,m.mould_type,	m.mould_content as mould_content from sms_info o left join sys_sign_info s
+		select o.*,s.sign_name as sign_name,m.mould_name as  mould_name,m.mould_type,	m.mould_content as mould_content from sys_sms_task o left join sys_sign_info s
 		on o.sign_id =s.sign_id left join sys_mould_info m on o.mould_id = m.mould_id
 		<where>
 			<include refid="where" />
@@ -132,11 +132,11 @@
 	</select>
 
 	<select id="getSmsSendData"  parameterType="String" resultType="map">
-		select * from sms_send_info where sms_id = #{sms_id}
+		select * from sys_sms_info where sms_id = #{sms_id}
 	</select>
 
 	<select id="getSmsSendIdData"  parameterType="String" resultType="map">
-		select * from sms_send_info where send_id = #{send_id}
+		select * from sys_sms_info where send_id = #{send_id}
 	</select>
 
 
@@ -165,5 +165,12 @@
 			 #{remarks}
 			)
 	</insert>
+
+
+
+
+	<select id="getSendInfoById"  parameterType="Integer" resultType="map">
+		select send_id from sys_sms_info where sms_id = #{id}
+	</select>
 
 </mapper>

@@ -44,4 +44,7 @@ public interface ISmsMngDao<SmsMngDO> extends ISysBaseDao<com.quick.portal.sms.s
 
 
     public void updateInfo(SmsMngDO sms);
+
+
+    public List<Map<String, Object>> getSendInfoById(Integer id);
 }
