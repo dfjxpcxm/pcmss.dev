@@ -19,6 +19,7 @@
 package com.quick.portal.sms.smsmng;
 
 import com.quick.core.base.ISysBaseDao;
+import com.quick.core.base.model.PageBounds;
 import com.quick.portal.security.sysconfmng.SysConfMngDO;
 import org.apache.ibatis.annotations.Param;
 
@@ -33,7 +34,7 @@ public interface ISmsMngDao<SmsMngDO> extends ISysBaseDao<com.quick.portal.sms.s
 
     public List<Map<String, Object>> getMouldNameData();
 
-    public List<Map<String, Object>> getSmsSendData(String smsID);
+    public List<Map<String, Object>> getSmsSendData(SmsMngDO sms);
 
     public Map<String, Object> getSmsSendIdData(String sendID);
 

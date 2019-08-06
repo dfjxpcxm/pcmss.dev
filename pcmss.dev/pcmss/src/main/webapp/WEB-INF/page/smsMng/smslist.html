@@ -16,11 +16,11 @@
 		   quick.editUrl = "${G.editUrl}";
 		   quick.objName = "${G.objName}";
 		   quick.idField = "${G.idField}";
-           
+		   $("#sms_id").val("${sms_id}");
 		   $("#list").bootstrapTable("destroy");
 		   _gd["list"]=new BGrid("#list");
 		   _gd["list"].config({
-			   url:quick.serverUrl+"/getSmsSendData?smsId=${sms_id}&i=" + Math.random(),
+			   url:quick.serverUrl+"/getSmsSendData?i=" + Math.random(),
 			   idField: quick.idField,
 			   sortName: quick.idField,
                cache:false,
@@ -116,8 +116,9 @@
 				  <div class="ibox-content ibox-content-x">
 					  <div class="panel-mar">
 							  <form id="formSearch" class="form-inline">
+								  <input type="hidden" id="sms_id" name="sms_id" />
                                   <div class="form-group" style="padding: 0px;width:180px;">
-									  <input maxlength="20" id="sms_title" name="sms_title" class="input-sm form-control"
+									  <input maxlength="20" id="sms_rec_obj" name="sms_rec_obj" class="input-sm form-control"
 											 type="text" placeholder="手机号码"/>
 								  </div>
 

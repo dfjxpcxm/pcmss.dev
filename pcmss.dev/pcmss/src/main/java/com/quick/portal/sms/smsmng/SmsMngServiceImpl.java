@@ -98,8 +98,8 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
     }
 
     @Override
-    public List<Map<String, Object>> getSmsSendData(String smsID) {
-        return dao.getSmsSendData(smsID);
+    public List<Map<String, Object>> getSmsSendData(SmsMngDO sms) {
+        return dao.getSmsSendData(sms);
     }
 
     @Override
