@@ -200,7 +200,7 @@ public class FileUploadUtils {
             Iterator<String> iter = multiRequest.getFileNames();
             while (iter.hasNext()) {
                 MultipartFile file = multiRequest.getFile(iter.next());
-                System.out.println(file.getName()+"11111111111");
+                //System.out.println(file.getName()+"11111111111");
                 if (file != null && file.getSize() > 0) {
                     fileList.add(file);
                 }
@@ -288,7 +288,7 @@ public class FileUploadUtils {
 ///                    String fname = oldname;
                     File uploadFile = new File(dirPath + File.separator + fname);
                     FileCopyUtils.copy(file.getBytes(), uploadFile);
-                    String url = SmsConstants.TARGE_UPLOAD_PATH + SmsConstants.SRC_UPLOAD_PATH + fname;
+                    String url = baseDir + SmsConstants.SRC_UPLOAD_PATH + fname;
                     return url;
                 }
             }
