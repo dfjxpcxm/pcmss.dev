@@ -225,7 +225,7 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
         tplNums.add(snum);
         //调用删除签名接口
         try{
-            SmsRemoveReplyResult tplReplyResult = smsTemple.removeTempleInfo(tplNums, SmsConstants.MOD_TEMPLATE_URL);
+            SmsRemoveReplyResult tplReplyResult = smsTemple.removeTempleInfo(tplNums, SmsConstants.DEL_TEMPLATE_URL);
         }catch (Exception e){
             System.out.println("调用删除模板接口失败！"+e.getLocalizedMessage());
             return null;

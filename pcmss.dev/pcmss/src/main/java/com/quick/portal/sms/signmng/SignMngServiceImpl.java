@@ -213,7 +213,7 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
         signNums.add(snum);
         //调用删除签名接口
         try{
-            SmsRemoveReplyResult signReplyResult = smsSign.removeSignInfo(signNums, SmsConstants.MOD_SIGN_URL);
+            SmsRemoveReplyResult signReplyResult = smsSign.removeSignInfo(signNums, SmsConstants.DEL_SIGN_URL);
         }catch (Exception e){
             System.out.println("调用删除签名接口失败！"+e.getLocalizedMessage());
             e.printStackTrace();
