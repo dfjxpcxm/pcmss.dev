@@ -11,6 +11,9 @@
 		<if test="sms_id != null "><![CDATA[
 	       and sms_id = #{sms_id}
 	    ]]></if>
+        <if test="sms_rec_obj != null and sms_rec_obj != '' and !'null'.equals(sms_rec_obj)"><![CDATA[
+	       and sms_rec_obj  like CONCAT('%',#{sms_rec_obj},'%')
+	    ]]></if>
 		<if test="sms_title != null and sms_title != '' and !'null'.equals(sms_title)"><![CDATA[
 	       and sms_title  like CONCAT('%',#{sms_title},'%')
 	    ]]></if>
@@ -27,9 +30,6 @@
 	       and cre_time >= #{cre_time}
 	    ]]></if>
 
-		<if test="_sql_where != null and _sql_where != ''"> <![CDATA[
-            and ${_sql_where}
-        ]]> </if>
 	</sql>
 
 
@@ -131,8 +131,11 @@
 		order by upd_time desc
 	</select>
 
-	<select id="getSmsSendData"  parameterType="String" resultType="map">
-		select * from sys_sms_info where sms_id = #{sms_id}
+	<select id="getSmsSendData"  parameterType="com.quick.portal.sms.smsmng.SmsMngDO" resultType="map">
+		select * from sys_sms_info
+        <where>
+            <include refid="where" />
+        </where>
 	</select>
 
 	<select id="getSmsSendIdData"  parameterType="String" resultType="map">

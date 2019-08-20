@@ -15,7 +15,6 @@ public class SysCommon {
 
     public static String getFilePath(){
         String os = System.getProperty("os.name").toLowerCase();
-        System.out.println(os);		//windows 7
         String filePath = "";
         if (os.startsWith("win")) {
             filePath = PropertiesUtil.getPropery("potal.upload.file");

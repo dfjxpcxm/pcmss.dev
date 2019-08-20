@@ -123,8 +123,8 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
      */
     @RequestMapping(value = "/getSmsSendData")
     @ResponseBody
-    public Object getSmsSendData(String smsId) throws Exception {
-        List<Map<String, Object>> list = smsMngService.getSmsSendData(smsId);
+    public Object getSmsSendData(SmsMngDO sms) throws Exception {
+        List<Map<String, Object>> list = smsMngService.getSmsSendData(sms);
         return new JsonDataGrid(list.size(), list).toObj();
     }
     /**
