@@ -270,6 +270,7 @@
                 AND T.AUD_ACTION = 'AUTHENTICATION_FAILED'
                 AND T.AUD_CLIENT_IP = #{ip}
                 AND T.AUD_DATE > X.AUD_SUCC_DATE
+                GROUP BY T.AUD_USER
 		]]>
 	</select>
 	<!--  通过用户名称查询用户信息 -->
