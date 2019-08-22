@@ -276,7 +276,7 @@
 	<!--  通过用户名称查询用户信息 -->
 	<select id="isExitUserInfoByUserId" parameterType="java.lang.String" resultType="map">
 	<![CDATA[		        		
-			SELECT USER_STATE, COUNT(1) AS CNT FROM SYS_USER WHERE USER_NAME=#{userName}
+			SELECT USER_STATE, COUNT(1) AS CNT FROM SYS_USER WHERE USER_NAME=#{userName}  GROUP BY USER_STATE
 		]]>
 	</select>
 
