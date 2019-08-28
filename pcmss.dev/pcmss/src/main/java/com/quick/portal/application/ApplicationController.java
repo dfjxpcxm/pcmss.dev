@@ -145,14 +145,13 @@ public class ApplicationController extends SysBaseController<ApplicationDO> {
         //将request变成多部分request
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
         //创建文件夹
-        String baseDir = PropertiesUtil.getPropery("file.dir");
+        String baseDir = SysCommon.getFilePath();
         File dirPath = new File(baseDir + SRC_UPLOAD_PATH);
         if (!dirPath.exists()) {
             dirPath.mkdirs();
         }
         //获取multiRequest 中所有的文件名
         Iterator iter = multiRequest.getFileNames();
-
         try {
             while (iter.hasNext()) {
                 //一次遍历所有文件
@@ -165,7 +164,7 @@ public class ApplicationController extends SysBaseController<ApplicationDO> {
                     String fname = QCommon.getUUID() + suffix;
                     File uploadFile = new File(dirPath + File.separator + fname);
                     FileCopyUtils.copy(file.getBytes(), uploadFile);
-                    String url = SysCommon.getFilePath()+ fname;
+                    String url = TARGE_UPLOAD_PATH + fname;
                     return url;
                 }
             }

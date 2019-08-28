@@ -72,13 +72,14 @@ public class WebLoginController {
              */
 
             loggerInfoLoginSystemLogInfo(request,loginer);
+            return WebLoginConstants.REDIRECT_KEY.concat(WebLoginConstants.MAINFRAME_URL);
             //平台用户:1:app;2:sys;公服用户:1:app
-            String flag = WebLoginUitls.getUserHomePage(loginer);
+           /* String flag = WebLoginUitls.getUserHomePage(loginer);
             if (WebLoginConstants.SYS_MENU_FLAG.equals(flag)) {
                 return WebLoginConstants.REDIRECT_KEY.concat(WebLoginConstants.MAINFRAME_URL);
             } else {
                 return WebLoginConstants.REDIRECT_KEY.concat(WebLoginConstants.MAIN_URL);
-            }
+            }*/
         }
     }
 
