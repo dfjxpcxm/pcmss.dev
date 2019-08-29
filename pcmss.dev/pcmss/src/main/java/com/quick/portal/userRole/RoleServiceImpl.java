@@ -168,7 +168,14 @@ public class RoleServiceImpl extends SysBaseService<UserRoleDO> implements RoleS
         return ActionMsg.setOk("操作成功");
     }
 
-	@Override
+
+
+    @Override
+    public List<Map<String, Object>> getRoleLevelData(Integer dep_level) {
+        return dao.getRoleLevelData(dep_level);
+    }
+
+    @Override
 	public List<Map<String, Object>> getRoleType() {
 		return dao.getRoleType();
 	}

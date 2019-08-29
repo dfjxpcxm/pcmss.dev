@@ -21,9 +21,22 @@
 		<if test="user_real_name != null and user_real_name != '' and !'null'.equals(user_real_name)"><![CDATA[
 	     and u.user_real_name = #{user_real_name}
        ]]></if>
-		<if test="dep_id != null and dep_id != '' and !'null'.equals(dep_id)"><![CDATA[
-	       and d.dep_id = #{dep_id}
-	    ]]></if>
+		<if test="dep_id != null and dep_id != '' and !'null'.equals(dep_id)">
+		    <if test="dep_level == '1'">
+				<![CDATA[
+		     and d.dep_id in (select dep_id from user_department where dep_state=1)
+		     ]]>
+		    </if>
+		    <if test="dep_level == '2'">
+				<![CDATA[
+		      and d.dep_id in (select dep_id from user_department where super_dep_id = #{dep_id} or dep_id=  #{dep_id})
+		      ]]></if>
+		    <if test="dep_level == '3'">
+		    	<![CDATA[
+		    and d.dep_id in (select dep_id from user_department where super_dep_id = #{dep_id} or dep_id=  #{dep_id})
+		      ]]></if>
+
+	    </if>
 		<if test="role_id != null and role_id != '' and !'null'.equals(role_id)"><![CDATA[
 	       and r.role_id = #{role_id}
 	    ]]></if>

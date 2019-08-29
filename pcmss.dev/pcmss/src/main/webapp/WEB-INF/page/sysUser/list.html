@@ -74,11 +74,17 @@
     var flag = true;
     var pageFlag = 0;
 
+    var depId = "${depId}";
+    var level = "${level}";
+
+
     quick.baseUrl = "${G.host}";
     quick.serverUrl = "${G.serverUrl}";  // /sysUser
     quick.editUrl = "${G.editUrl}";       // sysUser/edit
     quick.objName = "${G.objName}";
     quick.idField = "${G.idField}";
+
+
 
     //初始化表格
     function config() {
@@ -86,7 +92,7 @@
         $("#list").bootstrapTable("destroy");
         _gridPool["list"] = new BGrid("#list");
         _gridPool["list"].config({
-            url: quick.serverUrl + "/getList?i=" + Math.random(),
+            url: quick.serverUrl + "/getList?dep_id="+depId+"&dep_level="+level+"&i=" + Math.random(),
             idField: quick.idField,
             sortName: quick.idField,
             cache: false,
@@ -203,7 +209,7 @@
     function selectDep() {
         $.ajax({
             type: "get",
-            url: quick.baseUrl + "/userDepartment/getData?dep_state=1",
+            url: quick.baseUrl + "/userDepartment/getData?dep_state=1&dep_level="+level+"&dep_id="+depId,
             async: false,
             dataType: "json",
             success: function (data) {

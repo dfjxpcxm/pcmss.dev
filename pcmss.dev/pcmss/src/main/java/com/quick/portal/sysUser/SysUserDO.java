@@ -54,7 +54,8 @@ public class SysUserDO  implements java.io.Serializable {
         setUser_email(u.getUser_email());
         setFile_state(u.getFile_state());
         setIdcard_num(u.getIdcard_num());
-
+        setDep_id(u.getDep_id());
+        setDep_level(u.getDep_level());
 
     }
     // <editor-fold defaultstate="collapsed" desc="私有成员">
@@ -85,7 +86,9 @@ public class SysUserDO  implements java.io.Serializable {
     /**
      *部门ID
      */
-    private Integer  dep_id;         	
+    private Integer  dep_id;
+
+    private Integer dep_level;
     /**
      *用户地址
      */
@@ -413,5 +416,13 @@ public class SysUserDO  implements java.io.Serializable {
 
     public void setIdcard_num(String idcard_num) {
         this.idcard_num = idcard_num;
+    }
+
+    public Integer getDep_level() {
+        return dep_level;
+    }
+
+    public void setDep_level(Integer dep_level) {
+        this.dep_level = dep_level;
     }
 }

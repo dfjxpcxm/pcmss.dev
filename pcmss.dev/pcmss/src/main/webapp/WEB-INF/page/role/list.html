@@ -21,6 +21,16 @@
                                 <input type="text" class="form-control form-control-green" name="role_name"
                                        id="role_name" placeholder="角色名称">
                             </div>
+
+                            <div class="form-group" style="padding-left: 5px;width:180px;">
+                                <select class="form-control form-control-green select_change" id="role_level" name="role_level">
+                                </select>
+                            </div>
+                            <div class="form-group" style="padding-left: 5px;width:180px;">
+                                <select class="form-control form-control-green select_change" id="role_type" name="role_type">
+                                </select>
+                            </div>
+
                             <div class="form-group" style="width:159px;">
                                 <select name="role_state" class="input-group form-control select_change"
                                         id="IDS_SYSPLATFORM">
@@ -53,7 +63,7 @@
     var queryParm = '';
     var flag = true;
     var pageFlag = 0;
-
+    var level = "${level}";
     var RFlag = $.request.queryString["RFlag"];
 
     quick.serverUrl = "${G.serverUrl}";
@@ -89,7 +99,11 @@
                         }
                     }
                 },
+                {field: 'role_level_name', title: '角色级别', width: '12%', align: 'center'},
                 {field: 'role_type_name', title: '角色类型', width: '12%', align: 'center'},
+
+
+
                 {
 
                     field: 'role_state',
@@ -258,6 +272,45 @@
         var s = queryParm + "&IpageNum=" + pageNum + "&IpageSize=" + pageSize;
         return s;
     }
+
+
+    function selectRoleType() {
+        $.ajax({
+            type: "get",
+            url: quick.serverUrl  + "/getRoleType?i=" + Math.random(),
+            async: true,
+            dataType: "json",
+            success: function (data) {
+                $("#role_type").append("<option selected hidden value=''>选择类别</option><option value= ''>选择类别</option>");
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    $("#role_type").append("<option  value=" + item.roleTypeId + "> " + item.roleTypeName + "</option>");
+                }
+            }
+        });
+    }
+
+    selectRoleType();
+
+
+    function selectRoleLevel() {
+        $.ajax({
+            type: "get",
+            url: quick.serverUrl + "/getRoleLevelData?dep_level="+level,
+            async: true,
+            dataType: "json",
+            success: function (data) {
+                data = data.rows;
+                $("#role_level").append("<option selected hidden value=''>选择级别</option><option value= ''>选择级别</option>");
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    $("#role_level").append("<option  value=" + item.role_level_id + "> " + item.role_level_name + "</option>");
+                }
+            }
+        });
+    }
+
+    selectRoleLevel();
 
 </script>
 </body>

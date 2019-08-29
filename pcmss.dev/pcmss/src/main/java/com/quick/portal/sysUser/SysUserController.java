@@ -63,6 +63,11 @@ public class SysUserController extends SysBaseController<SysUserDO> {
     //页面请求(/sysUser/list =》page/sysUser/list
     @RequestMapping
     public String list(ModelMap model) {
+        String depId = QCookie.getValue(request, "sbd.dep_id");
+        String level = QCookie.getValue(request, "sbd.dep_level");
+
+        model.addAttribute("depId", depId);
+        model.addAttribute("level", level);
         return view();
     }
 

@@ -32,15 +32,26 @@
                                 </div>
                             </div>
                             <div class="col-sm-6 form_ipt_botm">
-                                <div class="form-group">
-                                    <label class="col-xs-3 lable_top"><span class="span_require">*</span>角色类型</label>
-                                    <div class="col-xs-9">
-                                        <select name="role_type_id" class="form-control required select_change"
-                                                id="role_type_id">
-                                        </select>
-                                    </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>角色级别</label>
+                                <div class="col-xs-9">
+                                    <select name="role_level" class="form-control required select_change"
+                                            id="role_level">
+                                    </select>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="col-sm-6 form_ipt_botm">
+                            <div class="form-group">
+                                <label class="col-xs-3 lable_top"><span class="span_require">*</span>角色类型</label>
+                                <div class="col-xs-9">
+                                    <select name="role_type_id" class="form-control required select_change"
+                                            id="role_type_id">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
                             <div class="col-sm-6 form_ipt_botm">
                                 <div class="form-group">
@@ -402,6 +413,25 @@
             $('#div_val').append('<label id="pagename" class="col-xs-8" style="text-align:center;font-size: 22px;color:blue;margin-left: 180px">角色新增</label>');
         }
     }
+
+    function selectRoleLevel() {
+        $.ajax({
+            type: "get",
+            url: quick.serverUrl + "/getRoleLevelData?dep_level="+level,
+            async: true,
+            dataType: "json",
+            success: function (data) {
+                data = data.rows;
+                $("#role_level").append("<option selected hidden value=''>选择级别</option><option value= ''>选择级别</option>");
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    $("#role_level").append("<option  value=" + item.role_level_id + "> " + item.role_level_name + "</option>");
+                }
+            }
+        });
+    }
+
+    selectRoleLevel();
 </script>
 </body>
 

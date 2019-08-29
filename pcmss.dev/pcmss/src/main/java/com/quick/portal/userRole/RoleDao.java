@@ -56,4 +56,7 @@ public interface RoleDao extends ISysBaseDao<UserRoleDO> {
 
     List<Map<String,Object>> getRoleType();
 
+
+    List<Map<String,Object>> getRoleLevelData(Integer dep_level);
+
 }

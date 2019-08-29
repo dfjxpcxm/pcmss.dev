@@ -4,6 +4,7 @@ package com.quick.portal.userRole;
 import com.quick.core.base.ISysBaseService;
 import com.quick.core.base.SysBaseController;
 import com.quick.core.base.model.DataStore;
+import com.quick.core.base.model.JsonDataGrid;
 import com.quick.core.util.common.CommonUtils;
 import com.quick.core.util.common.QCookie;
 import com.quick.portal.security.authority.metric.MetricPrivilegeConstants;
@@ -51,6 +52,8 @@ public class RoleController extends SysBaseController<UserRoleDO> {
     //页面请求---开始
     @RequestMapping
     public String list(ModelMap model) {
+        String level = QCookie.getValue(request, "sbd.dep_level");
+        model.addAttribute("level", level);
         return view();
     }
 
@@ -156,6 +159,17 @@ public class RoleController extends SysBaseController<UserRoleDO> {
         loggerInfoDeleteRoleInfo(role_id);
         return super.deleteAction();
     }
+
+
+    @RequestMapping(value = "/getRoleLevelData")
+    @ResponseBody
+    public Object getRoleLevelData(Integer dep_level) throws Exception {
+        List<Map<String, Object>> list = roleService.getRoleLevelData(dep_level);
+        return new JsonDataGrid(list.size(), list).toObj();
+
+    }
+
+
 
 
     private void loggerInfoDeleteRoleInfo(String id){

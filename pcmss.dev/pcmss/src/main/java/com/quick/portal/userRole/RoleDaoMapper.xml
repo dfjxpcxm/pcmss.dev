@@ -14,6 +14,14 @@
         <if test="role_name != null and role_name != '' and role_name != 'null'"><![CDATA[
 	       and role_name = '${role_name}'
 	    ]]></if>
+
+        <if test="role_level_id != null and role_level_id != '' and role_level_id != 'null'"><![CDATA[
+	       and role_level_id = #{role_level_id}
+	    ]]></if>
+        <if test="role_type_id != null and role_type_id != '' and role_type_id != 'null'"><![CDATA[
+	       and role_type_id = #{role_type_id}
+	    ]]></if>
+
         <if test="cre_time != null and cre_time != '' and cre_time != 'null'"><![CDATA[
 	       and cre_time >= #{cre_time}
 	    ]]></if>
@@ -56,8 +64,9 @@
 
     <!--查询-->
     <select id="select" parameterType="map" resultType="map">
-        select r.*,e.role_type_name
+        select r.*,e.role_type_name,l.role_level_name
         from user_role r inner join role_type e on r.role_type_id =e.role_type_id
+         inner join role_level l on r.role_level_id =l.role_level_id
         <where>
             <include refid="where"/>
         </where>
@@ -94,6 +103,14 @@
     <select id="getRoleType" parameterType="map" resultType="map">
 		SELECT  role_type_id,role_type_name FROM  ROLE_TYPE 
 	</select>
+
+
+
+    <select id="getRoleLevelData" parameterType="int" resultType="map">
+		SELECT  role_level_id,role_level_name FROM  ROLE_LEVEL where  role_level_id>=#{dep_level}
+	</select>
+
+
 
 
 </mapper>

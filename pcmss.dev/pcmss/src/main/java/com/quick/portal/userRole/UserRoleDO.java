@@ -52,6 +52,9 @@ public class UserRoleDO implements java.io.Serializable {
 	// </editor-fold>
 
     private Integer role_type_id;
+
+
+    private Integer role_level_id;
     // <editor-fold defaultstate="collapsed" desc="成员Get/Set">
     /**
      * 用户角色ID  Get方法
@@ -132,5 +135,13 @@ public class UserRoleDO implements java.io.Serializable {
 
     public void setRole_type_id(Integer role_type_id) {
         this.role_type_id = role_type_id;
+    }
+
+    public Integer getRole_level_id() {
+        return role_level_id;
+    }
+
+    public void setRole_level_id(Integer role_level_id) {
+        this.role_level_id = role_level_id;
     }
 }
