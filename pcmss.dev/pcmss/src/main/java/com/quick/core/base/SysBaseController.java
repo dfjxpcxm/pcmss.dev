@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.quick.core.util.common.QCookie;
 import org.pac4j.core.profile.CommonProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -559,6 +560,11 @@ public abstract class SysBaseController<T> {
 
         Map<String, Object> queryMap = getQueryMap(request, fieldShow,
                 tableName, whereStr, fieldOrder);
+
+        String depId = QCookie.getValue(request, "sbd.dep_id");
+        String level = QCookie.getValue(request, "sbd.dep_level");
+        queryMap.put("dep_id",depId);
+        queryMap.put("role_level_id",level);
         PageBounds pager = new PageBounds(pageNo, pageSize);
 
         List<Map<String, Object>> dt;

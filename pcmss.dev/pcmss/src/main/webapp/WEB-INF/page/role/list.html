@@ -23,11 +23,11 @@
                             </div>
 
                             <div class="form-group" style="padding-left: 5px;width:180px;">
-                                <select class="form-control form-control-green select_change" id="role_level" name="role_level">
+                                <select class="form-control form-control-green select_change" id="role_level_id" name="role_level_id">
                                 </select>
                             </div>
                             <div class="form-group" style="padding-left: 5px;width:180px;">
-                                <select class="form-control form-control-green select_change" id="role_type" name="role_type">
+                                <select class="form-control form-control-green select_change" id="role_type_id" name="role_type_id">
                                 </select>
                             </div>
 
@@ -78,7 +78,7 @@
         $('#tb_role').bootstrapTable('destroy');
         _gridPool["tb_role"] = new BGrid("#tb_role");
         _gridPool["tb_role"].config({
-            url: quick.serverUrl + "/getList?i=" + Math.random(),
+            url: quick.serverUrl + "/getList?dep_level="+level+"&i=" + Math.random(),
             idField: quick.idField,
             sortName: quick.idField,
             cache: false,
@@ -122,21 +122,21 @@
                     }
                 },
 
-                {
-                    field: 'upd_time',
-                    width: '10%',
-                    title: '更新时间',
-                    align: 'center',
-                    formatter: function (value, row, index) {
-
-                        if (value == "" || value == null) {
-                            return "-";
-                        } else {
-                            return value;
-                        }
-
-                    }
-                },
+                // {
+                //     field: 'upd_time',
+                //     width: '10%',
+                //     title: '更新时间',
+                //     align: 'center',
+                //     formatter: function (value, row, index) {
+                //
+                //         if (value == "" || value == null) {
+                //             return "-";
+                //         } else {
+                //             return value;
+                //         }
+                //
+                //     }
+                // },
                 {
                     field: 'CZ', width: '20%', title: '操作', align: 'center', formatter: function (value, row, index) {
 
@@ -281,10 +281,10 @@
             async: true,
             dataType: "json",
             success: function (data) {
-                $("#role_type").append("<option selected hidden value=''>选择类别</option><option value= ''>选择类别</option>");
+                $("#role_type_id").append("<option selected hidden value=''>选择类别</option><option value= ''>选择类别</option>");
                 for (var i = 0; i < data.length; i++) {
                     var item = data[i];
-                    $("#role_type").append("<option  value=" + item.roleTypeId + "> " + item.roleTypeName + "</option>");
+                    $("#role_type_id").append("<option  value=" + item.roleTypeId + "> " + item.roleTypeName + "</option>");
                 }
             }
         });
@@ -301,10 +301,10 @@
             dataType: "json",
             success: function (data) {
                 data = data.rows;
-                $("#role_level").append("<option selected hidden value=''>选择级别</option><option value= ''>选择级别</option>");
+                $("#role_level_id").append("<option selected hidden value=''>选择级别</option><option value= ''>选择级别</option>");
                 for (var i = 0; i < data.length; i++) {
                     var item = data[i];
-                    $("#role_level").append("<option  value=" + item.role_level_id + "> " + item.role_level_name + "</option>");
+                    $("#role_level_id").append("<option  value=" + item.role_level_id + "> " + item.role_level_name + "</option>");
                 }
             }
         });

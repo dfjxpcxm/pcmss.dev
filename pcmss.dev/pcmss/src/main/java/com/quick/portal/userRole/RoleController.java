@@ -59,6 +59,8 @@ public class RoleController extends SysBaseController<UserRoleDO> {
 
     @RequestMapping
     public String edit(ModelMap model) {
+        String level = QCookie.getValue(request, "sbd.dep_level");
+        model.addAttribute("level", level);
         return view();
     }
 

@@ -72,6 +72,7 @@
     var role_id = $.request.queryString["role_id"];
     var role_name = $.request.queryString["role_name"] || '';
     var role_type_id = $.request.queryString["role_type_id"] || '';
+    var role_level_id = $.request.queryString["role_level_id"] || '';
     var role_state = $.request.queryString["role_state"] || 1;
 
     var filter = getUserFilter(role_id);
@@ -174,6 +175,7 @@
             + "&userData=1"
             + "&role_name=" + role_name
             + "&role_type_id=" + role_type_id
+            + "&role_level_id=" + role_level_id
             + "&role_state=" + role_state;
     }
 

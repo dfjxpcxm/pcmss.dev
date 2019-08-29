@@ -35,8 +35,8 @@
                             <div class="form-group">
                                 <label class="col-xs-3 lable_top"><span class="span_require">*</span>角色级别</label>
                                 <div class="col-xs-9">
-                                    <select name="role_level" class="form-control required select_change"
-                                            id="role_level">
+                                    <select name="role_level_id" class="form-control required select_change"
+                                            id="role_level_id">
                                     </select>
                                 </div>
                             </div>
@@ -108,6 +108,7 @@
     var markForDelete = {};
     var markForAdd = {};
     var userSelection = {};
+    var level = "${level}";
 
     if ($.request.queryString['userData'])
         restoreUserSelection();
@@ -118,6 +119,7 @@
 
     var role_name = $.request.queryString["role_name"] || '';
     var role_type_id = $.request.queryString["role_type_id"] || '';
+ //   var role_level_id = $.request.queryString["role_level_id"] || '';
     var role_state = $.request.queryString["role_state"] || 1;
 
     var filter = getQueryFilter();
@@ -217,9 +219,10 @@
     }
 
     //选中多选下拉框的值
-    function ListInit(obj, v) {
+    function ListInit(obj, v,id) {
         if (!obj) return false;
-        var opts = $('#role_type_id option');
+//        var opts = $('#role_type_id option');
+        var opts = $('#'+id+' option');
         for (var i in opts) {
             if (opts[i].value == v) {
                 opts[i].selected = true;
@@ -230,6 +233,7 @@
     window.onload = function () {
 
         selectRoleType();
+        selectRoleLevel();
 
         if (role_id >= 0) {
             $.post(quick.serverUrl + '/getObj?role_id=' + role_id + "&i=" + Math.random(), function (data) {
@@ -238,14 +242,17 @@
                     $("#role_name").val(data.role_name);
                     $("#role_state").val(data.role_state);
                     $("#role_id").val(data.role_id);
-                    ListInit("role_type_id", data.role_type_id);
+
+                    ListInit("role_level_id", data.role_level_id,"role_level_id");
+                    ListInit("role_type_id", data.role_type_id,"role_type_id",);
 
                 }
             });
         } else {
             $("#role_name").val(role_name);
             $("#role_state").val(role_state);
-            ListInit("role_type_id", role_type_id);
+            ListInit("role_level_id", data.role_level_id,"role_level_id");
+            ListInit("role_type_id", role_type_id,"role_type_id",);
         }
 
         jQuery.validator.addMethod("nameFuc", function (value, element) {//名称验证  只能是2-10中文汉字或英文字母或数字的组合
@@ -325,8 +332,8 @@
     function selectRoleType() {
         $.ajax({
             type: "get",
-            url: "getRoleType",
-            async: false,
+            url: "${G.serverUrl}/getRoleType?i=" + Math.random(),
+            async: true,
             dataType: "json",
             success: function (data) {
                 $("#role_type_id").append("<option selected hidden value=''>请选择角色类型</option><option value= ''>角色类型</option>");
@@ -345,6 +352,7 @@
         window.location.href = "addRoleUser?role_id=" + role_id
             + "&role_name=" + $("#role_name").val()
             + "&role_type_id=" + $("#role_type_id").val()
+            + "&role_level_id=" + $("#role_level_id").val()
             + "&role_state=" + $("#role_state").val(); //跳转到另一个页面，并且还在当前框架
     }
 
@@ -364,6 +372,7 @@
                 role_id: (role_id == null) ? "" : role_id,
                 role_name: $("#role_name").val(),
                 role_type_id: $("#role_type_id").val(),
+                role_level_id: $("#role_level_id").val(),
                 role_state: $("#role_state").val(),
                 user_role_predicate: getQueryFilter()
             },
@@ -422,16 +431,16 @@
             dataType: "json",
             success: function (data) {
                 data = data.rows;
-                $("#role_level").append("<option selected hidden value=''>选择级别</option><option value= ''>选择级别</option>");
+                $("#role_level_id").append("<option selected hidden value=''>选择级别</option><option value= ''>选择级别</option>");
                 for (var i = 0; i < data.length; i++) {
                     var item = data[i];
-                    $("#role_level").append("<option  value=" + item.role_level_id + "> " + item.role_level_name + "</option>");
+                    $("#role_level_id").append("<option  value=" + item.role_level_id + "> " + item.role_level_name + "</option>");
                 }
             }
         });
     }
 
-    selectRoleLevel();
+
 </script>
 </body>
 
