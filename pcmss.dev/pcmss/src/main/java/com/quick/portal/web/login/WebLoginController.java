@@ -114,7 +114,7 @@ public class WebLoginController {
         QCookie.remove(response, request, "sbd.tk");
         QCookie.remove(response, request, "request.serial");
         QCookie.remove(response, request, "sbd.ustate");
-        QCookie.remove(response, request, "sbd.dept_id");
+        QCookie.remove(response, request, "sbd.dep_global_id");
         QCookie.remove(response, request, "sbd.dep_level");
 
         request.getSession().invalidate();

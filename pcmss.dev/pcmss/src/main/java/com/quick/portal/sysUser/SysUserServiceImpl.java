@@ -191,4 +191,10 @@ public class SysUserServiceImpl extends SysBaseService<SysUserDO> implements ISy
         return ActionMsg.setOk("同步LDAP用户成功");
     }
 
+    @Override
+    public List<Map<String, Object>> listAllDep() {
+        List<Map<String,Object>> result = dao.listAllDep();
+        return result;
+    }
+
 }

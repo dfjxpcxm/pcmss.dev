@@ -60,6 +60,12 @@ public class UserDepartmentController extends SysBaseController<UserDepartmentDO
         return view();
     }
 
+    @RequestMapping
+    public String choseDep(ModelMap model) {
+        return view();
+    }
+
+
 
     @RequestMapping(value = "/syncOrgLdap")
     @ResponseBody

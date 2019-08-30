@@ -21,9 +21,23 @@
                                 <input maxlength="20" id="user_name" name="user_name" class="input-sm form-control"
                                        type="text" placeholder="用户名称"/>
                             </div>
-                            <div class="form-group" style="padding-left: 5px;width:180px;">
-                                <select class="form-control form-control-green select_change" id="dep_id" name="dep_id">
-                                </select>
+                            <div class="form-group" style="padding-left: 1px;width:210px;">
+
+                                    <div class="input-group">
+                                        <input type="text" id="dep_name" readOnly="readOnly" class="form-control"/>
+                                        <input type="hidden" id="dep_global_id" name="dep_global_id" />
+                                        <input type="hidden" id="dep_level" name="dep_level" />
+                                       <!-- <input type="hidden" id="dep_id" name="dep_id" />-->
+                                        <span class="input-group-btn">
+                                 			<button class="btn btn-default" type="button" onclick="choseboxs('dep_name', '${G.serverUrl}/chose','dep_global_id','dep_level');">
+                                 				部门
+                                 			</button>
+                                 		</span>
+                                    </div>
+
+                               <!-- 部门下拉框
+                               <select class="form-control form-control-green select_change" id="dep_id" name="dep_id">
+                                </select>-->
                             </div>
                             <div class="form-group" style="padding-left: 5px;width:180px;">
                                 <select class="form-control form-control-green select_change" id="job_id" name="job_id">
@@ -92,7 +106,7 @@
         $("#list").bootstrapTable("destroy");
         _gridPool["list"] = new BGrid("#list");
         _gridPool["list"].config({
-            url: quick.serverUrl + "/getList?dep_id="+depId+"&dep_level="+level+"&i=" + Math.random(),
+            url: quick.serverUrl + "/getList?i=" + Math.random(),
             idField: quick.idField,
             sortName: quick.idField,
             cache: false,
@@ -205,7 +219,7 @@
     }
 
     selectJob();
-
+//部门下拉框
     function selectDep() {
         $.ajax({
             type: "get",
@@ -368,7 +382,37 @@
             }
         );
     }
-
+    function choseboxs(nid, url,id,levelid){
+        if(!layer.values)
+            layer.values = {};
+        layer.open({
+            type: 2 //此处以iframe举例
+            ,title: '选择记录'
+            ,area: ['600px', '500px']
+            ,shade: 0
+            ,maxmin: true
+            ,content: url + "?rid=" + id
+            ,btn: ['确认', '关闭'] //只是为了演示
+            ,yes: function(index, layero){
+                var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                if(!iframeWin._chosenId){
+                    layer.msg('您还未选择记录，请点击要选择的行', {icon: 1, time: 1000, skin: 'layer-ext-moon'});
+                    return;
+                }
+                $("#"+nid).val(iframeWin._chosenName);
+                $("#"+id).val(iframeWin._chosenId);
+                $("#"+levelid).val(iframeWin._chosenLevel);
+                layer.closeAll();
+            }
+            ,btn2: function(){
+                layer.closeAll();
+            }
+            ,zIndex: layer.zIndex //重点1
+            ,success: function(layero){
+                layer.setTop(layero); //重点2
+            }
+        });
+    }
 </script>
 
 </html>

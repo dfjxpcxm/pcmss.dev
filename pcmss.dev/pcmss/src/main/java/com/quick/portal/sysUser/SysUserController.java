@@ -63,7 +63,7 @@ public class SysUserController extends SysBaseController<SysUserDO> {
     //页面请求(/sysUser/list =》page/sysUser/list
     @RequestMapping
     public String list(ModelMap model) {
-        String depId = QCookie.getValue(request, "sbd.dep_id");
+        String depId = QCookie.getValue(request, "sbd.dep_global_id");
         String level = QCookie.getValue(request, "sbd.dep_level");
 
         model.addAttribute("depId", depId);
@@ -73,6 +73,11 @@ public class SysUserController extends SysBaseController<SysUserDO> {
 
     @RequestMapping
     public String edit(ModelMap model) {
+        return view();
+    }
+
+    @RequestMapping
+    public String chose(ModelMap model) {
         return view();
     }
 
@@ -169,6 +174,11 @@ public class SysUserController extends SysBaseController<SysUserDO> {
         return super.save(model);
     }
 
+    @RequestMapping(value ="/listAllDep")
+    @ResponseBody
+    public List<Map<String,Object>> listAllDep(){
+        return sysUserService.listAllDep();
+    }
 
     public void loggerInfoDeleteUserInfo(String id){
         String userName = QCookie.getValue(request, "sbd.user_name");

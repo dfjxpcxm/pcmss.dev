@@ -5,23 +5,51 @@
     <!--查询条件-->
 	<sql id="where">
 		1=1
-		<if test="dep_id != null"><![CDATA[
-	       and d.dep_id = #{dep_id}
-	    ]]></if>
+		<if test="dep_id != null">
+			<if test='dep_level == "1" or "1".equals(dep_level) or dep_level == "0" or "0".equals(dep_level) '>
+				<![CDATA[
+				 and d.dep_id in (select dep_id from user_department where dep_state=1)
+				 ]]>
+			</if>
+			<if test='dep_level == "2" or "2".equals(dep_level)'>
+				<![CDATA[
+		      and d.dep_id in (select dep_id from user_department where sup_dep_global_id = #{dep_id} or dep_global_id= #{dep_id})
+		      ]]></if>
+			<if test='dep_level == "3"  or "3".equals(dep_level)'>
+				<![CDATA[
+		   and d.dep_id in (select dep_id from user_department where sup_dep_global_id = #{dep_id} or dep_global_id= #{dep_id})
+		      ]]></if>
+				<if test=' dep_level==null or dep_level == "null"  or "".equals(dep_level) '>
+					<![CDATA[
+		    		and d.dep_id =#{dep_id}
+		      ]]>
+
+			</if>
+
+		</if>
 		<if test="dep_name != null and dep_name != '' and dep_name != 'null'"><![CDATA[
 	       and d.dep_name like CONCAT('%',#{dep_name},'%')
 	    ]]></if>
 
-		<if test="dep_global_id != null"><![CDATA[
-	       and d.dep_global_id = #{dep_global_id}
-	    ]]></if>
+		<if test="dep_global_id != null and dep_global_id != '' and dep_global_id != 'null'">
+			<choose>
+				<when  test='dep_global_id == "350010000000" or dep_global_id == "1" or  "350010000000" .equals(dep_global_id) or "1".equals(dep_global_id)'>
+					<![CDATA[
+						and d.dep_id in (select dep_id from user_department where dep_state=1)  ]]>
+				</when>
+				<otherwise>
+					<![CDATA[
+						and d.dep_id  in ( select dep_id from user_department where sup_dep_global_id = #{dep_global_id} or dep_global_id=#{dep_global_id})]]>
+				</otherwise>
+			</choose>
+		</if>
 
 		<if test="sup_dep_global_id != null"><![CDATA[
 	       and d.sup_dep_global_id = #{sup_dep_global_id}
 	    ]]></if>
 
 		<if test="dep_level != null"><![CDATA[
-	       and d.dep_level = #{dep_level}
+	       and d.dep_level >= #{dep_level}
 	    ]]></if>
 		<if test="dep_state != null"><![CDATA[
 	       and d.dep_state = #{dep_state}

@@ -54,4 +54,6 @@ public interface ISysUserDao<SysUserDO> extends ISysBaseDao<SysUserDO> {
 
 
 	List<Map<String,Object>> getUserInfoByIds(int userId);
+
+	List<Map<String,Object>> listAllDep();
 }

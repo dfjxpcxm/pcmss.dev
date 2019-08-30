@@ -54,4 +54,5 @@ public interface ISysUserService extends ISysBaseService<SysUserDO> {
 
 	DataStore syncUserLdap(String userIds);
 
+	List<Map<String,Object>> listAllDep();
 }

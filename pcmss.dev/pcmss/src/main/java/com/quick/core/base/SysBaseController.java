@@ -561,10 +561,10 @@ public abstract class SysBaseController<T> {
         Map<String, Object> queryMap = getQueryMap(request, fieldShow,
                 tableName, whereStr, fieldOrder);
 
-        String depId = QCookie.getValue(request, "sbd.dep_id");
+        String depGId = QCookie.getValue(request, "sbd.dep_global_id");
         String level = QCookie.getValue(request, "sbd.dep_level");
-        queryMap.put("dep_id",depId);
-        queryMap.put("role_level_id",level);
+        queryMap.put("dep_id",depGId);
+        queryMap.put("dep_level",level);
         PageBounds pager = new PageBounds(pageNo, pageSize);
 
         List<Map<String, Object>> dt;

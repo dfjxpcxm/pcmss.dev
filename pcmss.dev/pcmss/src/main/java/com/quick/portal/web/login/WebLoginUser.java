@@ -58,7 +58,7 @@ public class WebLoginUser extends SysUserDO {
             String gid = QCookie.getValue(request, "sbd.gid");
             String uid = QCookie.getValue(request, "sbd.user_name");
             String userState = QCookie.getValue(request, "sbd.ustate");
-            String depId = QCookie.getValue(request, "sbd.dep_id");
+            String depGlobalId = QCookie.getValue(request, "sbd.dep_global_id");
             String depLevel = QCookie.getValue(request, "sbd.dep_level");
 
 
@@ -72,8 +72,8 @@ public class WebLoginUser extends SysUserDO {
                 userId = "0";
             if (QCommon.isNullOrEmpty(userState))
                 userState = "0";
-            if (QCommon.isNullOrEmpty(depId)||"null".equals(depId))
-                depId = "0";
+            if (QCommon.isNullOrEmpty(depGlobalId)||"null".equals(depGlobalId))
+                depGlobalId = "0";
             if (QCommon.isNullOrEmpty(depLevel)||"null".equals(depLevel))
                 depLevel = "0";
 
@@ -82,7 +82,7 @@ public class WebLoginUser extends SysUserDO {
             this.setUser_id(Integer.valueOf(userId));
             this.setUser_global_id(gid);
             this.setUser_name(uid);
-            this.setDep_id(Integer.valueOf(depId));
+            this.setDep_global_id(depGlobalId);
             this.setDep_level(Integer.valueOf(depLevel));
             String requestSerial = QCookie.getValue(request, "request.serial");
             this.setRequestSerial(requestSerial == null ? 0 : Integer.valueOf(requestSerial));
@@ -116,7 +116,7 @@ public class WebLoginUser extends SysUserDO {
             QCookie.set(response, "sbd.gid", this.getUser_global_id(), cookieTTL);
             QCookie.set(response, "request.serial", String.valueOf(this.requestSerial), cookieTTL);
             QCookie.set(response, "sbd.ustate", String.valueOf(this.getUser_state()), cookieTTL);
-            QCookie.set(response, "sbd.dep_id", String.valueOf(this.getDep_id()), cookieTTL);
+            QCookie.set(response, "sbd.dep_global_id", String.valueOf(this.getDep_global_id()), cookieTTL);
             QCookie.set(response, "sbd.dep_level", String.valueOf(this.getDep_level()), cookieTTL);
 
         } catch (Exception e) {
