@@ -50,7 +50,8 @@
 		<if test="user_name != null and user_name != ''">
 			and  a.user_name like CONCAT('%',#{user_name},'%')
 		</if>
-		GROUP BY a.user_id
+	<!--	GROUP BY a.user_id-->
+		ORDER BY a.user_id
 	</select>
 	
 	 <!--查询-->
@@ -63,7 +64,7 @@
 		<if test="to_user_id != null and to_user_id != ''">
 			and  to_user_id = #{to_user_id}
 		</if>
-		GROUP BY to_user_id,menu_id
+		<!--GROUP BY to_user_id,menu_id-->
 		ORDER BY creat_time DESC
 		
 	</select>
