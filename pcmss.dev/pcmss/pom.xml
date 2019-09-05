@@ -613,7 +613,7 @@
                 <cas.server.ip>118.126.103.216</cas.server.ip>
                 <ca.server.ip>118.126.103.216</ca.server.ip>
                 <pcmss.mysql.ip>106.52.134.132</pcmss.mysql.ip>
-                <pcmss.db.password>123456</pcmss.db.password>
+                <pcmss.db.password>root@123456</pcmss.db.password>
                 <cas.server.protocol>http</cas.server.protocol>
                 <cas.server.port>17001</cas.server.port>
             </properties>

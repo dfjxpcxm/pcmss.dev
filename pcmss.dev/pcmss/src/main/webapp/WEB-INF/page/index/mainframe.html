@@ -61,6 +61,39 @@
 																		class="roll-nav roll-right J_tabExit"><i
 							class="fa fa-tasks" style="font-weight: normal;padding-top: 10px;"></i>返回领导驾驶舱</a></li>
 -->
+					<li class="dropdown" id="roro">
+						<!--<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
+							<i class="fa fa-bell"></i> <span class="label label-primary">8</span>
+						</a>
+						<ul class="dropdown-menu dropdown-alerts">
+							<li>
+								<a href="mailbox.html">
+									<div>
+										<i class="fa fa-envelope fa-fw"></i> 您有16条未读消息
+										<span class="pull-right text-muted small">4分钟前</span>
+									</div>
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="profile.html">
+									<div>
+										<i class="fa fa-qq fa-fw"></i> 3条新回复
+										<span class="pull-right text-muted small">12分钟钱</span>
+									</div>
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<div class="text-center link-block">
+									<a class="J_menuItem" href="${G.host}/newsMessage/list" data-index="89">&lt;!&ndash;notifications.html&ndash;&gt;
+										<strong>查看所有 </strong>
+										<i class="fa fa-angle-right"></i>
+									</a>
+								</div>
+							</li>
+						</ul>-->
+					</li>
 					<li class="hidden-xs"><a><!--<i class="fa fa-user"></i>-->
 							<strong class="font-bold" style="font-weight: normal;">用户：${L.user_real_name}</strong></a>
 
@@ -192,6 +225,7 @@
 				}
 			}
 		}
+		messageNotification();
 	}
 
 	function logout() {
@@ -205,6 +239,53 @@
 	function goMain() {
 		window.location.href = "home/main";
 		
+	}
+	function messageNotification() {
+		$.ajax({
+			type: "get",
+			url: "${G.host}/newsMessage/getList",
+			async:false,
+			dataType: "json",
+			success: function(data){
+				$("#roro").append('<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">' +
+						'<i class="fa fa-bell"></i> <span class="label label-primary">8</span>' +
+						'</a>' +
+						'<ul class="dropdown-menu dropdown-alerts">' +
+						'<li>' +
+							'<a href="${G.host}/newsMessage/mailbox">' +
+						'<div>' +
+						'<i class="fa fa-envelope fa-fw"></i> 您有16条未读消息' +
+						'<span class="pull-right text-muted small">4分钟前</span>' +
+						'</div>' +
+							'</a>' +
+						'</li>' +
+						'<li class="divider"></li>' +
+						'<li>' +
+							'<a href="${G.host}/newsMessage/profile">' +
+						'<div>' +
+						'<i class="fa fa-qq fa-fw"></i> 3条新回复' +
+						'<span class="pull-right text-muted small">12分钟钱</span>' +
+						'</div>' +
+						'</a>' +
+						'</li>' +
+						'<li class="divider"></li>' +
+						'<li>' +
+						'<div class="text-center link-block">' +
+						'<a class="J_menuItem" href="${G.host}/newsMessage/list" data-index="89"><!--notifications.html-->' +
+						'<strong>查看所有 </strong>' +
+						'<i class="fa fa-angle-right"></i>' +
+						'</a>' +
+						'</div>' +
+						'</li>' +
+						'</ul>');
+				//在控制台打印数据
+				 console.log(JSON.stringify(data));
+				// if(data!=null&&data.length>0){
+				// 	$.each(data,function(i,dataNode){
+				// 	});
+				// }
+			}
+		});
 	}
 </script>
 
