@@ -19,6 +19,7 @@
 package com.quick.portal.web.mainframe;
 
 import java.util.List;
+import java.util.Map;
 
 import com.quick.core.base.ISysBaseDao;
 
@@ -30,4 +31,6 @@ public interface MainFrameDao extends ISysBaseDao {
     
     /*根据userId查询菜单权限 */
     public List<MainFrameBean> searchMainFrame(int userId);
+
+    public Map<String, Object> searchSysIndex(int role_type_id);
 }

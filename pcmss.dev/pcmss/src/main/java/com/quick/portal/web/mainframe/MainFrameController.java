@@ -8,6 +8,7 @@ import com.quick.core.util.common.QCookie;
 import com.quick.portal.sysMenu.ISysMenuService;
 import com.quick.portal.userAccessLog.IUserAccessLogService;
 import com.quick.portal.userAccessLog.UserAccessLogConstants;
+import com.quick.portal.userRole.UserRoleDO;
 import com.quick.portal.web.login.WebLoginConstants;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.util.*;
+
+import static com.quick.portal.web.login.WebLoginUitls.isAdminRoleType;
 
 /**
  * 查询菜单权限
@@ -105,7 +108,19 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
      */
     @RequestMapping(value = "/goIframe")
     public String goIframe(HttpServletRequest request, Model model) throws Exception {
-        return "page/index/i2";
+        boolean isadmin = isAdminRoleType(loginer);
+        List<UserRoleDO> listUser= loginer.getRoleList();
+        int[] roleTypeId = new int[listUser.size()];
+        int i = 0;
+        for (UserRoleDO userRoleDO : listUser) {
+            roleTypeId[i] = userRoleDO.getRole_type_id();
+            i++;
+        }
+        Arrays.sort(roleTypeId);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map =  mainFrameService.searchSysIndex(roleTypeId[roleTypeId.length-1]);
+        String indexName = (String) map.get("index_name");
+        return "page/index/" + indexName;
     }
 
 

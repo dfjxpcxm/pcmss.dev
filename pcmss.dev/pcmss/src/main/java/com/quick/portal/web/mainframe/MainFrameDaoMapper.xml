@@ -54,4 +54,7 @@
 		]]>
 	
     </select>
+    <select id="searchSysIndex" parameterType="int" resultType="map">
+        select * from sys_index_mng where role_type_id =#{role_type_id}
+    </select>
 </mapper>

@@ -20,6 +20,7 @@ package com.quick.portal.web.mainframe;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,12 @@ public class MainFrameServiceImpl extends SysBaseService<MainFrameBean> implemen
 		Integer uid = Integer.valueOf(userId);
 		List<MainFrameBean> mainFrameList= dao.searchMainFrame(uid);
 		return mainFrameList;
+	}
+
+	@Override
+	public Map<String, Object> searchSysIndex(int role_type_id) {
+
+		return dao.searchSysIndex(role_type_id);
 	}
 
 }
