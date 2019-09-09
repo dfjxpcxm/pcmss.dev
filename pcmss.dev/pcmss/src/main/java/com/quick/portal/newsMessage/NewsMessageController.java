@@ -57,9 +57,6 @@ public class NewsMessageController extends SysBaseController<NewsMessageDO> {
     @RequestMapping
     public String list(ModelMap model) {
         String resource_status = request.getParameter("resource_status");
-        if (resource_status.equals("undefined")){
-            resource_status = null;
-        }
         model.addAttribute("resource_status", resource_status);
         return view();
     }
