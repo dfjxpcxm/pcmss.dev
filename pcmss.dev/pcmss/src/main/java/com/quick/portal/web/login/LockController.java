@@ -77,6 +77,12 @@ public class LockController {
     public String getLockInfo(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
     	String ip = CommonUtils.getIpAddrAdvanced(request);
     	Map<String,Object> mp  = sysUserService.getLockCount(ip);
+    	if(mp ==null){
+			request.getSession().setAttribute("code", ExceptionEnumServiceImpl.USER_STATUS_ERROR.getCode());
+			request.getSession().setAttribute("message",ExceptionEnumServiceImpl.USER_STATUS_ERROR.getMessage());
+			return  WebLoginConstants.REDIRECT_KEY.concat(WebLoginConstants.COMMON_INFO_CONTROLLER);
+		}
+
     	int lockCnt = Integer.parseInt(mp.get("CNT").toString());
     	if(lockCnt == 0){
     		request.getSession().setAttribute("code", ExceptionEnumServiceImpl.USER_STATUS_ERROR.getCode());
@@ -89,6 +95,12 @@ public class LockController {
 		String userId = mp.get("AUD_USER").toString();
 		//通过用户名称查询用户状态falase->0:禁用；true->1：启用
 		Map<String,Object> userMap = sysUserService.isExitUserInfoByUserId(userId);
+		if(userMap ==null){
+			request.getSession().setAttribute("code", ExceptionEnumServiceImpl.NO_THIS_USER.getCode());
+			request.getSession().setAttribute("message",userId + ExceptionEnumServiceImpl.NO_THIS_USER.getMessage());
+			return  WebLoginConstants.REDIRECT_KEY.concat(WebLoginConstants.COMMON_INFO_CONTROLLER);
+		}
+
 		int userCnt = Integer.parseInt(userMap.get("CNT").toString());
 		//用户不存在
 		if(userCnt == 0){

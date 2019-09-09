@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.ws.rs.HEAD;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,54 +49,45 @@ public class NewsMessageServiceImpl extends SysBaseService<NewsMessageDO> implem
         BaseTable = "res_info";
         BaseComment = "res_info";
         PrimaryKey = "resource_cd";
-        NameKey = "resource_name";
+        NameKey = "resource_cd";
     }
+
     
     @Autowired
     private INewsMessageDao dao;
     
-    @Autowired
-    private ISecMetricConfigDao configDao;
+
     
     @Override
     public ISysBaseDao getDao(){
         return dao;
     }
     
-    /**
-     * 保存业务
-     * @return 
-     */
+
     @Override
-    public DataStore save(NewsMessageDO entity) {
-        //如果编号为空,新增实体对象,否则更新实体对象
-        Integer val = entity.getResource_cd();
-        int c = 0;
-        if(val == null || val == 0) {
-            entity.setUpd_time( DateTime.Now().getTime() );  //修改时间
-            c = dao.insert(entity);
-        }else {
-            entity.setUpd_time( DateTime.Now().getTime() );  //修改时间
-            c = dao.update(entity);
-        }
-        if(c == 0)
-            return ActionMsg.setError("操作失败");
-        ActionMsg.setValue(entity);
-        return ActionMsg.setOk("操作成功");
+    public boolean searchResourceInfo(NewsMessageDO msgDO){
+            boolean bool = false;
+            Integer cnt = dao.searchResourceInfo(msgDO);
+            if (cnt > 0) {
+                bool = true;
+            }
+            return bool;
     }
-    
-    /**
-     * 删除业务
-     * @param sysid
-     * @return 
-     */
+
+
+
+
     @Override
-    public DataStore delete(String sysid) {
-        dao.delete(sysid);
-        return ActionMsg.setOk("操作成功");
+    public void updateResourceInfo(NewsMessageDO msgDO) {
+         dao.update(msgDO);
     }
 
     @Override
+    public void insertResourceInfo(NewsMessageDO msgDO){
+            dao.insert(msgDO);
+        }
+
+     @Override
     public List<Map<String, Object>> messageStatu(PageBounds page) {
         return dao.messageStatu(page);
     }

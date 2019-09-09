@@ -29,5 +29,12 @@ import java.util.Map;
  */
 public interface INewsMessageDao<SectionDO> extends ISysBaseDao<SectionDO> {
 
+    int searchResourceInfo(NewsMessageDO msgDO);
+
+    void updateResourceInfo(NewsMessageDO msgDO);
+
+    void insertResourceInfo(NewsMessageDO msgDO);
+
     List<Map<String, Object>> messageStatu(PageBounds page);
+
 }

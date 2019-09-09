@@ -18,32 +18,27 @@
  */
 package com.quick.portal.newsMessage;
 
-import java.util.Date;
 
+import java.sql.Date;
 
 /**
  * section数据对象
  */
 public class NewsMessageDO implements java.io.Serializable {
-	
+
     private static final long serialVersionUID = 1L;
-	
-    // <editor-fold defaultstate="collapsed" desc="私有成员">
-    /**
-     *
-     */
-    private int  resource_cd;
+
+
+    private int resource_cd;
     private String resource_id;
     private String resource_name;
     private String provider_cd;
     private String check_user;
-    private String  apply_user;
-    private int   resource_status;
-    private Date  date_time;
-    private Date  cre_time;
-    private Date  upd_time;
-	// </editor-fold>
-
+    private String apply_user;
+    private int resource_status;
+    private String date_time;
+    private Date cre_time;
+    private Date upd_time;
 
     public int getResource_cd() {
         return resource_cd;
@@ -101,11 +96,11 @@ public class NewsMessageDO implements java.io.Serializable {
         this.resource_status = resource_status;
     }
 
-    public Date getDate_time() {
+    public String getDate_time() {
         return date_time;
     }
 
-    public void setDate_time(Date date_time) {
+    public void setDate_time(String date_time) {
         this.date_time = date_time;
     }
 
@@ -125,3 +120,4 @@ public class NewsMessageDO implements java.io.Serializable {
         this.upd_time = upd_time;
     }
 }
+

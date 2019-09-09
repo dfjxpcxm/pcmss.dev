@@ -5,6 +5,12 @@
     <!--查询条件-->
 	<sql id="where">
 		1=1
+		<if test="resource_id != null and resource_id != '' and resource_id != 'null'"><![CDATA[
+	       and resource_id = #{resource_id}
+	    ]]></if>
+		<if test="resource_name != null and resource_name != '' and resource_name != 'null'"><![CDATA[
+	       and resource_name = #{resource_name}
+		]]></if>
 		<if test="resource_cd != null and resource_cd != '' and resource_cd != 'null'"><![CDATA[ 
 	       and resource_cd = #{resource_cd}
 	    ]]></if>
@@ -14,18 +20,34 @@
 		<if test='resource_status == "1" || resource_status == "0"'><![CDATA[
 	       and resource_status = #{resource_status}
 	    ]]></if>
-		<if test="upd_time != null and upd_time != '' and upd_time != 'null'"><![CDATA[ 
+
+		<if test="provider_cd != null and provider_cd != '' and provider_cd != 'null'"><![CDATA[
+	       and provider_cd = #{provider_cd}
+	    ]]></if>
+		<if test="check_user != null and check_user != '' and check_user != 'null'"><![CDATA[
+	       and check_user = #{check_user}
+	    ]]></if>
+		<if test="apply_user != null and apply_user != '' and apply_user != 'null'"><![CDATA[
+	       and apply_user = #{apply_user}
+	    ]]></if>
+
+		<if test="date_time != null and date_time != '' and date_time != 'null'"><![CDATA[
+	       and date_time >= #{date_time}
+	    ]]></if>
+		<if test="upd_time != null and upd_time != '' "><![CDATA[
 	       and upd_time >= #{upd_time}
 	    ]]></if>
-        <if test="_sql_where != null and _sql_where != ''"> <![CDATA[
-            and ${_sql_where}
-        ]]> </if>
+
+		<if test="cre_time != null and cre_time != ''"><![CDATA[
+	       and cre_time >= #{cre_time}
+	    ]]></if>
 	</sql>
+
+
     
     <!-- 新增res_info -->
 	<insert id="insert" parameterType="com.quick.portal.newsMessage.NewsMessageDO">
 		insert into res_info (
-			resource_cd,
 			resource_id,
 			resource_name,
 			provider_cd,
@@ -36,7 +58,6 @@
 			cre_time,
 			upd_time
 		)values(
-			 #{resource_cd},
 			 #{resource_id},
 			 #{resource_name},
 			 #{provider_cd},
@@ -44,33 +65,39 @@
 			 #{apply_user},
 			 #{resource_status},
 			 #{date_time},
-			 #{cre_time},
-			 #{upd_time}
-			);
-		<selectKey resultType="int" order="AFTER" keyProperty="resource_cd">
-			SELECT LAST_INSERT_ID()
-		</selectKey>
+			 now(),
+			 now()
+			)
 	</insert>
 		
 	<!-- 修改res_info -->
 	<update id="update" parameterType="com.quick.portal.newsMessage.NewsMessageDO">
-		update res_info 
-		   set resource_cd=#{resource_cd}
-			  ,resource_id=#{resource_id}
-			  ,resource_name=#{resource_name}
+		update res_info
+		   set	cre_time=now()
+			  ,upd_time=now()
+		<if test="resource_name != null and resource_name != '' and resource_name != 'null'"><![CDATA[
+		   	  ,resource_name=#{resource_name}
+		 ]]></if>
+		<if test="provider_cd != null and provider_cd != '' and provider_cd != 'null'"><![CDATA[
 			  ,provider_cd=#{provider_cd}
-			  ,check_user=#{check_user}
-			  ,apply_user=#{apply_user}
+		]]></if>
+		<if test="resource_status != null and resource_status != ''"><![CDATA[
 			  ,resource_status=#{resource_status}
+		]]></if>
+
+		<if test="check_user != null and check_user != '' and check_user != 'null'"><![CDATA[
+			  ,check_user=#{check_user}
+		]]></if>
+		<if test="apply_user != null and apply_user != '' and apply_user != 'null'"><![CDATA[
+			  ,apply_user=#{apply_user}
+		]]></if>
+		<if test="date_time != null and date_time != '' and date_time != 'null'"><![CDATA[
 			  ,date_time=#{date_time}
-			  ,upd_time=#{upd_time}
-		 where resource_cd = #{resource_cd}
+		]]></if>
+			 where resource_id = #{resource_id}
 	</update>
     
-	<!-- 删除 -->
-	<delete id="delete" parameterType="String">
-		delete from res_info where resource_cd = #{resource_cd};
-	</delete>
+
     
     <!--查询-->
 	<select id="select" parameterType="map" resultType="map">
@@ -78,9 +105,7 @@
 		<where>
 			<include refid="where" />
 		</where>
-        <if test="_sql_order != null and _sql_order != ''">
-            order by ${_sql_order}
-        </if>
+          order by upd_time
 	</select>
 	<!--查询消息状态是否阅读-->
 	<select id="messageStatu" resultType="map">
@@ -96,6 +121,11 @@
 		<where>
 			<include refid="where" />
 		</where>
+	</select>
+
+
+	<select id="searchResourceInfo" parameterType="map" resultType="int">
+		select count(1) as cnt from res_info  where resource_id = #{resource_id}
 	</select>
 
 </mapper>

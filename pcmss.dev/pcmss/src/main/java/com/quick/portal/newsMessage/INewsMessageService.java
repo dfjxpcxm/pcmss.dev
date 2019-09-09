@@ -28,5 +28,13 @@ import java.util.Map;
  * section服务接口
  */
 public interface INewsMessageService extends ISysBaseService<NewsMessageDO> {
+
+    boolean searchResourceInfo(NewsMessageDO msgDO);
+
+    void updateResourceInfo(NewsMessageDO msgDO);
+
+    void insertResourceInfo(NewsMessageDO msgDO);
+
     List<Map<String, Object>> messageStatu(PageBounds page);
+
 }
