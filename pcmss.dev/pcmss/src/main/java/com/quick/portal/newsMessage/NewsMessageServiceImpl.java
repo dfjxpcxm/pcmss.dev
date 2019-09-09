@@ -21,6 +21,7 @@ package com.quick.portal.newsMessage;
 import com.quick.core.base.ISysBaseDao;
 import com.quick.core.base.SysBaseService;
 import com.quick.core.base.model.DataStore;
+import com.quick.core.base.model.PageBounds;
 import com.quick.core.util.common.DateTime;
 import com.quick.core.util.common.QCommon;
 import com.quick.portal.secMetricConfig.ISecMetricConfigDao;
@@ -44,10 +45,10 @@ public class NewsMessageServiceImpl extends SysBaseService<NewsMessageDO> implem
      * 构造函数
      */
     public NewsMessageServiceImpl() {
-        BaseTable = "section";
-        BaseComment = "section";
-        PrimaryKey = "section_id";
-        NameKey = "section_name";
+        BaseTable = "res_info";
+        BaseComment = "res_info";
+        PrimaryKey = "resource_cd";
+        NameKey = "resource_name";
     }
     
     @Autowired
@@ -68,7 +69,7 @@ public class NewsMessageServiceImpl extends SysBaseService<NewsMessageDO> implem
     @Override
     public DataStore save(NewsMessageDO entity) {
         //如果编号为空,新增实体对象,否则更新实体对象
-        Integer val = entity.getSection_id();
+        Integer val = entity.getResource_cd();
         int c = 0;
         if(val == null || val == 0) {
             entity.setUpd_time( DateTime.Now().getTime() );  //修改时间
@@ -94,4 +95,8 @@ public class NewsMessageServiceImpl extends SysBaseService<NewsMessageDO> implem
         return ActionMsg.setOk("操作成功");
     }
 
+    @Override
+    public List<Map<String, Object>> messageStatu(PageBounds page) {
+        return dao.messageStatu(page);
+    }
 }

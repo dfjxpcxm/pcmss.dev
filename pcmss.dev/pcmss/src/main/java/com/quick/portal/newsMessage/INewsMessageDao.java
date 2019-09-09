@@ -19,6 +19,7 @@
 package com.quick.portal.newsMessage;
 
 import com.quick.core.base.ISysBaseDao;
+import com.quick.core.base.model.PageBounds;
 
 import java.util.List;
 import java.util.Map;
@@ -27,4 +28,6 @@ import java.util.Map;
  * section数据访问接口
  */
 public interface INewsMessageDao<SectionDO> extends ISysBaseDao<SectionDO> {
+
+    List<Map<String, Object>> messageStatu(PageBounds page);
 }

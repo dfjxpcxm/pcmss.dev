@@ -5,11 +5,14 @@
     <!--查询条件-->
 	<sql id="where">
 		1=1
-		<if test="section_id != null and section_id != '' and section_id != 'null'"><![CDATA[ 
-	       and section_id = #{section_id}
+		<if test="resource_cd != null and resource_cd != '' and resource_cd != 'null'"><![CDATA[ 
+	       and resource_cd = #{resource_cd}
 	    ]]></if>
-		<if test="section_type != null and section_type != '' and section_type != 'null'"><![CDATA[ 
-	       and section_type = #{section_type}
+		<if test="resource_name != null and resource_name != '' and resource_name != 'null'"><![CDATA[
+	       and resource_name = #{resource_name}
+	    ]]></if>
+		<if test='resource_status == "1" || resource_status == "0"'><![CDATA[
+	       and resource_status = #{resource_status}
 	    ]]></if>
 		<if test="upd_time != null and upd_time != '' and upd_time != 'null'"><![CDATA[ 
 	       and upd_time >= #{upd_time}
@@ -19,46 +22,59 @@
         ]]> </if>
 	</sql>
     
-    <!-- 新增section -->
+    <!-- 新增res_info -->
 	<insert id="insert" parameterType="com.quick.portal.newsMessage.NewsMessageDO">
-		insert into section (
-    		  section_name,
-    		  section_type,
-    		  section_url,
-    		  upd_time
+		insert into res_info (
+			resource_cd,
+			resource_id,
+			resource_name,
+			provider_cd,
+			check_user,
+			apply_user,
+			resource_status,
+			date_time,
+			cre_time,
+			upd_time
 		)values(
-			 #{section_name},
-			 #{section_type},
-			 #{section_url},
+			 #{resource_cd},
+			 #{resource_id},
+			 #{resource_name},
+			 #{provider_cd},
+			 #{check_user},
+			 #{apply_user},
+			 #{resource_status},
+			 #{date_time},
+			 #{cre_time},
 			 #{upd_time}
 			);
-		<selectKey resultType="int" order="AFTER" keyProperty="section_id">
+		<selectKey resultType="int" order="AFTER" keyProperty="resource_cd">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 	</insert>
 		
-	<!-- 修改section -->
+	<!-- 修改res_info -->
 	<update id="update" parameterType="com.quick.portal.newsMessage.NewsMessageDO">
-		update section 
-		   set section_id=#{section_id}
-			  ,section_name=#{section_name}
-			  ,section_type=#{section_type}
-			  ,section_url=#{section_url}
+		update res_info 
+		   set resource_cd=#{resource_cd}
+			  ,resource_id=#{resource_id}
+			  ,resource_name=#{resource_name}
+			  ,provider_cd=#{provider_cd}
+			  ,check_user=#{check_user}
+			  ,apply_user=#{apply_user}
+			  ,resource_status=#{resource_status}
+			  ,date_time=#{date_time}
 			  ,upd_time=#{upd_time}
-		 where section_id = #{section_id}
+		 where resource_cd = #{resource_cd}
 	</update>
     
 	<!-- 删除 -->
 	<delete id="delete" parameterType="String">
-		delete from page_section where section_id = #{section_id};
-		delete from sec_metric_config where sec_metric_id in (select sec_metric_id from section_metric where section_id = #{section_id});
-		delete from section_metric where section_id = #{section_id};
-		delete from section where section_id = #{section_id};
+		delete from res_info where resource_cd = #{resource_cd};
 	</delete>
     
     <!--查询-->
 	<select id="select" parameterType="map" resultType="map">
-		select * from section
+		select * from res_info
 		<where>
 			<include refid="where" />
 		</where>
@@ -66,10 +82,17 @@
             order by ${_sql_order}
         </if>
 	</select>
+	<!--查询消息状态是否阅读-->
+	<select id="messageStatu" resultType="map">
+		select * from res_info where resource_status = 0
+        <if test="_sql_order != null and _sql_order != ''">
+            order by ${_sql_order}
+        </if>
+	</select>
 	
 	<!-- 查询总记录数 -->
 	<select id="count" parameterType="map" resultType="int">
-		select count(*) from section
+		select count(*) from res_info
 		<where>
 			<include refid="where" />
 		</where>

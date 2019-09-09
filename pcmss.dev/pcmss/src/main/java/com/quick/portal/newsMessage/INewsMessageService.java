@@ -19,6 +19,7 @@
 package com.quick.portal.newsMessage;
 
 import com.quick.core.base.ISysBaseService;
+import com.quick.core.base.model.PageBounds;
 
 import java.util.List;
 import java.util.Map;
@@ -27,5 +28,5 @@ import java.util.Map;
  * section服务接口
  */
 public interface INewsMessageService extends ISysBaseService<NewsMessageDO> {
-
+    List<Map<String, Object>> messageStatu(PageBounds page);
 }

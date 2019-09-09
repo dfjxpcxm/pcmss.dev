@@ -243,35 +243,31 @@
 	function messageNotification() {
 		$.ajax({
 			type: "get",
-			url: "${G.host}/newsMessage/getList",
+			url: "${G.host}/newsMessage/getList?resource_status=0",
 			async:false,
 			dataType: "json",
 			success: function(data){
+
+				//console.log(data.total);
+				$.each(data.rows,function(i,dataNode){
+							console.log(i);
+							console.log(dataNode);
+					 	});
 				$("#roro").append('<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">' +
-						'<i class="fa fa-bell"></i> <span class="label label-primary">8</span>' +
-						'</a>' +
+						'<i class="fa fa-bell"></i> <span class="label label-primary">'+data.total+'</span>' +
+						'</a>').append(
 						'<ul class="dropdown-menu dropdown-alerts">' +
 						'<li>' +
-							'<a href="${G.host}/newsMessage/mailbox">' +
+							'<a href="${G.host}/newsMessage/list?resource_status=0">' +
 						'<div>' +
-						'<i class="fa fa-envelope fa-fw"></i> 您有16条未读消息' +
-						'<span class="pull-right text-muted small">4分钟前</span>' +
+						'<i class="fa fa-envelope fa-fw"></i> 您有'+data.total+'条未读消息' +
+						// '<span class="pull-right text-muted small">4分钟前</span>' +
 						'</div>' +
 							'</a>' +
 						'</li>' +
-						'<li class="divider"></li>' +
-						'<li>' +
-							'<a href="${G.host}/newsMessage/profile">' +
-						'<div>' +
-						'<i class="fa fa-qq fa-fw"></i> 3条新回复' +
-						'<span class="pull-right text-muted small">12分钟钱</span>' +
-						'</div>' +
-						'</a>' +
-						'</li>' +
-						'<li class="divider"></li>' +
 						'<li>' +
 						'<div class="text-center link-block">' +
-						'<a class="J_menuItem" href="${G.host}/newsMessage/list" data-index="89"><!--notifications.html-->' +
+						'<a class="J_menuItem" href="${G.host}/newsMessage/list" data-index="389"><!--notifications.html-->' +
 						'<strong>查看所有 </strong>' +
 						'<i class="fa fa-angle-right"></i>' +
 						'</a>' +

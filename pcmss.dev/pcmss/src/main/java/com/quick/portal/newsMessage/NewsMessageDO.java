@@ -32,95 +32,96 @@ public class NewsMessageDO implements java.io.Serializable {
     /**
      *
      */
-    private Integer  section_id;   	
-    /**
-     *
-     */
-    private String  section_name; 	
-    /**
-     *
-     */
-    private Integer  section_type; 	
-    /**
-     *
-     */
-    private String  section_url;  	
-    /**
-     *
-     */
-    private Date  upd_time;     	
+    private int  resource_cd;
+    private String resource_id;
+    private String resource_name;
+    private String provider_cd;
+    private String check_user;
+    private String  apply_user;
+    private int   resource_status;
+    private Date  date_time;
+    private Date  cre_time;
+    private Date  upd_time;
 	// </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="成员Get/Set">
-    /**
-     *   Get方法
-     * @return 
-     */
-    public Integer getSection_id() {
-        return this.section_id;
+
+
+    public int getResource_cd() {
+        return resource_cd;
     }
-    /**
-     *   Set方法
-     * @return 
-     */
-    public void setSection_id(Integer section_id) {
-        this.section_id = section_id;
+
+    public void setResource_cd(int resource_cd) {
+        this.resource_cd = resource_cd;
     }
-    /**
-     *   Get方法
-     * @return 
-     */
-    public String getSection_name() {
-        return this.section_name;
+
+    public String getResource_id() {
+        return resource_id;
     }
-    /**
-     *   Set方法
-     * @return 
-     */
-    public void setSection_name(String section_name) {
-        this.section_name = section_name;
+
+    public void setResource_id(String resource_id) {
+        this.resource_id = resource_id;
     }
-    /**
-     *   Get方法
-     * @return 
-     */
-    public Integer getSection_type() {
-        return this.section_type;
+
+    public String getResource_name() {
+        return resource_name;
     }
-    /**
-     *   Set方法
-     * @return 
-     */
-    public void setSection_type(Integer section_type) {
-        this.section_type = section_type;
+
+    public void setResource_name(String resource_name) {
+        this.resource_name = resource_name;
     }
-    /**
-     *   Get方法
-     * @return 
-     */
-    public String getSection_url() {
-        return this.section_url;
+
+    public String getProvider_cd() {
+        return provider_cd;
     }
-    /**
-     *   Set方法
-     * @return 
-     */
-    public void setSection_url(String section_url) {
-        this.section_url = section_url;
+
+    public void setProvider_cd(String provider_cd) {
+        this.provider_cd = provider_cd;
     }
-    /**
-     *   Get方法
-     * @return 
-     */
+
+    public String getCheck_user() {
+        return check_user;
+    }
+
+    public void setCheck_user(String check_user) {
+        this.check_user = check_user;
+    }
+
+    public String getApply_user() {
+        return apply_user;
+    }
+
+    public void setApply_user(String apply_user) {
+        this.apply_user = apply_user;
+    }
+
+    public int getResource_status() {
+        return resource_status;
+    }
+
+    public void setResource_status(int resource_status) {
+        this.resource_status = resource_status;
+    }
+
+    public Date getDate_time() {
+        return date_time;
+    }
+
+    public void setDate_time(Date date_time) {
+        this.date_time = date_time;
+    }
+
+    public Date getCre_time() {
+        return cre_time;
+    }
+
+    public void setCre_time(Date cre_time) {
+        this.cre_time = cre_time;
+    }
+
     public Date getUpd_time() {
-        return this.upd_time;
+        return upd_time;
     }
-    /**
-     *   Set方法
-     * @return 
-     */
+
     public void setUpd_time(Date upd_time) {
         this.upd_time = upd_time;
     }
-    // </editor-fold>
 }

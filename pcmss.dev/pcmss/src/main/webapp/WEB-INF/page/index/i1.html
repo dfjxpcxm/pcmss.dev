@@ -680,6 +680,7 @@
 		function drawMenu(id, dt) {
 			var html = [];
 			drawLi(html, dt);
+
 			$(id).after(html.join(''));
 			function drawLi(arr, dt) {
 				for (var i = 0; i < dt.length; i++) {

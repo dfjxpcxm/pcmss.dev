@@ -16,11 +16,12 @@
 		   quick.editUrl = "${G.editUrl}";
 		   quick.objName = "${G.objName}";
 		   quick.idField = "${G.idField}";
-           
+		   var resource_status=$.request.queryString["resource_status"];
+
 		   $("#list").bootstrapTable("destroy");
 		   _gd["list"]=new BGrid("#list");
 		   _gd["list"].config({
-			   url:quick.serverUrl+"/getList?i=" + Math.random(),
+			   url:quick.serverUrl+"/getList?resource_status="+resource_status+"&i="+Math.random(),
 			   idField: quick.idField,
 			   sortName: quick.idField,
                cache:false,
@@ -28,15 +29,30 @@
 			   toolbar:"#formSearch",
 			   columns: [
 				   {  checkbox: true },
-				   { field: 'sms_title', title: '短信标题', width: 100  },
-				   { field: 'sign_name', title: '签名名称', width: 100  },
-				   { field: 'mould_name', title: '模板名称', width: 100  },
-				   { field: 'mould_content', title: '模板内容', width: 100  },
+				   { field: 'resource_cd', title: '资源代码', width: 100  },
+				   { field: 'resource_id', title: '资源id', width: 100  },
+				   { field: 'resource_name', title: '资源名字', width: 100  },
+				   { field: 'provider_cd', title: '供应商代码', width: 100  },
+				   { field: 'check_user', title: '检查用户', width: 100  },
+				   { field: 'apply_user', title: '申请用户', width: 100  },
+				   {
+					   field: 'resource_status',
+					   title: '资源状态',
+					   width: 100,
+					   align: 'center',
+					   formatter: function (value, row, index) {
+						   var resource_status = '<span style="color:#9ACD32">未读</span>';
+						   if (row.resource_status == 1) {
+							   resource_status = '<span style="color:#CFCFCF">已读</span>';
+						   }
+						   return resource_status;
+					   }
+				   },
+				   { field: 'date_time', title: '日期', width: 100  },
+				   { field: 'cre_time', title: '创建时间', width: 100  },
 				   { field: 'CZ',  title: '操作',width: 100, formatter:function(value,row,index){
 
-					   return  "<button type='button' class='btn_el' onclick='dal(\""+row.sms_id+"\",\""+row.sms_title+"\")'>明细</button>| "
-							   +"<button type='button' class='btn_el' onclick='del(\""+row.sms_id+"\",\""+row.sms_title+"\")'>删除</button>";
-					   ;
+					   return  "<button type='button' class='btn_el' onclick='edit(\""+row.resource_id+"\")'>明细</button>| ";
 				   }}
 			   ],onPageChange:function(number, size){
                    $("#IDS_PAGESIZE").val(size);
@@ -65,7 +81,7 @@
 		   function(){
 			   $.ajax({
 				   type: "post",
-				   url: quick.serverUrl + '/delete?sms_id=' + node,
+				   url: quick.serverUrl + '/delete?resource_cd=' + node,
 				   dataType: "json",
 				   data:{ID:node},
 				   success: function(data){
@@ -83,18 +99,15 @@
 	//查看详细信息
 	function edit(id){
         navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
-	    window.location.href=quick.editUrl + "?mode=browse&sms_id="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+	    window.location.href=quick.editUrl + "?mode=browse&resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
 	}
 	//查看详细信息
 	function dal(id){
         navAppend("编辑集成系统");/*获取父页面元素并动态赋值父页面title*/
-	    window.location.href=quick.serverUrl +  "/smslist?sms_id="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+	    window.location.href=quick.serverUrl +  "/list?resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
 	}
 	function add(){
 		menuGoto(quick.editUrl);
-	}
-	function resend(id,title) {
-		window.location.href=quick.serverUrl +  "/reSend?title="+title;
 	}
     //将url查询信息传至详细信息页面,返回时调用
 	function goDetail(obj){
@@ -142,7 +155,7 @@
 					  <div class="panel-mar">
 							  <form id="formSearch" class="form-inline">
                                   <div class="form-group" style="padding: 0px;width:180px;">
-									  <input maxlength="20" id="sms_title" name="sms_title" class="input-sm form-control"
+									  <input maxlength="20" id="resource_name" name="resource_name" class="input-sm form-control"
 											 type="text" placeholder="短信标题"/>
 								  </div>
 
