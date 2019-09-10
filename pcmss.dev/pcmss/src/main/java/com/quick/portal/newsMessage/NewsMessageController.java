@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -295,6 +296,24 @@ public class NewsMessageController extends SysBaseController<NewsMessageDO> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @RequestMapping(value = "/getObj", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getObj() throws Exception {
+        String resource_status = request.getParameter("resource_status");
+        String sysid = QRequest.getString(request, getBaseService()
+                .getPrimaryKey());
+
+        if(resource_status.equals("0")){
+            NewsMessageDO newsMessageDO = new NewsMessageDO();
+            newsMessageDO.setResource_status(1);
+            newsMessageDO.setResource_cd(Integer.valueOf(sysid));
+            newsMessageService.update(newsMessageDO);
+        }
+
+        Map<String, Object> obj = getBaseService().selectMap(sysid);
+        return obj;
     }
 
 }

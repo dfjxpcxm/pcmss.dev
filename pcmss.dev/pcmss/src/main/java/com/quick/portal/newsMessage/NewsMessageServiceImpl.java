@@ -91,4 +91,9 @@ public class NewsMessageServiceImpl extends SysBaseService<NewsMessageDO> implem
     public List<Map<String, Object>> messageStatu(PageBounds page) {
         return dao.messageStatu(page);
     }
+
+    @Override
+    public int update(NewsMessageDO msgDO) {
+        return dao.update(msgDO);
+    }
 }

@@ -50,7 +50,15 @@
                                 <div class="form-group">
                                     <label class="col-xs-3 lable_top"><span class="span_require">*</span>状态</label>
                                     <div class="col-xs-9">
-                                        <input type="text" id="resource_status" name="resource_status" class="form-control required" />
+                                        <input type="text" id="resource_id" name="resource_id" class="form-control required" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form_ipt_botm">
+                                <div class="form-group">
+                                    <label class="col-xs-3 lable_top"><span class="span_require">*</span>申请用户</label>
+                                    <div class="col-xs-9">
+                                        <input type="text" id="apply_user" name="apply_user" class="form-control required" />
                                     </div>
                                 </div>
                             </div>
@@ -94,13 +102,15 @@
         });
         /*加载数据*/
         var mode = $.request.queryString["mode"];
-        var sysid=$.request.queryString["resource_cd"];
-        $("#pagename").text(sysid?'编辑配置':'新增配置');
-        if(sysid){
+        var resource_cd=$.request.queryString["resource_cd"];
+        var resource_status=$.request.queryString["resource_status"];
+        alert(resource_status);
+        $("#pagename").text(resource_cd?'编辑配置':'新增配置');
+        if(resource_cd){
             $("#resource_cd").attr("readOnly","readOnly");
-            $.post(quick.serverUrl + '/getObj?resource_cd=' + sysid + "&i=" + Math.random(), function(data){
+            $.post(quick.serverUrl + "/getObj?resource_cd=" + resource_cd + "&resource_status=" + resource_status + "&i=" + Math.random(), function(data){
                 setForm(data);
-                $("#str_res_id").val(data.res_id);
+               /// $("#str_res_id").val(data.res_id);
                 if(mode == "browse"){
                     viewRead();
                 }

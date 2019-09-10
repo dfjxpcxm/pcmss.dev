@@ -94,7 +94,7 @@
 		<if test="date_time != null and date_time != '' and date_time != 'null'"><![CDATA[
 			  ,date_time=#{date_time}
 		]]></if>
-			 where resource_id = #{resource_id}
+			 where resource_cd = #{resource_cd}
 	</update>
     
 

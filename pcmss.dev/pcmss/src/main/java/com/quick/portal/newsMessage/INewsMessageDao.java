@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * section数据访问接口
+ * NewsMessageDO数据访问接口
  */
-public interface INewsMessageDao<SectionDO> extends ISysBaseDao<SectionDO> {
+public interface INewsMessageDao<NewsMessageDO> extends ISysBaseDao<NewsMessageDO> {
 
     int searchResourceInfo(NewsMessageDO msgDO);
 

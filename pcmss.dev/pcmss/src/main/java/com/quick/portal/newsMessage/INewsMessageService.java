@@ -37,4 +37,5 @@ public interface INewsMessageService extends ISysBaseService<NewsMessageDO> {
 
     List<Map<String, Object>> messageStatu(PageBounds page);
 
+    int update(NewsMessageDO msgDO);
 }

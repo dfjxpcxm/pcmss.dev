@@ -52,7 +52,7 @@
 				   { field: 'cre_time', title: '创建时间', width: 100  },
 				   { field: 'CZ',  title: '操作',width: 100, formatter:function(value,row,index){
 
-					   return  "<button type='button' class='btn_el' onclick='edit(\""+row.resource_id+"\")'>明细</button>| ";
+					   return  "<button type='button' class='btn_el' onclick='dal(\""+row.resource_cd+"\",\""+row.resource_status+"\")'>明细</button>";
 				   }}
 			   ],onPageChange:function(number, size){
                    $("#IDS_PAGESIZE").val(size);
@@ -97,15 +97,16 @@
     }
     
 	//查看详细信息
-	function edit(id){
+	function edit(id,status){
         navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
-	    window.location.href=quick.editUrl + "?mode=browse&resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+	    window.location.href=quick.editUrl + "?mode=browse&resource_status="+status+"&resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
 	}
 	//查看详细信息
-	function dal(id){
-        navAppend("编辑集成系统");/*获取父页面元素并动态赋值父页面title*/
-	    window.location.href=quick.serverUrl +  "/list?resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+	function dal(id,status){
+        navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
+	    window.location.href=quick.editUrl + "?mode=browse&resource_status="+status+"&resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
 	}
+
 	function add(){
 		menuGoto(quick.editUrl);
 	}
@@ -161,7 +162,7 @@
 
 								  <span class="input-group-btn" style="display:inline-block;"><button class="btn btn-primary " type="button" onclick="query();"> 查询</button> </span>
 								  <div class="form-group" style="width:100px;float:right;">
-									  <button type="button" class="btn btn-primary" onclick="location.href='edit';"> 新增发送
+									  <button type="button" class="btn btn-primary" onclick="location.href='${G.host}';"> 返回首页
 									  </button>
 								  </div>
 							  </form>
