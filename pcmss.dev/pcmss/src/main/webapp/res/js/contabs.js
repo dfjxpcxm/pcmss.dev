@@ -121,7 +121,7 @@ $(function () {
             mId = $(this).attr('tabIndex'),
             menuName = $.trim($(this).text()),
             flag = true;
-        //       if (dataUrl == undefined || $.trim(dataUrl).length == 0)return false;
+
 
         // 选项卡菜单已存在
         $('.J_menuTab').each(function () {
@@ -152,6 +152,7 @@ $(function () {
             var str1 = '<iframe class="J_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
 //            $('.J_mainContent').find('iframe.J_iframe').hide().parents('.J_mainContent').append(str1);
             var isFlag  = isApp(mId);
+
             if(isFlag=="1"){
                 var targetOrigin = dataUrl;
                 window.open(targetOrigin,'_blank');
@@ -161,6 +162,7 @@ $(function () {
                 $('.J_menuTabs .page-tabs-content').append(str);
                 scrollToTab($('.J_menuTab.active'));
             }
+
             sendLog(mId,menuName);
         }
         if($(".J_menuTab").size()>6){
@@ -168,8 +170,13 @@ $(function () {
         }else{
             $(".J_tabLeft,.J_tabRight").hide();
         }
+        if(mId ==389){
+            $('.font-bold').click();
+        }
         return false;
     }
+
+
 
 
 
@@ -223,6 +230,7 @@ $(function () {
 
     // 关闭选项卡菜单
     function closeTab() {
+
         var closeTabId = $(this).parents('.J_menuTab').data('id');
         var currentWidth = $(this).parents('.J_menuTab').width();
 
