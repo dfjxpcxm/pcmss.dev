@@ -120,7 +120,7 @@
     
     <!--查询-->
 	<select id="select" parameterType="map" resultType="map">
-		select a.*, s.super_app_name, d.dep_name from application a
+		select a.*, s.super_app_name, d.dep_name,d.dep_global_id from application a
 		  left join (select app_id super_app_id, app_name super_app_name from application) s on a.super_app_id=s.super_app_id
 		  left join user_department d on a.dep_id=d.dep_id
 		<where>

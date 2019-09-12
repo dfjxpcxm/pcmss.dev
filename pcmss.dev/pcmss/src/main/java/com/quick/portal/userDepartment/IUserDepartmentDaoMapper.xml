@@ -8,7 +8,7 @@
 		<if test="dep_id != null">
 			<if test='dep_level == "1" or "1".equals(dep_level) or dep_level == "0" or "0".equals(dep_level) '>
 				<![CDATA[
-				 and d.dep_id in (select dep_id from user_department where dep_state=1)
+				 and d.dep_id in (select dep_id from user_department)
 				 ]]>
 			</if>
 			<if test='dep_level == "2" or "2".equals(dep_level)'>
@@ -35,7 +35,7 @@
 			<choose>
 				<when  test='dep_global_id == "350010000000" or dep_global_id == "1" or  "350010000000" .equals(dep_global_id) or "1".equals(dep_global_id)'>
 					<![CDATA[
-						and d.dep_id in (select dep_id from user_department where dep_state=1)  ]]>
+						and d.dep_id in (select dep_id from user_department)  ]]>
 				</when>
 				<otherwise>
 					<![CDATA[
