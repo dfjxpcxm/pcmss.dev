@@ -16,7 +16,7 @@
 	    ]]></if>
 
         <if test="dep_level != null and dep_level != '' and dep_level != 'null'"><![CDATA[
-	       and r.role_level_id >= #{dep_level}
+	       and r.role_level_id >= #{role_level_id}
 	    ]]></if>
         <if test="role_type_id != null and role_type_id != '' and role_type_id != 'null'"><![CDATA[
 	       and r.role_type_id = #{role_type_id}
