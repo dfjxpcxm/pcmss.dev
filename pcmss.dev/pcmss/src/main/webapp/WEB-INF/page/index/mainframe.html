@@ -218,11 +218,10 @@
 			dataType: "json",
 			success: function(data){
 
-				//console.log(data.total);
-				$.each(data.rows,function(i,dataNode){
+/*				$.each(data.rows,function(i,dataNode){
 							console.log(i);
 							console.log(dataNode);
-					 	});
+					 	});*/
 				$("#roro").append('<a class="dropdown-toggle count-info"  style="background-color:transparent;" data-toggle="dropdown" href="#" aria-expanded="false">' +
 						'<i class="fa fa-bell"></i> <span class="label label-primary">'+data.total+'</span>' +
 						'</a>').append(
@@ -238,24 +237,14 @@
 						'<li class="divider"></li>'+
 						'<li>' +
 						'<div class="text-center link-block" style="padding: 1px">' +
-						'<a class="J_menuItem" href="${G.host}/newsMessage/list" tabindex=389><!--notifications.html-->' +
+						'<a class="J_menuItem" href="${G.host}/newsMessage/list" tabindex=389>' +
 						'<strong>查看所有 </strong>' +
 						'<i class="fa fa-angle-right"></i>' +
 						'</a>' +
 						'</div>' +
 						'</li>' +
 						'</ul>');
-				//在控制台打印数据
-				 console.log(JSON.stringify(data));
-				// if(data!=null&&data.length>0){
-				// 	$.each(data,function(i,dataNode){
-				// 	});
-				// }
-				$("#roro li").click(function(){
 
-					$("#roro").attr("class","dropdown");
-					alert($("#roro").attr("class"));
-				});
 			}
 
 		});
