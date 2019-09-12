@@ -6,28 +6,48 @@
 	<sql id="where">
 		1=1
 		<if test="app_id != null"><![CDATA[
-	       and app_id = #{app_id}
+	       and a.app_id = #{app_id}
 	    ]]></if>
 		<if test="super_app_id != null"><![CDATA[
-	       and super_app_id = #{super_app_id}
+	       and a.super_app_id = #{super_app_id}
 	    ]]></if>
-		<if test="dep_id != null"><![CDATA[
-	       and dep_id = #{dep_id}
-	    ]]></if>
+
+		<if test="dep_id != null">
+			<if test='dep_level == "1" or "1".equals(dep_level) or dep_level == "0" or "0".equals(dep_level) '>
+				<![CDATA[
+				 and a.dep_id in (select dep_id from user_department where dep_state=1)
+				 ]]>
+			</if>
+			<if test='dep_level == "2" or "2".equals(dep_level)'>
+				<![CDATA[
+		      and a.dep_id in (select dep_id from user_department where sup_dep_global_id = #{dep_id} or dep_global_id= #{dep_id})
+		      ]]></if>
+			<if test='dep_level == "3"  or "3".equals(dep_level)'>
+				<![CDATA[
+		   and a.dep_id in (select dep_id from user_department where sup_dep_global_id = #{dep_id} or dep_global_id= #{dep_id})
+		      ]]></if>
+			<if test=' dep_level==null or dep_level == "null"  or "".equals(dep_level) '>
+				<![CDATA[
+		    		and a.dep_id =#{dep_id}
+		      ]]>
+			</if>
+		</if>
+
+
 		<if test="app_name != null and app_name != '' and app_name != 'null'"><![CDATA[
-	       and app_name  like CONCAT('%',#{app_name},'%')
+	       and a.app_name  like CONCAT('%',#{app_name},'%')
 	    ]]></if>
 		<if test="app_level != null"><![CDATA[
-	       and app_level = #{app_level}
+	       and a.app_level = #{app_level}
 	    ]]></if>
 		<if test="app_state != null"><![CDATA[
-	       and app_state = #{app_state}
+	       and a.app_state = #{app_state}
 	    ]]></if>
 		<if test="is_app_page != null"><![CDATA[
-	       and (app_url is null or app_url='')
+	       and (a.app_url is null or a.app_url='')
 	    ]]></if>
 		<if test="is_app_url != null"><![CDATA[
-	       and (app_url is not null and app_url != '')
+	       and (app_url is not null and a.app_url != '')
 	    ]]></if>
         <if test="_sql_where != null and _sql_where != ''"> <![CDATA[
             and ${_sql_where}
@@ -113,7 +133,7 @@
 	
 	<!-- 查询总记录数 -->
 	<select id="count" parameterType="map" resultType="int">
-		select count(*) from application
+		select count(*) from application a
 		<where>
 			<include refid="where" />
 		</where>
