@@ -41,9 +41,8 @@
 					   width: 100,
 					   align: 'center',
 					   formatter: function (value, row, index) {
-						   if (row.resource_status == 0) {
-							   var resource_status = '<span style="color:#9ACD32">未读</span>';
-						   } else {
+						   var resource_status = '<span style="color:#9ACD32">未读</span>';
+						   if (row.resource_status == 1) {
 							   resource_status = '<span style="color:#CFCFCF">已读</span>';
 						   }
 						   return resource_status;
