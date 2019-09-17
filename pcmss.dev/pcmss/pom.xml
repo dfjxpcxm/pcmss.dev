@@ -10,7 +10,6 @@
     <packaging>war</packaging>
     <name>${project.artifactId}</name>
 
-
     <properties>
         <!-- spring版本号 -->
         <spring.version>5.0.2.RELEASE</spring.version>
@@ -55,7 +54,7 @@
         <service.log.port>7001</service.log.port>
         <audit.log.port>7002</audit.log.port>
         <pcmss.file.dir>/home/files/pcmss</pcmss.file.dir>
-        <pcmss.log.dir>/home/files/pcmss</pcmss.log.dir>
+        <pcmss.log.dir>/home/files/pcmss/logs</pcmss.log.dir>
         <ca.server.ip>127.0.0.1</ca.server.ip>
         <cas.server.ip>127.0.0.1</cas.server.ip>
         <cas.server.protocol>https</cas.server.protocol>
@@ -542,7 +541,7 @@
                 <service.log.port>6698</service.log.port>
                 <audit.log.port>6699</audit.log.port>
                 <pcmss.file.dir>/home/pcmss/files</pcmss.file.dir>
-                <pcmss.log.dir>/home/pcmss/logs</pcmss.log.dir>
+                <pcmss.log.dir>/home/files/pcmss/logs</pcmss.log.dir>
                 <cas.server.ip>118.126.103.216</cas.server.ip>
                 <ca.server.ip>118.126.103.216</ca.server.ip>
                 <pcmss.mysql.ip>106.52.134.132</pcmss.mysql.ip>
@@ -564,7 +563,7 @@
                 <service.log.port>6666</service.log.port>
                 <audit.log.port>6666</audit.log.port>
                 <pcmss.file.dir>/home/pcmss/files</pcmss.file.dir>
-                <pcmss.log.dir>/home/pcmss/logs</pcmss.log.dir>
+                <pcmss.log.dir>/home/files/pcmss/logs</pcmss.log.dir>
                 <cas.server.ip>10.1.3.62</cas.server.ip>
                 <ca.server.ip>172.26.64.109</ca.server.ip>
                 <pcmss.mysql.ip>127.0.0.1</pcmss.mysql.ip>
@@ -586,7 +585,7 @@
                 <service.log.port>6666</service.log.port>
                 <audit.log.port>6666</audit.log.port>
                 <pcmss.file.dir>/home/pcmss/files</pcmss.file.dir>
-                <pcmss.log.dir>/home/pcmss/logs</pcmss.log.dir>
+                <pcmss.log.dir>/home/files/pcmss/logs</pcmss.log.dir>
                 <cas.server.ip>10.1.3.195</cas.server.ip>
                 <ca.server.ip>172.26.64.109</ca.server.ip>
                 <pcmss.mysql.ip>127.0.0.1</pcmss.mysql.ip>
@@ -609,7 +608,7 @@
                 <service.log.port>6698</service.log.port>
                 <audit.log.port>6699</audit.log.port>
                 <pcmss.file.dir>/home/pcmss/files</pcmss.file.dir>
-                <pcmss.log.dir>/home/pcmss/logs</pcmss.log.dir>
+                <pcmss.log.dir>/home/files/pcmss/logs</pcmss.log.dir>
                 <cas.server.ip>118.126.103.216</cas.server.ip>
                 <ca.server.ip>118.126.103.216</ca.server.ip>
                 <pcmss.mysql.ip>106.52.134.132</pcmss.mysql.ip>
@@ -632,7 +631,7 @@
                 <service.log.port>6698</service.log.port>
                 <audit.log.port>6699</audit.log.port>
                 <pcmss.file.dir>/home/pcmss/files</pcmss.file.dir>
-                <pcmss.log.dir>/home/pcmss/logs</pcmss.log.dir>
+                <pcmss.log.dir>/home/files/pcmss/logs</pcmss.log.dir>
                 <cas.server.ip>192.166.162.148</cas.server.ip>
                 <ca.server.ip>192.167.40.14</ca.server.ip>
                 <pcmss.mysql.ip>192.166.162.150</pcmss.mysql.ip>
