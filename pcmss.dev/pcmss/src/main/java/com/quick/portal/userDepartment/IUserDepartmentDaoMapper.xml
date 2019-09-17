@@ -94,7 +94,7 @@
 	</update>
     
 	<!-- 删除 -->
-	<delete id="delete" parameterType="int">
+	<delete id="delete" parameterType="String">
 		delete from user_department where dep_id = #{dep_id}
 	</delete>
     

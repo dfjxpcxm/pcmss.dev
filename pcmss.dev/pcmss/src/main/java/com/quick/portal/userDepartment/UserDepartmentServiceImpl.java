@@ -29,10 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * user_department服务实现类
@@ -70,21 +67,27 @@ public class UserDepartmentServiceImpl extends SysBaseService<UserDepartmentDO> 
     public DataStore save(UserDepartmentDO entity) {
         //如果编号为空,新增实体对象,否则更新实体对象
         Integer val = entity.getDep_id();
+        String valName = entity.getDep_name();
+        Map map = new HashMap();
+        map.put("dep_name",valName);
+        List list = dao.select(map);
         int c = 0;
-        Date now = DateTime.Now().getTime();
-        String ldapState = PropertiesUtil.getPropery("ldap.auth.set");
-        if(val == null || val == 0) {
-            entity.setCre_time( now );  //新增时间
-			entity.setUpd_time( now );  //修改时间
-            c = dao.insert(entity);
-            if("true".equals(ldapState)){
-                orgLdapMngDao.saveOrgLdapInfo(entity);
-            }
-        }else {
-            entity.setUpd_time( now );  //修改时间
-            c = dao.update(entity);
-            if("true".equals(ldapState)){
-                orgLdapMngDao.updateOrgLdapInfo(entity);
+        if (list.size() == 0 || list == null){
+            Date now = DateTime.Now().getTime();
+            String ldapState = PropertiesUtil.getPropery("ldap.auth.set");
+            if(val == null || val == 0) {
+                entity.setCre_time( now );  //新增时间
+                entity.setUpd_time( now );  //修改时间
+                c = dao.insert(entity);
+                if("true".equals(ldapState)){
+                    orgLdapMngDao.saveOrgLdapInfo(entity);
+                }
+            }else {
+                entity.setUpd_time( now );  //修改时间
+                c = dao.update(entity);
+                if("true".equals(ldapState)){
+                    orgLdapMngDao.updateOrgLdapInfo(entity);
+                }
             }
         }
         if(c == 0)

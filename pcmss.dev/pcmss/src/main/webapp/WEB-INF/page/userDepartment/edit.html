@@ -35,7 +35,7 @@
                         <div class="col-sm-6 form_ipt_botm">
                             <div class="form-group">
                                 <label class="col-xs-3 lable_top"><span></span>上级部门</label>
-                                <div class="col-xs-9"><div class="input-group"><input type="text" id="super_dep_name" readOnly="readOnly" class="form-control"/><span class="input-group-btn"><button class="btn btn-default" type="button" onclick="choseboxs('super_dep_name', '${G.serverUrl}/choseDep','dep_global_id','dep_level');">...</button></span></div></div>
+                                <div class="col-xs-9"><div class="input-group"><input type="text" id="super_dep_name" readOnly="readOnly" class="form-control"/><span class="input-group-btn"><button class="btn btn-default" type="button" onclick="choseboxs('super_dep_name', '${G.serverUrl}/choseDep','sup_dep_global_id','dep_level');">...</button></span></div></div>
                             </div>
                         </div>
                         <div class="col-sm-6 form_ipt_botm">
@@ -167,7 +167,7 @@
                 }
                 $("#"+nid).val(iframeWin._chosenName);
                 $("#"+id).val(iframeWin._chosenId);
-                $("#"+levelid).val(iframeWin._chosenLevel);
+                $("#"+levelid).val(iframeWin._chosenLevel+2);
                 layer.closeAll();
             }
             ,btn2: function(){

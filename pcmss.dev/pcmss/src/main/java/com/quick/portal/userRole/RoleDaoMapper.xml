@@ -15,9 +15,17 @@
 	       and role_name = '${role_name}'
 	    ]]></if>
 
-        <if test="dep_level != null and dep_level != '' and dep_level != 'null'"><![CDATA[
-	       and r.role_level_id >= #{dep_level}
-	    ]]></if>
+
+        <if test="dep_level != null and dep_level != '' and dep_level != 'null'">
+            <choose>
+                <when test="role_level_id != null and role_level_id != '' and role_level_id != 'null'">
+                     <![CDATA[   and r.role_level_id = #{role_level_id} ]]>
+                </when>
+                <otherwise>
+                    <![CDATA[    and r.role_level_id >= #{dep_level}  ]]>
+                </otherwise>
+            </choose>
+        </if>
         <if test="role_type_id != null and role_type_id != '' and role_type_id != 'null'"><![CDATA[
 	       and r.role_type_id = #{role_type_id}
 	    ]]></if>
@@ -72,9 +80,7 @@
         <where>
             <include refid="where"/>
         </where>
-        <if test="_sql_order != null and _sql_order != ''">
-            order by ${_sql_order}
-        </if>
+            order by r.role_level_id
     </select>
 
     <select id="listAppTree" parameterType="map" resultType="map" statementType="CALLABLE">
