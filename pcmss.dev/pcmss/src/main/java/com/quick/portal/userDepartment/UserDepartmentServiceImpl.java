@@ -72,16 +72,19 @@ public class UserDepartmentServiceImpl extends SysBaseService<UserDepartmentDO> 
         map.put("dep_name",valName);
         List list = dao.select(map);
         int c = 0;
-        if (list.size() == 0 || list == null){
-            Date now = DateTime.Now().getTime();
-            String ldapState = PropertiesUtil.getPropery("ldap.auth.set");
+        Date now = DateTime.Now().getTime();
+        String ldapState = PropertiesUtil.getPropery("ldap.auth.set");
+
             if(val == null || val == 0) {
                 entity.setCre_time( now );  //新增时间
                 entity.setUpd_time( now );  //修改时间
-                c = dao.insert(entity);
-                if("true".equals(ldapState)){
-                    orgLdapMngDao.saveOrgLdapInfo(entity);
-                }
+                if (list.size() == 0 || list == null){{
+                    c = dao.insert(entity);
+                    if("true".equals(ldapState)){
+                        orgLdapMngDao.saveOrgLdapInfo(entity);
+                    }
+                }}
+
             }else {
                 entity.setUpd_time( now );  //修改时间
                 c = dao.update(entity);
@@ -89,7 +92,6 @@ public class UserDepartmentServiceImpl extends SysBaseService<UserDepartmentDO> 
                     orgLdapMngDao.updateOrgLdapInfo(entity);
                 }
             }
-        }
         if(c == 0)
             return ActionMsg.setError("操作失败");
         ActionMsg.setValue(entity);
