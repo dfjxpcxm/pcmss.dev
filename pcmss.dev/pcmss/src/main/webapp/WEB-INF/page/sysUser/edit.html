@@ -77,8 +77,8 @@
                                             <input type="text" id="dep_name" readOnly="readOnly" class="form-control"/>
                                             <input type="hidden" id="dep_global_id" name="dep_global_id" />
                                             <input type="hidden" id="dep_id" name="dep_id" />
-                                            <span class="input-group-btn">
-                                                <button class="btn btn-default" type="button" onclick="choseboxs('dep_name', '${G.serverUrl}/chose','dep_global_id','dep_level','dep_id');">
+                                            <span class="input-group-btn" >
+                                                <button id="choseboxsBtn" class="btn btn-default" type="button" onclick="choseboxs('dep_name', '${G.serverUrl}/chose','dep_global_id','dep_level','dep_id');">
                                                     ...
                                                 </button>
                                             </span>
@@ -268,7 +268,9 @@
             $.post(quick.serverUrl + '/getObj?user_id=' + sysid + "&i=" + Math.random(), function (data) {
 
                 setForm(data);
-
+                if (data.dep_level > 1){
+                    $("#choseboxsBtn").attr("disabled","disabled");
+                }
                 $('.selectpicker').selectpicker('val', data.role_ids.split(","));
  //               $('.selectpicker').selectpicker('val', data.dep_id);
 
