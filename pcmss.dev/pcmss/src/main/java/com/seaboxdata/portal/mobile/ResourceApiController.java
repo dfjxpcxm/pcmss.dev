@@ -19,11 +19,13 @@
 package com.seaboxdata.portal.mobile;
 
 import com.quick.core.base.SysApiController;
+import com.quick.core.base.exception.ExceptionEnumServiceImpl;
 import com.quick.core.base.model.DataStore;
 import com.quick.core.util.common.JsonUtil;
 import com.quick.core.util.common.QCommon;
 import com.quick.portal.newsMessage.INewsMessageService;
 import com.quick.portal.newsMessage.NewsMessageDO;
+import com.quick.portal.security.authority.metric.PropertiesUtil;
 import com.quick.portal.sms.smsServices.SmsSignPullerReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignReplyResult;
 import com.quick.portal.web.home.IHomeService;
@@ -90,7 +92,9 @@ public class ResourceApiController extends SysApiController {
         "check_user": "test01",
         "apply_user": "admin",
         "status": 1,
-        "date_time": "2019-07-19 14:29:50"
+        "date_time": "2019-07-19 14:29:50"，
+        "url": "http://www.baidu.com"
+
 	},
 	{
         "resource_id": "300200010007/00002",
@@ -99,7 +103,8 @@ public class ResourceApiController extends SysApiController {
         "check_user": "test01",
         "apply_user": "admin",
         "status": 1,
-        "date_time": "2019-07-19 14:29:50"
+        "date_time": "2019-07-19 14:29:50",
+         "url": "http://www.baidu.com"
 	}
 ]
 }         */
@@ -133,6 +138,7 @@ public class ResourceApiController extends SysApiController {
             String cuser = reply_json.getString("check_user");
             String auser = reply_json.getString("apply_user");
             String datetime = reply_json.getString("date_time");
+            String url = reply_json.getString("url");
             msgDO.setResource_id(resid);
             msgDO.setResource_name(resnm);
             msgDO.setResource_status(status);
@@ -140,6 +146,10 @@ public class ResourceApiController extends SysApiController {
             msgDO.setCheck_user(cuser);
             msgDO.setApply_user(auser);
             msgDO.setDate_time(datetime);
+            msgDO.setUrl(getCasUrl(url));
+            String desc = getOperDesc(status);
+            String operDesc = "用户："+cuser + "，处理资源目录："+ resnm + ",审核状态:"+desc;
+            msgDO.setOper_desc(operDesc);
             isExist = this.searchResourceInfo(msgDO);
             if(isExist){
                 this.updateResourceInfo(msgDO);
@@ -149,6 +159,42 @@ public class ResourceApiController extends SysApiController {
         }
 
         return getReplyResult(0,"");
+    }
+
+
+    public String getCasUrl(String url){
+        String casUrl = PropertiesUtil.getPropery("sso.cas.server.loginUrl");
+        return casUrl.concat("&service=").concat(url);
+//        return casUrl.concat("&service=").concat(QCommon.urlEncode(url));
+
+    }
+
+
+    public String getOperDesc(Integer status){
+        String desc ="";
+        switch(status){
+            default:
+                desc = ExceptionEnumServiceImpl.UNCHECKED.getMessage();
+                break;
+            case 1:
+                desc = ExceptionEnumServiceImpl.UNCHECKED.getMessage();
+                break;
+            case 2:
+                desc = ExceptionEnumServiceImpl.DISABLED.getMessage();
+                break;
+            case 3:
+                desc = ExceptionEnumServiceImpl.NOT_PASS.getMessage();
+                break;
+            case 4:
+                desc = ExceptionEnumServiceImpl.PASSDE.getMessage();
+                break;
+            case 5:
+                desc = ExceptionEnumServiceImpl.PUB_SUC.getMessage();
+                break;
+        }
+
+        return desc;
+
     }
 
     /**

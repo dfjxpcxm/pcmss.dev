@@ -29,41 +29,65 @@
 			   toolbar:"#formSearch",
 			   columns: [
 				   {  checkbox: true },
-				   { field: 'resource_cd', title: '资源代码', width: 100  },
-				   { field: 'resource_id', title: '资源id', width: 100  },
-				   { field: 'resource_name', title: '资源名字', width: 100  },
-				   { field: 'provider_cd', title: '供应商代码', width: 100  },
-				   { field: 'check_user', title: '检查用户', width: 100  },
 				   { field: 'apply_user', title: '申请用户', width: 100  },
+				   // { field: 'resource_cd', title: '资源代码', width: 100  },
+				   // { field: 'resource_id', title: '资源id', width: 100  },
+				   { field: 'resource_name', title: '资源名称', width: 100  },
+				   { field: 'oper_desc', title: '操作描述', width: 100  },
+				  /* { field: 'check_user', title: '检查用户', width: 100  },*/
+
 				   {
 					   field: 'resource_status',
 					   title: '资源状态',
 					   width: 100,
 					   align: 'center',
 					   formatter: function (value, row, index) {
-						   if (row.resource_status == 0) {
-							   var resource_status = '<span style="color:#9ACD32">未读</span>';
-						   } else {
-							   resource_status = '<span style="color:#CFCFCF">已读</span>';
+
+						   if (row.resource_status ==1) {
+							   var resource_status = '<span style="color:#9ACD32">未审核</span>';
+						   }else if(row.resource_status ==2 ) {
+							   resource_status = '<span style="color:#b6cf35">已停用</span>';
+						   }else if(row.resource_status ==3 ) {
+							   resource_status = '<span style="color:#cf282c">未通过</span>';
+						   }
+						   else if(row.resource_status ==4 ) {
+							   resource_status = '<span style="color:#5fcf9f">已通过</span>';
+						   }else if(row.resource_status ==5 ) {
+							   resource_status = '<span style="color:#5c6acf">已发布</span>';
+						   }
+						   else {
+							   resource_status = '<span style="color:#CFCFCF">其它</span>';
 						   }
 						   return resource_status;
 					   }
 				   },
 				   { field: 'date_time', title: '日期', width: 100  },
-				   { field: 'cre_time', title: '创建时间', width: 100  },
+				  /* { field: 'cre_time', title: '创建时间', width: 100  },*/
 				   { field: 'CZ',  title: '操作',width: 100, formatter:function(value,row,index){
 
-					   return  "<button type='button' class='btn_el' onclick='dal(\""+row.resource_cd+"\",\""+row.resource_status+"\")'>明细</button>";
+					   return  "<button type='button' class='btn_el' onclick='go(\""+row.url+"\")'>向往处理</button>";
 				   }}
 			   ],onPageChange:function(number, size){
                    $("#IDS_PAGESIZE").val(size);
                    $("#IDS_PAGENUM").val(number);
                    pageNum=number;
                    pageSize=size;
-               },onPostBody:function(data){
-				   if(queryParm=='' &&　(data == null || data.length == 0)){
-					   $(".no-records-found td").html('您还没有添加相关信息，请点击<a onclick="add();" href="javascript:void(0);">添加</a>');
-                   }
+               },onClickCell: function (field, value, row, e) {
+				   if (value.length > 6) {
+					   var data = "<div align='center' style='margin-top:15px;'>" + "<p style='font-size:16px;color:#0d509a'>" + value + "</p>" + "</div>";
+					   layer.open({
+						   type: 1//此处以iframe举例
+						   , title: '详细信息'
+						   , area: ['500px', '150px']
+						   , shade: 0
+						   , maxmin: true
+						   , content: data
+						   , btn: ['关闭']
+						   , btn2: function () {
+							   layer.closeAll();
+						   }
+					   });
+				   }
 			   }
 		   });
 
@@ -74,28 +98,7 @@
            }
 	   }
 
-    //删除记录
-    function del(node,name){
-       layer.confirm(
-		   "确认将删除【"+name+"】吗？<br/>删除后，所有关联数据将一并删除，且删除后不可恢复",
-		   {icon:3,title:"删除记录",skin: 'layer-ext-moon'},
-		   function(){
-			   $.ajax({
-				   type: "post",
-				   url: quick.serverUrl + '/delete?resource_cd=' + node,
-				   dataType: "json",
-				   data:{ID:node},
-				   success: function(data){
-					   layer.msg('删除记录成功', {icon:1,time: 1000,skin: 'layer-ext-moon'});
-                       _gd["list"].refresh();
-				   },
-				   error:function(err){
-					   layer.msg("结果异常",{icon:1,time: 1000,skin: 'layer-ext-moon'});
-				   }
-			   });
-		   }
-       );
-    }
+
     
 	//查看详细信息
 	function edit(id,status){
@@ -103,14 +106,14 @@
 	    window.location.href=quick.editUrl + "?mode=browse&resource_status="+status+"&resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
 	}
 	//查看详细信息
-	function dal(id,status){
+	function go(url){
         navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
-	    window.location.href=quick.editUrl + "?mode=browse&resource_status="+status+"&resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+		var targetOrigin = url;
+		window.open(targetOrigin,'_blank');
+	 //   window.location.href=quick.editUrl + "?mode=browse&resource_status="+status+"&resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
 	}
 
-	function add(){
-		menuGoto(quick.editUrl);
-	}
+
     //将url查询信息传至详细信息页面,返回时调用
 	function goDetail(obj){
 		var value = $(obj).attr("id");

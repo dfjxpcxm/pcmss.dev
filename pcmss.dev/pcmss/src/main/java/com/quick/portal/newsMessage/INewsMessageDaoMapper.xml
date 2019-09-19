@@ -54,6 +54,8 @@
 			check_user,
 			apply_user,
 			resource_status,
+			url,
+			oper_desc,
 			date_time,
 			cre_time,
 			upd_time
@@ -64,6 +66,8 @@
 			 #{check_user},
 			 #{apply_user},
 			 #{resource_status},
+			 #{url},
+			 #{oper_desc},
 			 #{date_time},
 			 now(),
 			 now()
@@ -94,7 +98,15 @@
 		<if test="date_time != null and date_time != '' and date_time != 'null'"><![CDATA[
 			  ,date_time=#{date_time}
 		]]></if>
-			 where resource_cd = #{resource_cd}
+
+		<if test="url != null and url != '' and url != 'null'"><![CDATA[
+			  ,url=#{url}
+		]]></if>
+
+		<if test="oper_desc != null and oper_desc != '' and oper_desc != 'null'"><![CDATA[
+			  ,oper_desc=#{oper_desc}
+		]]></if>
+			 where resource_id = #{resource_id}
 	</update>
     
 

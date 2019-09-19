@@ -40,6 +40,11 @@ public class NewsMessageDO implements java.io.Serializable {
     private Date cre_time;
     private Date upd_time;
 
+    private String url;
+
+    private String oper_desc;
+
+
     public int getResource_cd() {
         return resource_cd;
     }
@@ -118,6 +123,22 @@ public class NewsMessageDO implements java.io.Serializable {
 
     public void setUpd_time(Date upd_time) {
         this.upd_time = upd_time;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getOper_desc() {
+        return oper_desc;
+    }
+
+    public void setOper_desc(String oper_desc) {
+        this.oper_desc = oper_desc;
     }
 }
 

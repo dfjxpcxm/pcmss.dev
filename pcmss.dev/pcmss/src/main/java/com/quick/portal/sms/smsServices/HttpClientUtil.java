@@ -156,8 +156,8 @@ public class HttpClientUtil {
         data.put("errmsg", "");
         data.put("count", 2);
         ArrayList<String> retList = new ArrayList<>();
-        retList.add("300200010006/00001");
-        retList.add("300200010006/00002");
+        retList.add("FJ00115-0103-2017-01051");
+        retList.add("FJ00115-0101-2016-00288");
         data.put("datas", dataToJSONArray(retList));
         String str = data.toString();
         return str;
@@ -170,12 +170,13 @@ public class HttpClientUtil {
         do {
             JSONObject telElement = new JSONObject();
             telElement.put("resource_id", resIds.get(i));
-            telElement.put("resource_name", "旅游指南"+i);
+            telElement.put("resource_name", "省国土资源厅"+i);
             telElement.put("provider_cd", "350001");
             telElement.put("check_user", "test01");
             telElement.put("apply_user", "admin");
             telElement.put("status", i+1);
             telElement.put("date_time", "2019-07-19 14:29:50");
+            telElement.put("url", "http://www.baidu.com");
 
             tel.put(telElement);
         } while (++i < resIds.size());

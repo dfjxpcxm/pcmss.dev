@@ -7592,7 +7592,7 @@ body.skin-3 {
 .nav-close {
     padding: 15px 10px 15px 20px;
     position: absolute;
-    top: 12px;
+    top: 16px;
     font-size: 1.4em;
     cursor: pointer;
     z-index: 10;

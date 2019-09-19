@@ -56,8 +56,26 @@ public enum ExceptionEnumServiceImpl implements IExceptionEnumService{
 	DICT_MUST_BE_NUMBER("610","值必须为数字"),
 	REQUEST_NULL("620", "请求有错误"),
 	SESSION_TIMEOUT("630", "会话超时"),
-	SERVER_ERROR("640", "服务器异常");
-	
+	SERVER_ERROR("640", "服务器异常"),
+
+
+
+	/*
+	 *审核状态
+	 * 审核状态，{1未审核，2已停用,3未通过,4已通过,5已发布}
+	 *
+	 */
+	UNCHECKED("1","未审核"),
+	DISABLED("2","已停用"),
+	NOT_PASS("3", "未通过"),
+	PASSDE("4", "已通过"),
+	PUB_SUC("5", "已发布");
+
+
+
+
+
+
 
 
 	ExceptionEnumServiceImpl(String code, String message) {
