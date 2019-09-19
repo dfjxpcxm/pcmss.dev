@@ -104,7 +104,7 @@
         var mode = $.request.queryString["mode"];
         var resource_cd=$.request.queryString["resource_cd"];
         var resource_status=$.request.queryString["resource_status"];
-        alert(resource_status);
+        //alert(resource_status);
         $("#pagename").text(resource_cd?'编辑配置':'新增配置');
         if(resource_cd){
             $("#resource_cd").attr("readOnly","readOnly");

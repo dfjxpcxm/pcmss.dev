@@ -196,7 +196,7 @@
 		,group_concat(distinct d.dep_name) as dep_name
 		,group_concat(distinct r.role_id) as role_ids
 		,group_concat(distinct d.dep_id) as dep_id
-		,j.job_name, j.job_level
+		,j.job_name, j.job_level,d.dep_level
 		from sys_user u
 		left join user_role_rela ur_rel on u.user_id = ur_rel.user_id
 		join user_role r on r.role_id = ur_rel.role_id
@@ -219,7 +219,7 @@
 		, u.file_state
 		, j.job_name
 		, j.job_level
-
+		,d.dep_level
 		<if test="_sql_order != null and _sql_order != ''">
 		order by ${_sql_order}
      	</if>
