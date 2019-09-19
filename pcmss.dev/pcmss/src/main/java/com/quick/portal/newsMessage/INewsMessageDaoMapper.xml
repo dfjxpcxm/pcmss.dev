@@ -17,8 +17,11 @@
 		<if test="resource_name != null and resource_name != '' and resource_name != 'null'"><![CDATA[
 	       and resource_name = #{resource_name}
 	    ]]></if>
-		<if test='resource_status == "1" || resource_status == "0"'><![CDATA[
+		<if test="resource_status != null and resource_status != '' and resource_status != 'null'"><![CDATA[
 	       and resource_status = #{resource_status}
+	    ]]></if>
+		<if test='check_status == "1" || check_status == "0"'><![CDATA[
+	       and check_status = #{check_status}
 	    ]]></if>
 
 		<if test="provider_cd != null and provider_cd != '' and provider_cd != 'null'"><![CDATA[
@@ -55,6 +58,7 @@
 			apply_user,
 			resource_status,
 			url,
+			check_status,
 			oper_desc,
 			date_time,
 			cre_time,
@@ -67,6 +71,7 @@
 			 #{apply_user},
 			 #{resource_status},
 			 #{url},
+			 #{check_status},
 			 #{oper_desc},
 			 #{date_time},
 			 now(),
@@ -102,11 +107,13 @@
 		<if test="url != null and url != '' and url != 'null'"><![CDATA[
 			  ,url=#{url}
 		]]></if>
-
+		<if test="check_status != null and check_status != ''"><![CDATA[
+			  ,check_status=#{check_status}
+		]]></if>
 		<if test="oper_desc != null and oper_desc != '' and oper_desc != 'null'"><![CDATA[
 			  ,oper_desc=#{oper_desc}
 		]]></if>
-			 where resource_id = #{resource_id}
+			 where resource_cd = #{resource_cd}
 	</update>
     
 
@@ -119,9 +126,9 @@
 		</where>
           order by upd_time
 	</select>
-	<!--查询消息状态是否阅读-->
+	<!--查询消息状态是否阅读  0 未读 ， 1 已读-->
 	<select id="messageStatu" resultType="map">
-		select * from res_info where resource_status = 0
+		select * from res_info where check_status = 0
         <if test="_sql_order != null and _sql_order != ''">
             order by ${_sql_order}
         </if>

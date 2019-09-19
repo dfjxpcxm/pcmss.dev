@@ -213,7 +213,7 @@
 	function messageNotification() {
 		$.ajax({
 			type: "get",
-			url: "${G.host}/newsMessage/getList?resource_status=0",
+			url: "${G.host}/newsMessage/getList?check_status=0",
 			async:false,
 			dataType: "json",
 			success: function(data){
@@ -227,7 +227,7 @@
 						'</a>').append(
 						'<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px;">' +
 						'<li>' +
-							'<a class="J_menuItem" href="${G.host}/newsMessage/list?resource_status=0" tabindex=389>' +
+							'<a class="J_menuItem" href="${G.host}/newsMessage/list?check_status=0" tabindex=389>' +
 						'<div>' +
 						'<i class="fa fa-envelope fa-fw"></i> 您有'+data.total+'条未读消息' +
 						// '<span class="pull-right text-muted small">4分钟前</span>' +

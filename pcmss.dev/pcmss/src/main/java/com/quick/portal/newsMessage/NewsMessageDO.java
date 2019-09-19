@@ -41,6 +41,7 @@ public class NewsMessageDO implements java.io.Serializable {
     private Date upd_time;
 
     private String url;
+    private String check_status;
 
     private String oper_desc;
 
@@ -131,6 +132,14 @@ public class NewsMessageDO implements java.io.Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getCheck_status() {
+        return check_status;
+    }
+
+    public void setCheck_status(String check_status) {
+        this.check_status = check_status;
     }
 
     public String getOper_desc() {

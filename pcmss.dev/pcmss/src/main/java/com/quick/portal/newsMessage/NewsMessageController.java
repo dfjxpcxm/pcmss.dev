@@ -57,8 +57,8 @@ public class NewsMessageController extends SysBaseController<NewsMessageDO> {
     //页面请求
     @RequestMapping
     public String list(ModelMap model) {
-        String resource_status = request.getParameter("resource_status");
-        model.addAttribute("resource_status", resource_status);
+        String check_status = request.getParameter("check_status");
+        model.addAttribute("check_status", check_status);
         return view();
     }
     @RequestMapping
@@ -301,19 +301,33 @@ public class NewsMessageController extends SysBaseController<NewsMessageDO> {
     @RequestMapping(value = "/getObj", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> getObj() throws Exception {
-        String resource_status = request.getParameter("resource_status");
+        String check_status = request.getParameter("check_status");
         String sysid = QRequest.getString(request, getBaseService()
                 .getPrimaryKey());
 
-        if(resource_status.equals("0")){
+        if(check_status.equals("0")){
             NewsMessageDO newsMessageDO = new NewsMessageDO();
-            newsMessageDO.setResource_status(1);
+            newsMessageDO.setCheck_status("1");
             newsMessageDO.setResource_cd(Integer.valueOf(sysid));
             newsMessageService.update(newsMessageDO);
         }
-
         Map<String, Object> obj = getBaseService().selectMap(sysid);
         return obj;
+    }
+
+    @RequestMapping(value = "/getMessageStatus" ,method = RequestMethod.POST)
+    @ResponseBody
+    public void getMessageStatus(String[] messageId){
+        if (messageId != null || messageId.length > 0){
+            for (String s : messageId) {
+                NewsMessageDO newsMessageDO = new NewsMessageDO();
+                StringBuilder sysid = new StringBuilder(s);
+                newsMessageDO.setResource_cd(Integer.valueOf(sysid.toString()));
+                newsMessageDO.setCheck_status("1");
+                newsMessageService.update(newsMessageDO);
+            }
+        }
+
     }
 
 }

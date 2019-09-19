@@ -16,15 +16,16 @@
 		   quick.editUrl = "${G.editUrl}";
 		   quick.objName = "${G.objName}";
 		   quick.idField = "${G.idField}";
-		   var resource_status=$.request.queryString["resource_status"];
+		   var check_status=$.request.queryString["check_status"];
 
 		   $("#list").bootstrapTable("destroy");
 		   _gd["list"]=new BGrid("#list");
 		   _gd["list"].config({
-			   url:quick.serverUrl+"/getList?resource_status="+resource_status+"&i="+Math.random(),
+			   url:quick.serverUrl+"/getList?check_status="+check_status+"&i="+Math.random(),
 			   idField: quick.idField,
 			   sortName: quick.idField,
                cache:false,
+			   singleSelect:false,
 			   height: $(document.body).height()-50,
 			   toolbar:"#formSearch",
 			   columns: [
@@ -61,11 +62,27 @@
 						   return resource_status;
 					   }
 				   },
+				   {
+					   field: 'check_status',
+					   title: '阅读状态',
+					   width: 100,
+					   align: 'center',
+					   formatter: function (value, row, index) {
+						   var check_status = '';
+						   if (row.check_status == 0) {
+							   check_status = '<span style="color:#9ACD32">未读</span>';
+						   }
+						   else {
+							   check_status = '<span style="color:#CFCFCF">已读</span>';
+						   }
+						   return check_status;
+					   }
+				   },
 				   { field: 'date_time', title: '日期', width: 100  },
 				  /* { field: 'cre_time', title: '创建时间', width: 100  },*/
 				   { field: 'CZ',  title: '操作',width: 100, formatter:function(value,row,index){
 
-					   return  "<button type='button' class='btn_el' onclick='go(\""+row.url+"\")'>向往处理</button>";
+					   return  "<button type='submit' class='btn_el' onclick='go(\""+row.resource_cd+"\",\""+row.url+"\",\""+row.check_status+"\")'>前往处理</button>";
 				   }}
 			   ],onPageChange:function(number, size){
                    $("#IDS_PAGESIZE").val(size);
@@ -73,21 +90,21 @@
                    pageNum=number;
                    pageSize=size;
                },onClickCell: function (field, value, row, e) {
-				   if (value.length > 6) {
-					   var data = "<div align='center' style='margin-top:15px;'>" + "<p style='font-size:16px;color:#0d509a'>" + value + "</p>" + "</div>";
-					   layer.open({
-						   type: 1//此处以iframe举例
-						   , title: '详细信息'
-						   , area: ['500px', '150px']
-						   , shade: 0
-						   , maxmin: true
-						   , content: data
-						   , btn: ['关闭']
-						   , btn2: function () {
-							   layer.closeAll();
-						   }
-					   });
-				   }
+				   // if (value.length > 6) {
+					//    var data = "<div align='center' style='margin-top:15px;'>" + "<p style='font-size:16px;color:#0d509a'>" + value + "</p>" + "</div>";
+					//    layer.open({
+					// 	   type: 1//此处以iframe举例
+					// 	   , title: '详细信息'
+					// 	   , area: ['500px', '150px']
+					// 	   , shade: 0
+					// 	   , maxmin: true
+					// 	   , content: data
+					// 	   , btn: ['关闭']
+					// 	   , btn2: function () {
+					// 		   layer.closeAll();
+					// 	   }
+					//    });
+				   // }
 			   }
 		   });
 
@@ -103,11 +120,22 @@
 	//查看详细信息
 	function edit(id,status){
         navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
-	    window.location.href=quick.editUrl + "?mode=browse&resource_status="+status+"&resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
+	    window.location.href=quick.editUrl + "?mode=browse&check_status="+status+"&resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
 	}
 	//查看详细信息
-	function go(url){
+	function go(resource_cd,url,check_status){
         navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
+		if(check_status == 0){
+			$.post(quick.serverUrl + "/getObj?resource_cd=" + resource_cd + "&check_status=" + check_status + "&i=" + Math.random(), function(data){
+				//setForm(data);
+				/// $("#str_res_id").val(data.res_id);
+				// if(mode == "browse"){
+				// 	viewRead();
+				// }
+				//console.log(check_status);
+			});
+
+		}
 		var targetOrigin = url;
 		window.open(targetOrigin,'_blank');
 	 //   window.location.href=quick.editUrl + "?mode=browse&resource_status="+status+"&resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
@@ -115,11 +143,11 @@
 
 
     //将url查询信息传至详细信息页面,返回时调用
-	function goDetail(obj){
-		var value = $(obj).attr("id");
-		navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
-		window.location.href=quick.editUrl + "?mode=browse&sms_id="+id + getDetailParm();
-	}
+	// function goDetail(obj){
+	// 	var value = $(obj).attr("id");
+	// 	navAppend("详情信息");/*获取父页面元素并动态赋值父页面title*/
+	// 	window.location.href=quick.editUrl + "?mode=browse&sms_id="+id + getDetailParm();
+	// }
     function query(){
        _gd['list'].refresh();
        queryParm=getParm();
@@ -150,6 +178,27 @@
 		var s= queryParm + "&IpageNum="+pageNum+"&IpageSize="+pageSize;
 		return s;
 	}
+	function readyy(){
+		var messageId = [];
+		$("input:checkbox[name='btSelectItem']:checked").each(function () { // 遍历name=test的多选框
+			messageId.push($(this).val());
+		});
+		if(messageId.length > 0){
+			$.ajax({
+				type: "post",
+				url: "${G.host}/newsMessage/getMessageStatus",
+				async:false,
+				data:{"messageId":messageId},
+				traditional:true,
+				success: function(data){
+
+
+				}});
+		}else{
+			alert("请选择信息！！！")
+		}
+		console.log(messageId);
+	}
   </script>
   <body class="gray-bg">
   <div class="wrapper wrapper-content wrapper-content-x animated fadeInRight">
@@ -161,10 +210,14 @@
 							  <form id="formSearch" class="form-inline">
                                   <div class="form-group" style="padding: 0px;width:180px;">
 									  <input maxlength="20" id="resource_name" name="resource_name" class="input-sm form-control"
-											 type="text" placeholder="短信标题"/>
+											 type="text" placeholder="资源名称"/>
 								  </div>
 
 								  <span class="input-group-btn" style="display:inline-block;"><button class="btn btn-primary " type="button" onclick="query();"> 查询</button> </span>
+								  <div class="form-group" style="padding-left:100px; width:100px;">
+									  <button type="submit" class="btn btn-primary" onclick="readyy();"> 设为已读
+									  </button>
+								  </div>
 								  <div class="form-group" style="width:100px;float:right;">
 									  <button type="button" class="btn btn-primary" onclick="location.href='${G.host}';"> 返回首页
 									  </button>
