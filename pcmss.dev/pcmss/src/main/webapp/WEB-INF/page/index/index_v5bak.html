@@ -9,14 +9,9 @@
     <link rel="stylesheet" href="${G.host}/res/css/font-awesome.min.css">
     <link rel="stylesheet" href="${G.host}/res/css/AdminLTE.min.css">
     <link rel="stylesheet" href="${G.host}/res/css/daterangepicker.css">
-    <link href="${G.host}/res/css/plugins/ionRangeSlider/ion.rangeSlider.css" rel="stylesheet">
-    <link href="${G.host}/res/css/plugins/ionRangeSlider/ion.rangeSlider.skinFlat.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="${G.host}/statics/css/all-skins.min.css">
+    <link rel="stylesheet" href="${G.host}/statics/css/main.css"> -->
     <style type="text/css">
-        .irs-diapason{background:#3da5f4;}
-        .irs-slider{background:none;}
-        .irs-slider.to{border: 4px solid #3da5f4;background: #fff;border-radius: 50%;}
-        .irs-line{left:8px;}
-        .ibox-title{color:#333;padding:10px 15px}
         .content {
             min-height: 250px;
             /* padding: 15px; */
@@ -90,48 +85,35 @@
                 </div>
             </div>
         </div>
-        <div class="iboxx row" style="border-top:4px solid #ecf0f5">
-                <div class="col-xs-4">
-                    <h3 class="ibox-title" style="padding: 10px 120px;">应用情况</h3>
-                    <!-- tools box -->
-                    <div class="ibox-content" style="height: 384px;">
-                        <div class="m-b-sm m-t" style="margin-top: -10px;">
-                            <small><strong>应用用户数</strong> </small>
+        <div class="row" style="border-top:4px solid #ecf0f5">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">调度报表</h3>
+                        <!-- tools box -->
+                        <div class="pull-right box-tools">
+                            <button type="button" class="btn btn-primary btn-sm daterange pull-right" data-toggle="tooltip" id="filterTime">
+                                <i class="fa fa-calendar"></i>
+                            </button>
                         </div>
-                        <div id="ionrange_1"></div>
-                        <div class="m-b-sm m-t">
-                            <small><strong>用户访问量</strong> </small>
-                        </div>
-                        <div id="ionrange_2"></div>
-
-                        <div class="m-b-sm m-t">
-                            <small><strong>指标数量</strong> </small>
-                        </div>
-                        <div id="ionrange_3"></div>
-
-                        <div class="m-b-sm m-t">
-                            <small><strong>应用系统数量</strong></small>
-                        </div>
-                        <div id="ionrange_4"></div>
-                    </div>
-                </div>
                         <!-- /. tools -->
-                <div class="col-xs-8">
-                    <div class="row">
-                        <h3 class="ibox-title" style="padding: 10px 270px;">调度报表</h3>
-                        <div class="col-md-7">
-                            <div id="lineChart" style="height: 295px;"></div>
-                        </div>
-                        <div class="col-md-5">
-                            <div id="pieChart" style="height: 295px;"></div>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div id="lineChart" style="height: 295px;"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div id="pieChart" style="height: 295px;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     </section>
 </div>
 <script src="${G.host}/res/js/jquery.min.js"></script>
-<script src="${G.host}/res/js/jquery-ui.min.js"></script>
 <script src="${G.host}/res/js/bootstrap.min.js"></script>
 <script src="${G.host}/res/js/libs/app.js"></script>
 <script src="${G.host}/res/layer/layer.js"></script>
@@ -139,15 +121,6 @@
 <script src="${G.host}/res/js/libs/daterangepicker.js"></script>
 <script src="${G.host}/res/js/libs/vue.min.js"></script>
 <script src="${G.host}/res/js/libs/router.js"></script>
-<script src="${G.host}/res/js/plugins/chosen/chosen.jquery.js"></script>
-<script src="${G.host}/res/js/plugins/ionRangeSlider/ion.rangeSlider.min.js"></script>
-<script src="${G.host}/res/js/plugins/jsKnob/jquery.knob.js"></script>
-<script src="${G.host}/res/js/plugins/cropper/cropper.min.js"></script>
-<script src="${G.host}/res/js/plugins/colorpicker/bootstrap-colorpicker.min.js"></script>
-<script src="${G.host}/res/js/plugins/clockpicker/clockpicker.js"></script>
-<script src="${G.host}/res/js/form-advanced-demo.js"></script>
-<script src="${G.host}/res/js/plugins/switchery/switchery.js"></script>
-<script src="${G.host}/res/js/plugins/iCheck/icheck.min.js"></script>
 <script src="${G.host}/res/js/libs/echarts/echarts.min.js"></script>
 <script type="text/javascript">
     /**
@@ -319,7 +292,7 @@
                 title : {
                     text: '成功比例图',
                     /*subtext: 'subtext',*/
-                    x:'right'
+                    x:'center'
                 },
                 tooltip : {
                     trigger: 'item',

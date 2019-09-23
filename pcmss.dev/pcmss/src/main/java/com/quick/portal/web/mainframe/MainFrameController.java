@@ -104,6 +104,7 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
 
     /*
      * 查询菜单权限
+     * role_type:取最大值
      *
      */
     @RequestMapping(value = "/goIframe")
