@@ -132,15 +132,14 @@
 				// if(mode == "browse"){
 				// 	viewRead();
 				// }
-				//console.log(check_status);
-			});
 
+			});
 		}
+		window.location.reload();//本页面刷新
 		var targetOrigin = url;
 		window.open(targetOrigin,'_blank');
 	 //   window.location.href=quick.editUrl + "?mode=browse&resource_status="+status+"&resource_cd="+id + getDetailParm();//跳转到另一个页面，并且还在当前框架
 	}
-
 
     //将url查询信息传至详细信息页面,返回时调用
 	// function goDetail(obj){
@@ -194,11 +193,16 @@
 
 
 				}});
+			//parent.window.messageNotification();//执行父窗口的方法
 		}else{
+			//parent.window.location.reload();刷新页面
+			//window.parent.document.getElementById("seeAllMessage").valueOf();获取父窗口的id对应的值
+			//window.location.href=url     执行url
 			alert("请选择信息！！！")
 		}
 		console.log(messageId);
 	}
+	parent.window.messageNotification();//执行父窗口的方法
   </script>
   <body class="gray-bg">
   <div class="wrapper wrapper-content wrapper-content-x animated fadeInRight">
