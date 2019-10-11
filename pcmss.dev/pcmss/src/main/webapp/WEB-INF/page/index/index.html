@@ -5,12 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>欢迎页</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="${G.host}/res/css/bootstrap.min.css?v=3.3.6">
+    <link rel="stylesheet" href="${G.host}/res/css/bootstrap.min.css">
     <link rel="stylesheet" href="${G.host}/res/css/font-awesome.min.css">
     <link rel="stylesheet" href="${G.host}/res/css/AdminLTE.min.css">
     <link rel="stylesheet" href="${G.host}/res/css/daterangepicker.css">
-    <!-- <link rel="stylesheet" href="${G.host}/statics/css/all-skins.min.css">
-    <link rel="stylesheet" href="${G.host}/statics/css/main.css"> -->
+
     <style type="text/css">
         .content {
             min-height: 250px;
@@ -48,39 +47,51 @@
     <section class="content">
         <!-- 任务信息 -->
         <div class="row">
-            <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box bg-aqua">
-                    <span class="info-box-icon"><i class="fa fa-flag-o"></i></span>
+                    <span class="info-box-icon"><i class="fa fa-desktop"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">任务数量</span> <span class="info-box-number">2</span>
+                        <span class="info-box-text">应用数量</span> <span class="info-box-number" id="app_count">0</span>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                        <span class="progress-description">平台包含的应用数量</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box bg-yellow">
+                    <span class="info-box-icon"><i class="fa fa-home"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">用户数量</span> <span class="info-box-number" id="user_count">0</span>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                        <span class="progress-description">平台包含的用户数量 </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box bg-green">
+                    <span class="info-box-icon"><i class="fa fa-envelope"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">指标数量</span> <span class="info-box-number" id="index_count">0</span>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                        <span class="progress-description">平台包含的指标数量</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box bg-purple">
+                    <span class="info-box-icon"><i class="fa fa-sliders"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">任务数量</span> <span class="info-box-number" id="job_count">0</span>
                         <div class="progress">
                             <div class="progress-bar" style="width: 100%"></div>
                         </div>
                         <span class="progress-description">调度中心运行的任务数量</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-xs-12">
-                <div class="info-box bg-yellow">
-                    <span class="info-box-icon"><i class="fa fa-calendar"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">调度次数</span> <span class="info-box-number">518</span>
-                        <div class="progress">
-                            <div class="progress-bar" style="width: 100%"></div>
-                        </div>
-                        <span class="progress-description"> 调度中心触发的调度次数 </span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-xs-12">
-                <div class="info-box bg-green">
-                    <span class="info-box-icon"><i class="fa fa-sliders"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">执行器数量</span> <span class="info-box-number">1</span>
-                        <div class="progress">
-                            <div class="progress-bar" style="width: 100%"></div>
-                        </div>
-                        <span class="progress-description">调度中心在线的执行器机器数量</span>
                     </div>
                 </div>
             </div>
@@ -89,7 +100,7 @@
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header with-border">
-                        <h3 class="box-title">调度报表</h3>
+                        <h3 class="box-title">管理报表</h3>
                         <!-- tools box -->
                         <div class="pull-right box-tools">
                             <button type="button" class="btn btn-primary btn-sm daterange pull-right" data-toggle="tooltip" id="filterTime">
@@ -114,13 +125,13 @@
     </section>
 </div>
 <script src="${G.host}/res/js/jquery.min.js"></script>
+<script src="${G.host}/res/js/libs/vue.min.js"></script>
+<script src="${G.host}/res/js/libs/router.js"></script>
 <script src="${G.host}/res/js/bootstrap.min.js"></script>
 <script src="${G.host}/res/js/libs/app.js"></script>
 <script src="${G.host}/res/layer/layer.js"></script>
 <script src="${G.host}/res/js/libs/moment.min.js"></script>
 <script src="${G.host}/res/js/libs/daterangepicker.js"></script>
-<script src="${G.host}/res/js/libs/vue.min.js"></script>
-<script src="${G.host}/res/js/libs/router.js"></script>
 <script src="${G.host}/res/js/libs/echarts/echarts.min.js"></script>
 <script type="text/javascript">
     /**
@@ -181,14 +192,15 @@
                 "msg": null,
                 "content": {
                     "triggerCountFailTotal": 418,
-                    "triggerDayList": ["2018-07-24", "2018-07-31"],
+                    "triggerDayList": ["2019-09-24","2019-09-25","2019-09-26","2019-09-27","2019-09-28","2019-09-29","2019-09-30", "2019-10-01"],
                     "triggerCountSucTotal": 701,
-                    "triggerDayCountFailList": [248, 170],
-                    "triggerDayCountSucList": [243, 458]
+                    "triggerDayCountFailList": [248, 230, 288, 311, 266, 308, 150, 170],
+                    "triggerDayCountSucList": [248, 230, 288, 311, 266, 308, 150, 170],
                 }
             }
             lineChartInit(data)
             pieChartInit(data);
+            getData(startDate, endDate);
             /*          $.ajax({
                          type : 'POST',
                          url : base_url + '/triggerChartDate',
@@ -218,7 +230,7 @@
         function lineChartInit(data) {
             var option = {
                 title: {
-                    text: '日期分布图'
+                    text: '日访问量分布图'
                 },
                 tooltip : {
                     trigger: 'axis',
@@ -230,7 +242,7 @@
                     }
                 },
                 legend: {
-                    data:['成功调度次数','失败调度次数']
+                    data:['访问次数']
                 },
                 toolbox: {
                     feature: {
@@ -257,27 +269,13 @@
                 ],
                 series : [
                     {
-                        name:'成功调度次数',
+                        name:'访问次数',
                         type:'line',
                         stack: '总量',
-                        areaStyle: {normal: {}},
                         data: data.content.triggerDayCountSucList
                     },
-                    {
-                        name:'失败调度次数',
-                        type:'line',
-                        stack: '总量',
-                        label: {
-                            normal: {
-                                show: true,
-                                position: 'top'
-                            }
-                        },
-                        areaStyle: {normal: {}},
-                        data: data.content.triggerDayCountFailList
-                    }
                 ],
-                color:['#00A65A', '#F39C12']
+                color:['#216fff', '#F39C12']
             };
 
             var lineChart = echarts.init(document.getElementById('lineChart'));
@@ -290,7 +288,7 @@
         function pieChartInit(data) {
             var option = {
                 title : {
-                    text: '成功比例图',
+                    text: '作业调度比例图',
                     /*subtext: 'subtext',*/
                     x:'center'
                 },
@@ -305,7 +303,7 @@
                 },
                 series : [
                     {
-                        name: '分布比例',
+                        name: '作业调度比例',
                         type: 'pie',
                         radius : '55%',
                         center: ['50%', '60%'],
@@ -328,13 +326,35 @@
                         }
                     }
                 ],
-                color:['#00A65A', '#F39C12']
+                color:['#216fff', '#5acbff']
             };
             var pieChart = echarts.init(document.getElementById('pieChart'));
             pieChart.setOption(option);
         }
-
     });
+    function getData (startDate, endDate) {
+
+        $('#app_count').text('32');
+        $('#user_count').text('10');
+        $('#index_count').text('130');
+        $('#job_count').text('42');
+
+        // var url = "../../sys/user/home/data";
+        // $.ajax({
+        //     type: "POST",
+        //     url: url,
+        //     dataType: 'json',
+        //     data: {startDate:startDate.format('YYYY-MM-DD'), endDate:endDate.format('YYYY-MM-DD')},
+        //     success: function (r) {
+        //         if (r.code === 0) {
+        //             $('#col_count').text(r.data.colCount);
+        //             $('#app_count').text(r.data.appCount);
+        //             $('#res_count').text(r.data.resCount);
+        //             $('#warning_count').text(r.data.warningCount);
+        //         }
+        //     }
+        // });
+    }
 </script>
 </body>
 </html>
