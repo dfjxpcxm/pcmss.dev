@@ -231,10 +231,10 @@ public class NewsMessageController extends SysBaseController<NewsMessageDO> {
 
         // 默认O条数据
         int recordCount = 0;
-
+        String userName = QCookie.getValue(request, "sbd.user_name");
         Map<String, Object> queryMap = getQueryMap(request, fieldShow,
                 tableName, whereStr, fieldOrder);
-
+        queryMap.put("apply_user",userName);
         String resource_name = QCookie.getValue(request, "resource_name");
 //        String resource_status = request.getParameter("resource_status");
 //        if(!resource_status.equals("undefined")){
@@ -301,13 +301,13 @@ public class NewsMessageController extends SysBaseController<NewsMessageDO> {
     @RequestMapping(value = "/getObj", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> getObj() throws Exception {
+        String userName = QCookie.getValue(request, "sbd.user_name");
         String check_status = request.getParameter("check_status");
-        String sysid = QRequest.getString(request, getBaseService()
-                .getPrimaryKey());
-
+        String sysid = QRequest.getString(request, getBaseService().getPrimaryKey());
         if(check_status.equals("0")){
             NewsMessageDO newsMessageDO = new NewsMessageDO();
             newsMessageDO.setCheck_status("1");
+            newsMessageDO.setApply_user(userName);
             newsMessageDO.setResource_cd(Integer.valueOf(sysid));
             newsMessageService.update(newsMessageDO);
         }
