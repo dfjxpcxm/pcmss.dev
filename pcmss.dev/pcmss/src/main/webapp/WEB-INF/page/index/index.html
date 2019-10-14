@@ -100,14 +100,13 @@
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header with-border">
-                        <h3 class="box-title">管理报表</h3>
+                        <h3 class="box-title">系统统计</h3>
                         <!-- tools box -->
                         <div class="pull-right box-tools">
                             <button type="button" class="btn btn-primary btn-sm daterange pull-right" data-toggle="tooltip" id="filterTime">
                                 <i class="fa fa-calendar"></i>
                             </button>
                         </div>
-                        <!-- /. tools -->
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -137,10 +136,7 @@
     /**
      * Created by xuxueli on 17/4/24.
      */
-
-
     $(function () {
-
         // 过滤时间
         var _startDate = moment().subtract(1, 'months');    // 默认，最近一月
         var _endDate = moment();
@@ -326,7 +322,10 @@
                         }
                     }
                 ],
-                color:['#216fff', '#5acbff']
+
+//                color:['#216fff', '#5acbff']
+                color:['#00A65A', '#F39C12']
+
             };
             var pieChart = echarts.init(document.getElementById('pieChart'));
             pieChart.setOption(option);
