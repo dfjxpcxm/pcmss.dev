@@ -63,7 +63,24 @@
 							class="fa fa-tasks" style="font-weight: normal;padding-top: 10px;"></i>返回领导驾驶舱</a></li>
 -->
 					<li class="dropdown" id="roro">
-
+						<a class="dropdown-toggle count-info" style="background-color:transparent;" data-toggle="dropdown" aria-expanded="false">
+							<i class="fa fa-bell"></i> <span  class="label label-primary" id="newMessageL">0</span></a>
+						<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px;">
+						<li id="message_have">
+							<a class="J_menuItem"data-index="50" href="/pcmss/newsMessage/list?check_status=0" tabindex="389">
+							<div id="newMessageH"><i class="fa fa-envelope fa-fw"></i></div></a>
+						</li>
+							<li class="divider">
+						</li>
+							<li>
+								<div class="text-center link-block" style="padding: 1px">
+									<a id="seeAllMessage" class="J_menuItem" href="/pcmss/newsMessage/list" tabindex="389">
+										<strong>查看所有 </strong><i class="fa fa-angle-right">
+									</i>
+									</a>
+								</div>
+							</li>
+						</ul>
 					</li>
 					<li class="hidden-xs"><a><!--<i class="fa fa-user"></i>-->
 							<strong class="font-bold" style="font-weight: normal;">用户：${L.user_real_name}</strong></a>
@@ -217,61 +234,26 @@
 	// })
 
 	function messageNotification() {
-		$("#roro").empty();
 		$.ajax({
 			type: "get",
 			url: "${G.host}/newsMessage/getList?check_status=0",
 			async:false,
 			dataType: "json",
-			success: function(data){
-/*				$.each(data.rows,function(i,dataNode){
+			success: function(data) {
+				/*				$.each(data.rows,function(i,dataNode){
 							console.log(i);
 							console.log(dataNode);
 					 	});*/
-				var str = '';
 				if (data.total > 0) {
-					str = '<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px;">' +
-							'<li>' +
-							'<a class="J_menuItem" id="newMessageL" data-index="50" href="/pcmss/newsMessage/list?check_status=0" tabindex=389>' +
-							'<div>' +
-							'<i class="fa fa-envelope fa-fw"></i> 您有'+data.total+'条未读消息' +
-							// '<span class="pull-right text-muted small">4分钟前</span>' +
-							'</div>' +
-							'</a>' +
-							'</li>' +
-							'<li class="divider"></li>'+
-							'<li>' +
-							'<div class="text-center link-block" style="padding: 1px">' +
-							'<a id="seeAllMessage" class="J_menuItem" href="/pcmss/newsMessage/list" tabindex=389>' +
-							'<strong>查看所有 </strong>' +
-							'<i class="fa fa-angle-right"></i>' +
-							'</a>' +
-							'</div>' +
-							'</li>' +
-							'</ul>';
-				}else{
-					str ='<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px;">' +
-						'<li>' +
-						'<div class="text-center link-block" style="padding: 1px">' +
-						'<a id="seeAll" class="J_menuItem" href="${G.host}/newsMessage/list" tabindex=389>' +
-						'<strong>查看所有 </strong>' +
-						'<i class="fa fa-angle-right"></i>' +
-						'</a>' +
-						'</div>' +
-						'</li>' +
-						'</ul>';
+						$("#message_have").show();
+						$("#newMessageL").text(data.total);
+						$("#newMessageH").text('您有'+data.total+'条未读消息');
+					} else {
+						$("#newMessageL").text(0);
+						$("#message_have").hide();
 				}
-
-				$("#roro").append('<a class="dropdown-toggle count-info"  style="background-color:transparent;" data-toggle="dropdown" href="#" aria-expanded="false">' +
-							'<i class="fa fa-bell"></i> <span class="label label-primary">'+data.total+'</span>' +
-							'</a>')
-						.append(str);
-
 			}
-
 		});
-
-
 	}
 
 </script>
