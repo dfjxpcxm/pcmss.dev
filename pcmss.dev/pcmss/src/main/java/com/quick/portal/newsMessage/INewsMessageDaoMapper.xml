@@ -44,6 +44,8 @@
 		<if test="cre_time != null and cre_time != ''"><![CDATA[
 	       and cre_time >= #{cre_time}
 	    ]]></if>
+
+		and check_status in (0,1)
 	</sql>
 
 

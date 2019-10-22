@@ -2,8 +2,8 @@
 <html>
 <head>
     <#include "/WEB-INF/include/reslist.html" />
-    <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+    <link href="${G.host}/res/plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<!--    <link href="../css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">-->
     <link href="${G.host}/res/js/ztree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
     <script src="${G.host}/res/js/ztree/jquery.ztree.all.min.js" ></script>
     <style>
@@ -325,6 +325,7 @@
         });
      }
     SelectMsgCs();
+    parent.window.messageNotification();
 </script>
     </body>
     </html>
