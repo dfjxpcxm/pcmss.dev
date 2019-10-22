@@ -99,5 +99,8 @@ public interface MesManageDao<MesManageDO> extends ISysBaseDao<MesManageDO> {
     int insertTagType(Map<String,Object> tagType);
     //根据消息ID查对应的标签id
     List<Map<String,Object>> selectMesByTag(List<Integer> tag);
-
+    int insertRes(Map<String,Object> ResMap);
+    int updateRes(Map<String,Object> ResMap);
+    int deleteRes(Map<String,Object> ResMap);
+    String selectRes(String resource_cd);
 }

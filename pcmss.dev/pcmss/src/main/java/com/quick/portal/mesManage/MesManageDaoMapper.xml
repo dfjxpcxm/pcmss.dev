@@ -584,4 +584,29 @@
         ) tag
 </select>
 
+    <insert id="insertRes" parameterType="map" >
+        INSERT INTO res_info(resource_cd,apply_user,resource_name,oper_desc,resource_status,check_status)
+         VALUES (#{resource_cd},#{apply_user},#{resource_name},#{oper_desc},#{resource_status},#{check_status})
+    </insert>
+
+    <update id="updateRes" parameterType="map" >
+        UPDATE
+        res_info
+        SET
+        apply_user=#{apply_user},
+        resource_name=#{resource_name},
+        oper_desc=#{oper_desc}
+        WHERE resource_cd = #{resource_cd}
+    </update>
+    <!--逻辑删除-->
+    <update id="deleteRes" parameterType="map">
+        UPDATE
+        res_info
+        SET
+        check_status=#{check_status}
+        WHERE resource_cd = #{resource_cd}
+    </update>
+    <select id="selectRes" parameterType="String" resultType="String">
+        select s.apply_user from res_info s where s.resource_cd = #{resource_cd}
+    </select>
 </mapper>

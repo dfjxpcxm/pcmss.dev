@@ -212,6 +212,10 @@
 		window.location.href = "home/main";
 		
 	}
+	// $("#newMessageL").click(function () {
+	// 	window.location.href = "/pcmss/newsMessage/list?check_status=0";
+	// })
+
 	function messageNotification() {
 		$("#roro").empty();
 		$.ajax({
@@ -220,7 +224,6 @@
 			async:false,
 			dataType: "json",
 			success: function(data){
-
 /*				$.each(data.rows,function(i,dataNode){
 							console.log(i);
 							console.log(dataNode);
@@ -229,7 +232,7 @@
 				if (data.total > 0) {
 					str = '<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px;">' +
 							'<li>' +
-							'<a class="J_menuItem" href="${G.host}/newsMessage/list?check_status=0" tabindex=389>' +
+							'<a class="J_menuItem" id="newMessageL" data-index="50" href="/pcmss/newsMessage/list?check_status=0" tabindex=389>' +
 							'<div>' +
 							'<i class="fa fa-envelope fa-fw"></i> 您有'+data.total+'条未读消息' +
 							// '<span class="pull-right text-muted small">4分钟前</span>' +
@@ -239,7 +242,7 @@
 							'<li class="divider"></li>'+
 							'<li>' +
 							'<div class="text-center link-block" style="padding: 1px">' +
-							'<a id="seeAllMessage" class="J_menuItem" href="${G.host}/newsMessage/list" tabindex=389>' +
+							'<a id="seeAllMessage" class="J_menuItem" href="/pcmss/newsMessage/list" tabindex=389>' +
 							'<strong>查看所有 </strong>' +
 							'<i class="fa fa-angle-right"></i>' +
 							'</a>' +

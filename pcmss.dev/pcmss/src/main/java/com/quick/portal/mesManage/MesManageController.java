@@ -71,6 +71,9 @@ public class MesManageController extends SysBaseController<MesManageDO> {
     public String  list(Model view){return  view();}
 
     @RequestMapping
+    public String  chose(Model view){return  view();}
+
+    @RequestMapping
     public String  tagedit(Model view){return  view();}
 
     @RequestMapping
@@ -172,9 +175,15 @@ public class MesManageController extends SysBaseController<MesManageDO> {
                   int tagid = Integer.parseInt(data);
                     List<Map<String,Object>> map = mesManageDao.mesByTag(tagid );
                    for(Map<String,Object> param : map){
-                    queryMap.put("msg_id",param.get("msg_id"));
+                       System.out.println(param);
+                       queryMap.put("msg_id",param.get("msg_id"));
                        List<Map<String,Object>> list = mesManageDao.selectMes(queryMap, pager);
-                       dt.add(list.get(0));
+                       if (list.size() == 0){
+                           continue;
+                       }else{
+                           dt.add(list.get(0));
+                       }
+                       //;
                    }
                 }
             }
@@ -188,7 +197,7 @@ public class MesManageController extends SysBaseController<MesManageDO> {
        for (Map<String,Object> data : dt){
 //           String  serialNum= String.format("%03d",a);
            String msgId  =  data.get("msg_id").toString();
-       List<String> msgTag = mesManageDao.selectMesTag(msgId);
+           List<String> msgTag = mesManageDao.selectMesTag(msgId);
            data.put("msgtext", msgTag);
            data.put("serialNum",a);
             a+=1;
@@ -238,6 +247,7 @@ public class MesManageController extends SysBaseController<MesManageDO> {
         List<Integer> msgid = new ArrayList<>();
         msgid.add(Integer.parseInt(msgId));
         List<String> list = mesManageDao.selectMesByTag(msgid);
+
         String tag_text="";
         String msgtext=null;
         for(String data:list){
@@ -253,6 +263,8 @@ public class MesManageController extends SysBaseController<MesManageDO> {
             msgtext = LoadContentByPath(msgcontent,6);
             a.put("msgcontent",msgtext);
         }
+        String user_name = mesManageDao.selectRes(msgId);
+        a.put("user_name",user_name);
         return a;
     }
 

@@ -104,6 +104,19 @@
                                 </div>
                             </li>
 
+                            <div class="col-sm-6 form_ipt_botm">
+                                <div class="form-group">
+                                    <label class="col-xs-3 lable_top" style="width:100px;"><span class="span_require">*</span>申请人</label>
+                                    <div class="col-xs-9" style="padding-left:15px;width:70%;">
+                                        <div class="input-group">
+                                            <input type="text" id="user_name" name="user_name" readOnly="readOnly" class="form-control"/>
+                                            <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button" onclick="chosebox('user_name', '${G.serverUrl}/chose','user_id');">...</button>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-sm-6 form_ipt_botm"style="width:100%;">
                                 <div class="form-group" >
                                     <label class="col-xs-3 lable_top" style="width:100px;"><span class="span_require">*</span>内容</label>
@@ -195,6 +208,7 @@
                         layer.msg('内容已创建成功！', {icon:1,time: 1000,skin: 'layer-ext-moon'},function(){
                             window.location.href = quick.serverUrl+"/list";
                         });
+                        parent.window.messageNotification();
                     }else{
                         layer.msg('内容审核未通过！', {icon:1,time: 1000,skin: 'layer-ext-moon'});
                     }

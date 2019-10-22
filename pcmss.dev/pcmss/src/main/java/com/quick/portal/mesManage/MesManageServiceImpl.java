@@ -146,15 +146,15 @@ public class MesManageServiceImpl extends SysBaseService<MesManageDO> implements
         String content = combinFile(fa,mesManageDO);
         String type = SolrInfoConstants.MSG_OBJ_TYPE;
             if(rules.size()>0){
-                SolrUtils.addSolrInfo(id,content,type,title,attach);
+                //SolrUtils.addSolrInfo(id,content,type,title,attach);
                 lab = autoFilter(rules,id);
-            }else {
+            }/*else {
                 SolrUtils.addSolrInfo(id,content,type,title,attach);
-            }
+            }*/
             if(lab ==1){
                 deleteFile(id);
                 deleteFile(path+"attachment/"+attName);
-                SolrUtils.deleteSolrInfo(id);
+                //SolrUtils.deleteSolrInfo(id);
                 response.getWriter().write("2");
                 response.getWriter().flush();
             }else{
@@ -173,6 +173,14 @@ public class MesManageServiceImpl extends SysBaseService<MesManageDO> implements
                     map.put("tag_id",Integer.parseInt(tags[i]));
                     mesManageDao.insertMesTag(map);
                 }
+                Map ResMap = new HashMap();
+                    ResMap.put("resource_cd",msgId);
+                    ResMap.put("apply_user",mesManageDO.getUser_name());
+                    ResMap.put("resource_name",mesManageDO.getMsg_title());
+                    ResMap.put("oper_desc",mesManageDO.getMsgcontent());
+                    ResMap.put("resource_status",1);//1 未审批 2已停用 3未通过 4已通过 5已发布   其它
+                    ResMap.put("check_status",0);//未读 1已读
+                mesManageDao.insertRes(ResMap);
                 response.getWriter().write("1");
                 response.getWriter().flush();
             }
@@ -264,10 +272,10 @@ public class MesManageServiceImpl extends SysBaseService<MesManageDO> implements
         String type = SolrInfoConstants.MSG_OBJ_TYPE;
         String content = combinFile(fa,mesManageDO);
         if(rules.size()>0){
-            SolrUtils.addSolrInfo(id,content,type,title,attach);
+            //SolrUtils.addSolrInfo(id,content,type,title,attach);
             lab  = autoFilter(rules,id);
         }else {
-            SolrUtils.addSolrInfo(id,content,type,title,attach);
+            //SolrUtils.addSolrInfo(id,content,type,title,attach);
         }
         if(lab ==1){
             deleteFile(id);
@@ -295,6 +303,13 @@ public class MesManageServiceImpl extends SysBaseService<MesManageDO> implements
             map.put("pub_time",date);
             map.put("appr_time",date);
             mesManageDao.msgedit(map);
+
+            Map ResMap = new HashMap();
+            ResMap.put("resource_cd",mesManageDO.getMsg_id());
+            ResMap.put("apply_user",mesManageDO.getUser_name());
+            ResMap.put("resource_name",mesManageDO.getMsg_title());
+            ResMap.put("oper_desc",mesManageDO.getMsgcontent());
+            mesManageDao.updateRes(ResMap);
         }
 
         try {
@@ -348,7 +363,7 @@ public class MesManageServiceImpl extends SysBaseService<MesManageDO> implements
             int tagId = mesManageDao.selectMaxTagId();
             tagFilter(key,map,tagId,msgId);
             String attach = "";
-             SolrUtils.addSolrInfo(content,datacontent,type,title,attach);
+             //SolrUtils.addSolrInfo(content,datacontent,type,title,attach);
             response.getWriter().write("1");
             response.getWriter().flush();
     }
@@ -363,11 +378,17 @@ public class MesManageServiceImpl extends SysBaseService<MesManageDO> implements
                 map.put("msg_id",msgs[i]);
                 List<Map<String,Object>> res = mesManageDao.selectMes(map);
                 mesManageDao.deleteMsg(msgs[i]);
+                //删除关联表res_info
+                Map resMap = new HashMap();
+                resMap.put("resource_cd",msgs[i]);
+                resMap.put("check_status",2);
+                mesManageDao.deleteRes(resMap);
+
                 mesManageDao.deleteMesTag(Integer.parseInt(msgs[i]));
                 String msgc = res.get(0).get("msg_content").toString();
                 Object msga = res.get(0).get("msg_attachment");
                 if(msgc!=null && !msgc.equals("") && !msgc.equals("undefined")){
-                    SolrUtils.deleteSolrInfo(msgc);
+                    //SolrUtils.deleteSolrInfo(msgc);
                     deleteFile(msgc);
                 }
                 if(msga!=null && !msga.equals("") && !msga.equals("undefined")){
@@ -378,6 +399,7 @@ public class MesManageServiceImpl extends SysBaseService<MesManageDO> implements
                 response.getWriter().write("0");
                 response.getWriter().flush();
             }}
+
         try {
             response.getWriter().write("1");
             response.getWriter().flush();
@@ -423,7 +445,7 @@ public class MesManageServiceImpl extends SysBaseService<MesManageDO> implements
             String[]  msgatt = mesManageDO.getMsg_content().split(",");
             if (msgatt.length>1){
                 msg_content = msgatt[1];
-                SolrUtils.deleteSolrInfo(msgatt[1]);
+               // SolrUtils.deleteSolrInfo(msgatt[1]);
                 map.put("msg_content",msg_content);
             }
         }
@@ -449,13 +471,13 @@ public class MesManageServiceImpl extends SysBaseService<MesManageDO> implements
                 title = attName.split("\\.")[0];
             }
 
-            SolrUtils.addSolrInfo(content,datacontent,type,title,attach);
+            //SolrUtils.addSolrInfo(content,datacontent,type,title,attach);
             map.put("msg_content",content);
             map.put("msg_title",title);
         }else {
             File fi = new File(msg_content);
             datacontent = parseFile(fi)+datacontent;
-            SolrUtils.addSolrInfo(msg_content,datacontent,type,title,attach);
+            //SolrUtils.addSolrInfo(msg_content,datacontent,type,title,attach);
         }
         String useId = QCookie.getValue(request,"sbd.user_id");
         map.put("pub_user_id",Integer.parseInt(useId));
@@ -493,7 +515,7 @@ public class MesManageServiceImpl extends SysBaseService<MesManageDO> implements
         mesManageDao.deleteMsg(msgId.toString());
         if(content!=null && !content.equals("") && !content.equals("undefined")){
             deleteFile(content);
-            SolrUtils.deleteSolrInfo(content);
+            //SolrUtils.deleteSolrInfo(content);
         }
         try {
             response.getWriter().write("1");
@@ -852,16 +874,17 @@ public class MesManageServiceImpl extends SysBaseService<MesManageDO> implements
         while( i<rules.size()){
             Map<String,Object> solr = new HashMap<>();
             solr.put("keyword",rules.get(i).get("param_value"));
-            SolrQuery query = SolrUtils.getAllSolrQuery(solr, pageBounds,"2");
-            SolrDocumentList docList = SolrUtils.getSolrInfoDataByTitle(query);
-            boolean bool = SolrUtils.getSolrDataByRule(docList,id);
-            if (bool){
-                SolrUtils.deleteSolrInfo(id);
-                return 1;
-            }else {
-                i++;
-                continue;
-            }
+            //SolrQuery query = SolrUtils.getAllSolrQuery(solr, pageBounds,"2");
+            //SolrDocumentList docList = SolrUtils.getSolrInfoDataByTitle(query);
+            //boolean bool = SolrUtils.getSolrDataByRule(docList,id);
+//            if (bool){
+//                SolrUtils.deleteSolrInfo(id);
+//                return 1;
+//            }else {
+//                i++;
+//                continue;
+//            }
+            i++;
         }
         return 0;
     }
