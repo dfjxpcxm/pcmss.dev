@@ -82,16 +82,14 @@
 							</li>
 						</ul>
 					</li>
-					<li class="hidden-xs"><a><!--<i class="fa fa-user"></i>-->
-							<strong class="font-bold" style="font-weight: normal;">用户：${L.user_real_name}</strong></a>
 
+					<li class="hidden-xs"><a><!--<i class="fa fa-user"></i>-->
+							<strong class="font-bold" onclick="choseboxType('${G.host}/sysUser/edit?mode=browse&user_id=${L.user_id}');"  style="font-weight: normal;">用户：${L.user_real_name}</strong></a>
 					</li>
 					<li class="hidden-xs" style="margin-right:62px;"><a href="javascript:void(0);"
 											 onclick="javascript:logout();return false;"
 											 class="roll-nav roll-right J_tabExit"><i
 							class="fa fa fa-sign-out" style="font-weight: normal;"></i>退出</a></li>
-
-
 				</ul>
 			</nav>
 		</div>
@@ -255,7 +253,44 @@
 			}
 		});
 	}
-
+	function choseboxType(url){
+		if(!layer.values)
+			layer.values = {};
+		var val=$('input:radio[name="mould_type"]:checked').val();
+		var opt = {};
+		var d = {
+			type: 2
+			,title: '用户信息'
+			,area: ['850px', '680px']
+			,shade: 0
+			,maxmin: true
+			,content: url + "?rid=" + val
+			,btn: ['确认', '关闭'] //只是为了演示
+			,yes: function(index, layero){
+				debugger
+				var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+				if(!iframeWin._chosenId){
+					alert('您还未选择记录，请点击要选择的行');
+					return;
+				}
+				// if(id){
+				// 	$("#"+nid).val(iframeWin._chosenName);
+				// 	$("#"+id).val(iframeWin._chosenId);
+				// }
+				if(fn){
+					var gd = iframeWin._gd["list"];
+					var dt = gd.getSelect();
+					fn(dt || [], iframeWin);
+				}
+				layer.closeAll();
+			}
+			,btn2: function(){
+				layer.closeAll();
+			}
+		};
+		var o = $.extend(d, opt);
+		layer.open(o);
+	}
 </script>
 
 
