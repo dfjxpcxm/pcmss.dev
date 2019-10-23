@@ -165,7 +165,7 @@
                                 </div>
                             </div>
 
-                            <div ibox-toolbars hidefield style="float:left;width:62%;height:80px;margin-top:30px;">
+                            <div id="save_cancel" ibox-toolbars hidefield style="float:left;width:62%;height:80px;margin-top:30px;">
                                 <li class="li_bom" style="height:70px;">
                                     <span class="input-group-btn" style="width:9%;"> <input id="submit-form"
                                                                                             type="button"
@@ -266,7 +266,7 @@
             $("input,textarea").attr("placeholder", "");
             $(".hidefield").show();
             $.post(quick.serverUrl + '/getObj?user_id=' + sysid + "&i=" + Math.random(), function (data) {
-
+                $("#save_cancel").show();
                 setForm(data);
                 if (data.dep_level > 1){
                     $("#choseboxsBtn").attr("disabled","disabled");
@@ -281,7 +281,9 @@
                     $("#user_state0").attr("checked", "checked");
                 }
                 if (mode == "browse") {
+                    $('#pagename').html("用户详细信息");
                     viewRead();
+                    $("#save_cancel").hide();
                 }
             });
         }

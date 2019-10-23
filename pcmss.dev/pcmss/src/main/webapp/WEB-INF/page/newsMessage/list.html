@@ -191,18 +191,18 @@
 				traditional:true,
 				success: function(data){
 
-
 				}});
-			//parent.window.messageNotification();//执行父窗口的方法
+			//parent.messageNotification();//执行父窗口的方法
 		}else{
 			//parent.window.location.reload();刷新页面
 			//window.parent.document.getElementById("seeAllMessage").valueOf();获取父窗口的id对应的值
 			//window.location.href=url     执行url
 			alert("请选择信息！！！")
 		}
-		console.log(messageId);
+		//console.log(messageId);
 	}
-	parent.window.messageNotification();//执行父窗口的方法
+	parent.messageNotification();
+	//parent.message();
   </script>
   <body class="gray-bg">
   <div class="wrapper wrapper-content wrapper-content-x animated fadeInRight">

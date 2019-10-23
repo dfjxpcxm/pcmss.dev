@@ -63,18 +63,47 @@
 							class="fa fa-tasks" style="font-weight: normal;padding-top: 10px;"></i>返回领导驾驶舱</a></li>
 -->
 					<li class="dropdown" id="roro">
-
+						<a class="dropdown-toggle count-info" style="background-color:transparent;" data-toggle="dropdown" aria-expanded="false">
+							<i class="fa fa-bell"></i> <span  class="label label-primary" id="newMessageL">0</span></a>
+						<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px;">
+						<li id="message_have">
+							<a class="J_menuItem" data-index="50" href="/pcmss/newsMessage/list?check_status=0" tabindex="389">
+							<div id="newMessageH"><i class="fa fa-envelope fa-fw"></i></div></a>
+						</li>
+							<li class="divider">
+						</li>
+							<li>
+								<div class="text-center link-block" style="padding: 1px">
+									<a id="seeAllMessage" class="J_menuItem" href="/pcmss/newsMessage/list" tabindex="389">
+										<strong>查看所有 </strong><i class="fa fa-angle-right">
+									</i>
+									</a>
+								</div>
+							</li>
+						</ul>
 					</li>
-					<li class="hidden-xs"><a><!--<i class="fa fa-user"></i>-->
-							<strong class="font-bold" style="font-weight: normal;">用户：${L.user_real_name}</strong></a>
-
+					<li class="hidden-xs">
+						<a class="dropdown-toggle count-info" style="background-color:transparent;" data-toggle="dropdown" aria-expanded="false">
+							<strong class="font-bold"  style="font-weight: normal;">用户：${L.user_real_name}</strong></a>
+						<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px; width: 140%">
+							<div class="contact-box" style="padding: 0px">
+									<div class="col-sm-12" >
+										<strong>用户名称：${L.user_name}</strong>
+										<p>
+											角色名称： ${L.role_name}<br>
+											部门名称： ${L.dep_name}
+										</p>
+									</div>
+							</div>
+						</ul>
+<!--						<a href="javascript:void(0);">&lt;!&ndash;<i class="fa fa-user"></i>&ndash;&gt;-->
+<!--							<strong class="font-bold"  style="font-weight: normal;">用户：${L.user_real_name}</strong></a>-->
 					</li>
+
 					<li class="hidden-xs" style="margin-right:62px;"><a href="javascript:void(0);"
 											 onclick="javascript:logout();return false;"
 											 class="roll-nav roll-right J_tabExit"><i
 							class="fa fa fa-sign-out" style="font-weight: normal;"></i>退出</a></li>
-
-
 				</ul>
 			</nav>
 		</div>
@@ -198,6 +227,7 @@
 			}
 		}
 		messageNotification();
+
 	}
 
 	function logout() {
@@ -217,63 +247,108 @@
 	// })
 
 	function messageNotification() {
-		$("#roro").empty();
 		$.ajax({
 			type: "get",
 			url: "${G.host}/newsMessage/getList?check_status=0",
 			async:false,
 			dataType: "json",
-			success: function(data){
-/*				$.each(data.rows,function(i,dataNode){
+			success: function(data) {
+				/*				$.each(data.rows,function(i,dataNode){
 							console.log(i);
 							console.log(dataNode);
 					 	});*/
-				var str = '';
 				if (data.total > 0) {
-					str = '<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px;">' +
-							'<li>' +
-							'<a class="J_menuItem" id="newMessageL" data-index="50" href="/pcmss/newsMessage/list?check_status=0" tabindex=389>' +
-							'<div>' +
-							'<i class="fa fa-envelope fa-fw"></i> 您有'+data.total+'条未读消息' +
-							// '<span class="pull-right text-muted small">4分钟前</span>' +
-							'</div>' +
-							'</a>' +
-							'</li>' +
-							'<li class="divider"></li>'+
-							'<li>' +
-							'<div class="text-center link-block" style="padding: 1px">' +
-							'<a id="seeAllMessage" class="J_menuItem" href="/pcmss/newsMessage/list" tabindex=389>' +
-							'<strong>查看所有 </strong>' +
-							'<i class="fa fa-angle-right"></i>' +
-							'</a>' +
-							'</div>' +
-							'</li>' +
-							'</ul>';
-				}else{
-					str ='<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px;">' +
-						'<li>' +
-						'<div class="text-center link-block" style="padding: 1px">' +
-						'<a id="seeAll" class="J_menuItem" href="${G.host}/newsMessage/list" tabindex=389>' +
-						'<strong>查看所有 </strong>' +
-						'<i class="fa fa-angle-right"></i>' +
-						'</a>' +
-						'</div>' +
-						'</li>' +
-						'</ul>';
+						$("#message_have").show();
+						$("#newMessageL").text(data.total);
+						$("#newMessageH").text('您有'+data.total+'条未读消息');
+					} else {
+						$("#newMessageL").text(0);
+						$("#message_have").hide();
 				}
-
-				$("#roro").append('<a class="dropdown-toggle count-info"  style="background-color:transparent;" data-toggle="dropdown" href="#" aria-expanded="false">' +
-							'<i class="fa fa-bell"></i> <span class="label label-primary">'+data.total+'</span>' +
-							'</a>')
-						.append(str);
-
 			}
-
 		});
-
-
 	}
+	//choseboxType('${G.host}/sysUser/edit?mode=browse&user_id=${L.user_id}')
+	$("#user_info").click(function () {
+		alert("hhe")
+		// var url = '${G.host}/sysUser/edit?mode=browse&user_id=${L.user_id}';
+		// if(!layer.values)
+		// 	layer.values = {};
+		// var val=$('input:radio[name="mould_type"]:checked').val();
+		// var opt = {};
+		// var d = {
+		// 	type: 2
+		// 	,title: '用户信息'
+		// 	,area: ['850px', '680px']
+		// 	,shade: 0
+		// 	,maxmin: true
+		// 	,content: url + "?rid=" + val
+		// 	,btn: ['确认', '关闭'] //只是为了演示
+		// 	,yes: function(index, layero){
+		// 		debugger
+		// 		var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+		// 		if(!iframeWin._chosenId){
+		// 			alert('您还未选择记录，请点击要选择的行');
+		// 			return;
+		// 		}
+		// 		// if(id){
+		// 		// 	$("#"+nid).val(iframeWin._chosenName);
+		// 		// 	$("#"+id).val(iframeWin._chosenId);
+		// 		// }
+		// 		if(fn){
+		// 			var gd = iframeWin._gd["list"];
+		// 			var dt = gd.getSelect();
+		// 			fn(dt || [], iframeWin);
+		// 		}
+		// 		layer.closeAll();
+		// 	}
+		// 	,btn2: function(){
+		// 		layer.closeAll();
+		// 	}
+		// };
+		// var o = $.extend(d, opt);
+		// layer.open(o);
+	});
 
+	function choseboxType(url){
+		debugger;
+		if(!layer.values)
+			layer.values = {};
+		var val=$('input:radio[name="mould_type"]:checked').val();
+		var opt = {};
+		var d = {
+			type: 2
+			,title: '用户信息'
+			,area: ['850px', '680px']
+			,shade: 0
+			,maxmin: true
+			,content: url + "?rid=" + val
+			,btn: ['确认', '关闭'] //只是为了演示
+			,yes: function(index, layero){
+				debugger
+				var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+				if(!iframeWin._chosenId){
+					alert('您还未选择记录，请点击要选择的行');
+					return;
+				}
+				// if(id){
+				// 	$("#"+nid).val(iframeWin._chosenName);
+				// 	$("#"+id).val(iframeWin._chosenId);
+				// }
+				if(fn){
+					var gd = iframeWin._gd["list"];
+					var dt = gd.getSelect();
+					fn(dt || [], iframeWin);
+				}
+				layer.closeAll();
+			}
+			,btn2: function(){
+				layer.closeAll();
+			}
+		};
+		var o = $.extend(d, opt);
+		layer.open(o);
+	}
 </script>
 
 

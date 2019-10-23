@@ -56,6 +56,8 @@ public class SysUserDO  implements java.io.Serializable {
         setIdcard_num(u.getIdcard_num());
         setDep_id(u.getDep_id());
         setDep_level(u.getDep_level());
+        setDep_name(u.dep_name);
+        setRole_name(u.role_name);
 
     }
     // <editor-fold defaultstate="collapsed" desc="私有成员">
@@ -92,7 +94,9 @@ public class SysUserDO  implements java.io.Serializable {
     /**
      *用户地址
      */
-    private String  user_addr;      	
+    private String  user_addr;
+
+    private String dep_name;
     /**
      *用户电话
      */
@@ -120,6 +124,8 @@ public class SysUserDO  implements java.io.Serializable {
     private int job_level;
 
     private String  idcard_num;
+
+    private String role_name;
 
     private List<UserRoleDO> roleList;
     private List<UserDepartmentDO> depList;
@@ -424,5 +430,21 @@ public class SysUserDO  implements java.io.Serializable {
 
     public void setDep_level(Integer dep_level) {
         this.dep_level = dep_level;
+    }
+
+    public String getDep_name() {
+        return dep_name;
+    }
+
+    public void setDep_name(String dep_name) {
+        this.dep_name = dep_name;
+    }
+
+    public String getRole_name() {
+        return role_name;
+    }
+
+    public void setRole_name(String role_name) {
+        this.role_name = role_name;
     }
 }
