@@ -116,6 +116,7 @@ $(function () {
 
     function menuItem() {
         // 获取标识数据
+
         var dataUrl = $(this).attr('href'),
             dataIndex = $(this).data('index'),
             mId = $(this).attr('tabIndex'),
@@ -170,9 +171,7 @@ $(function () {
         }else{
             $(".J_tabLeft,.J_tabRight").hide();
         }
-        if(mId ==389){
-            $('.font-bold').click();
-        }
+
         return false;
     }
 

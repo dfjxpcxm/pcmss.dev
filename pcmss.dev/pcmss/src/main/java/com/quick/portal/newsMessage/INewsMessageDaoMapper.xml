@@ -64,7 +64,8 @@
 			oper_desc,
 			date_time,
 			cre_time,
-			upd_time
+			upd_time,
+			resource_type
 		)values(
 			 #{resource_id},
 			 #{resource_name},
@@ -77,7 +78,8 @@
 			 #{oper_desc},
 			 #{date_time},
 			 now(),
-			 now()
+			 now(),
+			 #{resource_type}
 			)
 	</insert>
 		

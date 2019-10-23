@@ -199,7 +199,7 @@
     <select id="selectTagsTree" resultType="map">
       SELECT b.tag_type_id,b.tag_type_name,GROUP_CONCAT(tag_id,':',tag_text) tag_text
       FROM (SELECT t.tag_type_id,t.tag_type_name,tt.tag_text,tt.tag_id FROM tag_type t left join tags tt on  t.tag_type_id = tt.tag_type_id where t.tag_type_id !='' )
-      b GROUP BY b.tag_type_name
+      b GROUP BY b.tag_type_id, b.tag_type_name
     </select>
 
     <!--根据标签查询msgid-->
@@ -585,8 +585,8 @@
 </select>
 
     <insert id="insertRes" parameterType="map" >
-        INSERT INTO res_info(resource_cd,apply_user,resource_name,oper_desc,resource_status,check_status)
-         VALUES (#{resource_cd},#{apply_user},#{resource_name},#{oper_desc},#{resource_status},#{check_status})
+        INSERT INTO res_info(resource_cd,apply_user,resource_name,oper_desc,resource_status,check_status,resource_type)
+         VALUES (#{resource_cd},#{apply_user},#{resource_name},#{oper_desc},#{resource_status},#{check_status},3)
     </insert>
 
     <update id="updateRes" parameterType="map" >

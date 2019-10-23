@@ -78,11 +78,14 @@
 						   return check_status;
 					   }
 				   },
-				   { field: 'date_time', title: '日期', width: 100  },
-				  /* { field: 'cre_time', title: '创建时间', width: 100  },*/
+				   /*{ field: 'date_time', title: '日期', width: 100  },*/
+				   { field: 'cre_time', title: '创建时间', width: 100  },
 				   { field: 'CZ',  title: '操作',width: 100, formatter:function(value,row,index){
-
-					   return  "<button type='submit' class='btn_el' onclick='go(\""+row.resource_cd+"\",\""+row.url+"\",\""+row.check_status+"\")'>前往处理</button>";
+				   	if(row.url == null ||row.url.length ==0){
+						return  "<button type='submit' class='btn_el'";
+					}else{
+						return  "<button type='submit' class='btn_el' onclick='go(\""+row.resource_cd+"\",\""+row.url+"\",\""+row.check_status+"\")'>前往处理</button>";
+					}
 				   }}
 			   ],onPageChange:function(number, size){
                    $("#IDS_PAGESIZE").val(size);

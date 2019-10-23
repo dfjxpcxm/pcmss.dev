@@ -40,6 +40,8 @@ public class NewsMessageDO implements java.io.Serializable {
     private Date cre_time;
     private Date upd_time;
 
+    private int resource_type;
+
     private String url;
     private String check_status;
 
@@ -148,6 +150,14 @@ public class NewsMessageDO implements java.io.Serializable {
 
     public void setOper_desc(String oper_desc) {
         this.oper_desc = oper_desc;
+    }
+
+    public int getResource_type() {
+        return resource_type;
+    }
+
+    public void setResource_type(int resource_type) {
+        this.resource_type = resource_type;
     }
 }
 

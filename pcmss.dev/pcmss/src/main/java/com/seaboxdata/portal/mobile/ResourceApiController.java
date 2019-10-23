@@ -147,6 +147,7 @@ public class ResourceApiController extends SysApiController {
             msgDO.setApply_user(auser);
             msgDO.setDate_time(datetime);
             msgDO.setUrl(getCasUrl(url));
+            msgDO.setResource_type(1);
             String desc = getOperDesc(status);
             String operDesc = "用户："+cuser + "，处理资源目录："+ resnm + ",审核状态:"+desc;
             msgDO.setOper_desc(operDesc);
