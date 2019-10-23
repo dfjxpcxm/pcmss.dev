@@ -60,8 +60,8 @@ public class WebLoginUser extends SysUserDO {
             String userState = QCookie.getValue(request, "sbd.ustate");
             String depGlobalId = QCookie.getValue(request, "sbd.dep_global_id");
             String depLevel = QCookie.getValue(request, "sbd.dep_level");
-
-
+            String dep_name = QCookie.getValue(request, "sbd.dep_name");
+            String role_name = QCookie.getValue(request, "sbd.role_name");
 
 
             if (!QCommon.isNullOrEmpty(userRealName))
@@ -76,6 +76,10 @@ public class WebLoginUser extends SysUserDO {
                 depGlobalId = "0";
             if (QCommon.isNullOrEmpty(depLevel)||"null".equals(depLevel))
                 depLevel = "0";
+            if (!QCommon.isNullOrEmpty(dep_name))
+                dep_name = URLDecoder.decode(dep_name, "utf-8");
+            if (!QCommon.isNullOrEmpty(role_name))
+                role_name = URLDecoder.decode(role_name, "utf-8");
 
             this.setRoleList(this.extractRoleListStr(userRole));
             this.setUser_real_name(userRealName);
@@ -87,6 +91,8 @@ public class WebLoginUser extends SysUserDO {
             String requestSerial = QCookie.getValue(request, "request.serial");
             this.setRequestSerial(requestSerial == null ? 0 : Integer.valueOf(requestSerial));
             this.setUser_state(Integer.valueOf(userState));
+            this.setDep_name(dep_name);
+            this.setRole_name(role_name);
         } catch (Exception e) {
             System.out.print("无法从会话中读取用户信息");
             e.printStackTrace();
@@ -118,6 +124,8 @@ public class WebLoginUser extends SysUserDO {
             QCookie.set(response, "sbd.ustate", String.valueOf(this.getUser_state()), cookieTTL);
             QCookie.set(response, "sbd.dep_global_id", String.valueOf(this.getDep_global_id()), cookieTTL);
             QCookie.set(response, "sbd.dep_level", String.valueOf(this.getDep_level()), cookieTTL);
+            QCookie.set(response, "sbd.dep_name", String.valueOf(this.getDep_name()), cookieTTL);
+            QCookie.set(response, "sbd.role_name", String.valueOf(this.getRole_name()), cookieTTL);
 
         } catch (Exception e) {
             System.out.print("无法缓存用户会话信息");

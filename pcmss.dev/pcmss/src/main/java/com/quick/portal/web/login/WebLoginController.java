@@ -117,6 +117,10 @@ public class WebLoginController {
         QCookie.remove(response, request, "sbd.dep_global_id");
         QCookie.remove(response, request, "sbd.dep_level");
 
+        QCookie.remove(response, request, "sbd.dep_name");
+        QCookie.remove(response, request, "sbd.role_name");
+
+
         request.getSession().invalidate();
 
         String casUrl = PropertiesUtil.getPropery("sso.cas.server.prefixUrl");

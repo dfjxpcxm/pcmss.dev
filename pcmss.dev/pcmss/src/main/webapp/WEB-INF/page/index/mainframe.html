@@ -67,7 +67,7 @@
 							<i class="fa fa-bell"></i> <span  class="label label-primary" id="newMessageL">0</span></a>
 						<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px;">
 						<li id="message_have">
-							<a class="J_menuItem"data-index="50" href="/pcmss/newsMessage/list?check_status=0" tabindex="389">
+							<a class="J_menuItem" data-index="50" href="/pcmss/newsMessage/list?check_status=0" tabindex="389">
 							<div id="newMessageH"><i class="fa fa-envelope fa-fw"></i></div></a>
 						</li>
 							<li class="divider">
@@ -82,10 +82,24 @@
 							</li>
 						</ul>
 					</li>
-
-					<li class="hidden-xs"><a><!--<i class="fa fa-user"></i>-->
-							<strong class="font-bold" onclick="choseboxType('${G.host}/sysUser/edit?mode=browse&user_id=${L.user_id}');"  style="font-weight: normal;">用户：${L.user_real_name}</strong></a>
+					<li class="hidden-xs">
+						<a class="dropdown-toggle count-info" style="background-color:transparent;" data-toggle="dropdown" aria-expanded="false">
+							<strong class="font-bold"  style="font-weight: normal;">用户：${L.user_real_name}</strong></a>
+						<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px; width: 140%">
+							<div class="contact-box" style="padding: 0px">
+									<div class="col-sm-12" >
+										<strong>用户名称：${L.user_name}</strong>
+										<p>
+											角色名称： ${L.role_name}<br>
+											部门名称： ${L.dep_name}
+										</p>
+									</div>
+							</div>
+						</ul>
+<!--						<a href="javascript:void(0);">&lt;!&ndash;<i class="fa fa-user"></i>&ndash;&gt;-->
+<!--							<strong class="font-bold"  style="font-weight: normal;">用户：${L.user_real_name}</strong></a>-->
 					</li>
+
 					<li class="hidden-xs" style="margin-right:62px;"><a href="javascript:void(0);"
 											 onclick="javascript:logout();return false;"
 											 class="roll-nav roll-right J_tabExit"><i
@@ -213,6 +227,7 @@
 			}
 		}
 		messageNotification();
+
 	}
 
 	function logout() {
@@ -253,7 +268,50 @@
 			}
 		});
 	}
+	//choseboxType('${G.host}/sysUser/edit?mode=browse&user_id=${L.user_id}')
+	$("#user_info").click(function () {
+		alert("hhe")
+		// var url = '${G.host}/sysUser/edit?mode=browse&user_id=${L.user_id}';
+		// if(!layer.values)
+		// 	layer.values = {};
+		// var val=$('input:radio[name="mould_type"]:checked').val();
+		// var opt = {};
+		// var d = {
+		// 	type: 2
+		// 	,title: '用户信息'
+		// 	,area: ['850px', '680px']
+		// 	,shade: 0
+		// 	,maxmin: true
+		// 	,content: url + "?rid=" + val
+		// 	,btn: ['确认', '关闭'] //只是为了演示
+		// 	,yes: function(index, layero){
+		// 		debugger
+		// 		var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+		// 		if(!iframeWin._chosenId){
+		// 			alert('您还未选择记录，请点击要选择的行');
+		// 			return;
+		// 		}
+		// 		// if(id){
+		// 		// 	$("#"+nid).val(iframeWin._chosenName);
+		// 		// 	$("#"+id).val(iframeWin._chosenId);
+		// 		// }
+		// 		if(fn){
+		// 			var gd = iframeWin._gd["list"];
+		// 			var dt = gd.getSelect();
+		// 			fn(dt || [], iframeWin);
+		// 		}
+		// 		layer.closeAll();
+		// 	}
+		// 	,btn2: function(){
+		// 		layer.closeAll();
+		// 	}
+		// };
+		// var o = $.extend(d, opt);
+		// layer.open(o);
+	});
+
 	function choseboxType(url){
+		debugger;
 		if(!layer.values)
 			layer.values = {};
 		var val=$('input:radio[name="mould_type"]:checked').val();
