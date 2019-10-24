@@ -171,7 +171,6 @@ $(function () {
         }else{
             $(".J_tabLeft,.J_tabRight").hide();
         }
-
         return false;
     }
 

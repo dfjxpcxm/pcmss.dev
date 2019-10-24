@@ -128,7 +128,7 @@ public class WebLoginController {
                 + ":" + request.getServerPort() + request.getContextPath()
                 + "/";
 
-        return "redirect:".concat(casUrl).concat("/logout?service=").concat(QCommon.urlEncode(url));
+        return "redirect:".concat(casUrl).concat("logout?service=").concat(QCommon.urlEncode(url));
     }
 
     private WebLoginUser loadPortalUserInfo(HttpServletRequest request, HttpServletResponse response) {
