@@ -20,7 +20,7 @@
                                                                                                 type="button"
                                                                                                 onclick="query();"> 查询</button> </span>
                             <div class="form-group" style="width:100px;float:right;">
-                                <button type="button" class="btn btn-primary" onclick="location.href='edit';"> 新增接口申请
+                                <button type="button" class="btn btn-primary" onclick="location.href='edit';"> 新增
                                 </button>
                             </div>
                         </form>
@@ -87,7 +87,6 @@
                     }
                 },
                 {field: 'cre_time', title: '创建时间', width: 100, align: 'center'},
-                {field: 'upd_time', title: '更新时间', width: 100, align: 'center'},
                 {
                     field: 'CZ', title: '操作', width: '15%', align: 'center', formatter: function (value, row, index) {
                         return "<button type='button' class='btn_el' onclick='edit(\"" + row.app_id + "\",\"" + row.app_usename + "\")'>编辑</button>| "
