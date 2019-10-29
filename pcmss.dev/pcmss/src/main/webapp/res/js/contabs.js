@@ -153,7 +153,6 @@ $(function () {
             var str1 = '<iframe class="J_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
 //            $('.J_mainContent').find('iframe.J_iframe').hide().parents('.J_mainContent').append(str1);
             var isFlag  = isApp(mId);
-
             if(isFlag=="1"){
                 var targetOrigin = dataUrl;
                 window.open(targetOrigin,'_blank');
@@ -180,27 +179,15 @@ $(function () {
 
 
     function isApp(id){
-        var bool;
+        var bool= '1';
         $.ajax({
             type: "post",
             async:false,
             url:  'getIsAppMenuByID',
             data:{menuId:id},
             success: function(data){
-                if(data.code == '-99'){
-                    layer.msg(data.msg, {
-                        icon : 1,
-                        time : 1000,
-                        skin : 'layer-ext-seaning'
-                    });
-
-                    top.location.href = data.url;
-                }else{
-                    bool = data;
-                }
-
+             bool = data;
             }
-
         });
         return bool;
     }
