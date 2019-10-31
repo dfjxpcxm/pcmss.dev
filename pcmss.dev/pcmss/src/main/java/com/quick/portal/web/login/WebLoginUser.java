@@ -115,7 +115,7 @@ public class WebLoginUser extends SysUserDO {
             logger.debug("Set portal session  timeout to {} seconds.", cookieTTL);
 
             QCookie.set(response, "sbd.user_id", this.getUser_id().toString(), cookieTTL); //浏览器关闭就过期
-            QCookie.set(response, "sbd.user_real_name", userNm, cookieTTL);
+          //  QCookie.set(response, "sbd.user_real_name", userNm, cookieTTL);
             QCookie.set(response, "sbd.user_name", this.getUser_name(), cookieTTL);
             QCookie.set(response, "sbd.user_role", this.constructRoleListStr(), cookieTTL);
             QCookie.set(response, "sbd.tk", this.createToken(request), cookieTTL); //验证参数是否被修改
@@ -124,8 +124,8 @@ public class WebLoginUser extends SysUserDO {
             QCookie.set(response, "sbd.ustate", String.valueOf(this.getUser_state()), cookieTTL);
             QCookie.set(response, "sbd.dep_global_id", String.valueOf(this.getDep_global_id()), cookieTTL);
             QCookie.set(response, "sbd.dep_level", String.valueOf(this.getDep_level()), cookieTTL);
-            QCookie.set(response, "sbd.dep_name", String.valueOf(this.getDep_name()), cookieTTL);
-            QCookie.set(response, "sbd.role_name", String.valueOf(this.getRole_name()), cookieTTL);
+           // QCookie.set(response, "sbd.dep_name", String.valueOf(this.getDep_name()), cookieTTL);
+           // QCookie.set(response, "sbd.role_name", String.valueOf(this.getRole_name()), cookieTTL);
 
         } catch (Exception e) {
             System.out.print("无法缓存用户会话信息");
