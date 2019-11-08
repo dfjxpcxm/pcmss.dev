@@ -225,4 +225,14 @@ public class SysUserController extends SysBaseController<SysUserDO> {
         DataStore ds = sysUserService.syncUserLdap(userids);
         return ds;
     }
+    @RequestMapping(value = "/userInfo")
+    @ResponseBody
+    public List<SysUserDO> userInfo(){
+        Map<String, Object> parm = new HashMap<>();
+        String uid = QCookie.getValue(request, "sbd.user_name");
+        parm.put("user_name", uid);
+        List<SysUserDO> uList = sysUserService.getUserInfo(parm);
+        return uList;
+    }
+
 }

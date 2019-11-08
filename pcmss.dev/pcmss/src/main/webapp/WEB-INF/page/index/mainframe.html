@@ -84,20 +84,15 @@
 					</li>
 					<li class="hidden-xs">
 						<a class="dropdown-toggle count-info" style="background-color:transparent;" data-toggle="dropdown" aria-expanded="false">
-							<strong class="font-bold"  style="font-weight: normal;">用户：${L.user_real_name}</strong></a>
+							<strong class="font-bold"  style="font-weight: normal;" id="userRealName">用户：</strong></a>
 						<ul class="dropdown-menu dropdown-alerts" style="padding: 1px 1px 1px 1px; width: 140%">
 							<div class="contact-box" style="padding: 0px">
-									<div class="col-sm-12" >
-										<strong>用户名称：${L.user_name}</strong>
-										<p>
-											角色名称： ${L.role_name}<br>
-											部门名称： ${L.dep_name}
-										</p>
+									<div class="col-sm-12" id="userInfo">
+
 									</div>
 							</div>
 						</ul>
 <!--						<a href="javascript:void(0);">&lt;!&ndash;<i class="fa fa-user"></i>&ndash;&gt;-->
-<!--							<strong class="font-bold"  style="font-weight: normal;">用户：${L.user_real_name}</strong></a>-->
 					</li>
 
 					<li class="hidden-xs" style="margin-right:62px;"><a href="javascript:void(0);"
@@ -226,6 +221,7 @@
 				}
 			}
 		}
+		userInfo();
 		messageNotification();
 
 	}
@@ -245,7 +241,22 @@
 	// $("#newMessageL").click(function () {
 	// 	window.location.href = "/pcmss/newsMessage/list?check_status=0";
 	// })
+	function userInfo(){
+		$.ajax({
+			type: "get",
+			url: "${G.host}/sysUser/userInfo",
+			async:false,
+			dataType: "json",
+			success: function(data) {
+				console.log(data[0].dep_name);
+				var str = '<strong id="userName">用户名称：'+data[0].user_name+'</strong>'
+						+'<p>角色名称：' +data[0].role_name+'<br>部门名称：'+data[0].dep_name+'</p>';
+				$("#userInfo").append(str);
+				$("#userRealName").text("用户："+data[0].user_real_name);
 
+			}
+		});
+	}
 	function messageNotification() {
 		$.ajax({
 			type: "get",
