@@ -42,20 +42,20 @@ public class UserApiController extends SysApiController {
         DataResult result = null;
         if(null == user_old_pw || "".equals(user_old_pw)){
         	 result = new DataResult(0,"您输入旧密码不能为空，请重新输入密码！");
-             return result;     
+             return result;
         }
         if(null == new_password || "".equals(new_password)){
         	 result = new DataResult(0,"您输入新密码不能为空，请重新输入密码！");
-             return result;     
+             return result;
         }
-        		
+
         map.put("user_password",user_old_pw);
         map.put("user_name",user_id);
-        
+
         List<Map<String,Object>> list = sysUserService.select(map);
         if(null == list || list.size()==0){
               result = new DataResult(0,"您输入用户或密码不准确，请重新输入密码！");
-              return result;     
+              return result;
         }
     	SysUserDO sysUserDO = new SysUserDO();
         sysUserDO.setUser_password(new_password);
@@ -88,6 +88,16 @@ public class UserApiController extends SysApiController {
             result.setMsg("输入的密码有错，请重新输入！");
             result.setVersion("1.0");
         }
+        return result;
+    }
+
+
+    //App修改密码
+    @RequestMapping(value = "/getUserPwdData")
+    @ResponseBody
+    public DataResult getUserPwdData(String userId,String userPwd, String encType)  {
+
+        DataResult result = new DataResult(0,"OK");
         return result;
     }
 
