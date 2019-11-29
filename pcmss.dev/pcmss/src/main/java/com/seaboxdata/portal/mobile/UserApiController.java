@@ -101,10 +101,6 @@ public class UserApiController extends SysApiController {
     @RequestMapping(value = "/getUserPwdData")
     @ResponseBody
     public DataResult getUserPwdData(String userId, String userPwd, String encType, String sysSource) throws NoSuchAlgorithmException {
-//        userId = user_id
-//        userPwd = user_password
-//        encType = user_cert_type
-//        sysSource = user_global_id
         DataResult result = new DataResult();
         if(userPwd.length() != 32){
             result.setCode(3);
@@ -112,11 +108,13 @@ public class UserApiController extends SysApiController {
             return result;
         }
 
+        Map<String,Object> mp = new HashMap<>();
+        mp.put("user_name",userId);
         SysUserDO sysUserDO = new SysUserDO();
-        List<Map<String, Object>> ListsysUserInfo = iSysUserDao.getUserInfoByIds(Integer.valueOf(userId));
-        if(ListsysUserInfo.size() != 0 ){
+        List<SysUserDO> ListsysUserInfo = iSysUserDao.getUserInfo(mp);
+        if(null != ListsysUserInfo &&ListsysUserInfo.size() >0 ){
             sysUserDO.setUser_password(userPwd);//加密
-            sysUserDO.setUser_id(Integer.parseInt(userId));
+            sysUserDO.setUser_name(userId);
             sysUserDO.setUser_cert_type(encType);
             sysUserDO.setUser_global_id(sysSource);
             int c = sysUserService.updateUserPassword(sysUserDO);
@@ -128,10 +126,9 @@ public class UserApiController extends SysApiController {
                 result.setMsg("修改失败");
             }
 
-        }else
-        {
+        }else {
             result.setCode(2);
-            result.setMsg("用户不存在！");
+            result.setMsg("用户不存在！用户名:"+userId);
         }
         return result;
     }

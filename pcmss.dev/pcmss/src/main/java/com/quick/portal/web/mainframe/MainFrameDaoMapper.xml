@@ -57,4 +57,19 @@
     <select id="searchSysIndex" parameterType="int" resultType="map">
         select * from sys_index_mng where role_type_id =#{role_type_id}
     </select>
+
+
+
+    <select id="getAcessData2Main" parameterType="map" resultType="map">
+        select * from MAIN_ACESS_DATA where  DATE_FORMAT(date_time,'%Y-%m-%d')=#{endDate}
+    </select>
+
+    <select id="getJobData" parameterType="map" resultType="map">
+        select job_fail_count as JOB_FAIL_COUNT,job_suc_count as JOB_SUC_COUNT from MAIN_JOB_DATA where DATE_FORMAT(date_time,'%Y-%m-%d')=#{endDate}
+    </select>
+    <select id="getLoginCntData" parameterType="map" resultType="map">
+        select LOGIN_COUNT as LOGIN_COUNT from MAIN_LOGIN_DATA WHERE DATE_FORMAT(date_time,'%Y-%m-%d') BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+
 </mapper>

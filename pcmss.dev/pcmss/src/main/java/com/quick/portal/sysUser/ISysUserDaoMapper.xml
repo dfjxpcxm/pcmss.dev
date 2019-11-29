@@ -8,6 +8,9 @@
 		<if test="user_id != null and user_id != '' and !'null'.equals(user_id)"><![CDATA[
 	       and u.user_id = #{user_id}
 	    ]]></if>
+		<if test="user_name != null and user_name != '' and !'null'.equals(user_name)"><![CDATA[
+	       and u.user_name = #{user_name}
+	    ]]></if>
 		<if test="user_password != null and user_password != '' and !'null'.equals(user_password)"><![CDATA[
 	       and u.user_password = #{user_password}
 	    ]]></if>
@@ -164,7 +167,7 @@
 		user_cert_type=#{user_cert_type},
 		user_global_id=#{user_global_id},
 		upd_time=now()
-		where user_id = #{user_id}
+		where user_name = #{user_name}
 	</update>
 	
 	

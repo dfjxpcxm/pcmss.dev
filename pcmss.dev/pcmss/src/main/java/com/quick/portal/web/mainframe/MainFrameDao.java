@@ -33,4 +33,11 @@ public interface MainFrameDao extends ISysBaseDao {
     public List<MainFrameBean> searchMainFrame(int userId);
 
     public Map<String, Object> searchSysIndex(int role_type_id);
+
+
+    public  List<Map<String,Object>> getAcessData2Main(Map<String,Object> mp);
+
+    public List<Map<String, Object>> getJobData(Map<String,Object> mp);
+
+    public List<Map<String, Object>> getLoginCntData(Map<String,Object> mp);
 }

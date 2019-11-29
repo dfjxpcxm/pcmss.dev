@@ -10,6 +10,10 @@ import com.quick.portal.userAccessLog.IUserAccessLogService;
 import com.quick.portal.userAccessLog.UserAccessLogConstants;
 import com.quick.portal.userRole.UserRoleDO;
 import com.quick.portal.web.login.WebLoginConstants;
+import com.quick.portal.web.model.DataResult;
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.quick.portal.web.login.WebLoginUitls.isAdminRoleType;
@@ -155,5 +160,124 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
         res.getWriter().write(flag);
     }
 
+
+    @RequestMapping(value = "/getAcessData2Main")
+    @ResponseBody
+    public Object getAcessData2Main(String startDate,String endDate){
+        DataResult dr = new DataResult();
+        if(StringUtils.isEmpty(startDate)){
+            dr.setError("系统统计不准确，开始时间异常：startDate="+startDate);
+            return dr;
+        }
+        if(StringUtils.isEmpty(endDate)){
+            dr.setError("系统统计不准确，开始时间异常：startDate="+endDate);
+            return dr;
+        }
+        Map<String, Object> p = new HashMap<>();
+        p.put("startDate", startDate);
+        p.put("endDate", endDate);
+        AcessData2MainBean data = mainFrameService.getAcessData2Main(p);
+        dr.setCode(1);
+        dr.setData(data);
+        return dr;
+    }
+
+
+    /*
+          var data={
+                "code": 200,
+                "msg": null,
+                "content": {
+                    "triggerCountFailTotal": 418,
+                    "triggerDayList": ["2019-09-24","2019-09-25","2019-09-26","2019-09-27","2019-09-28","2019-09-29","2019-09-30", "2019-10-01"],
+                    "triggerCountSucTotal": 701,
+                    "triggerDayCountSucList": [248, 230, 288, 311, 266, 308, 150, 170],
+                }
+            }
+     */
+    @RequestMapping(value = "/getMainData")
+    @ResponseBody
+    public Object getMainData(String startDate,String endDate) throws Exception {
+        DataResult dr = new DataResult();
+        if(StringUtils.isEmpty(startDate)){
+            dr.setError("系统统计不准确，开始时间异常：startDate="+startDate);
+            return dr;
+        }
+        startDate = startDate.substring(0,10);
+        if(StringUtils.isEmpty(endDate)){
+            dr.setError("系统统计不准确，开始时间异常：startDate="+endDate);
+            return dr;
+        }
+        startDate = getPastDate(endDate,WEEK_DAY);
+        endDate = endDate.substring(0,10);
+        Map<String, Object> p = new HashMap<>();
+        p.put("startDate", startDate);
+        p.put("endDate", endDate);
+        List<Map<String, Object>>  restList = new ArrayList<Map<String, Object>>();
+
+        //查询作业调度数量
+        JobDataBean jobData = mainFrameService.getJobData(p);
+
+        //查询系统访问量
+        List<Integer> loginCnt = mainFrameService.getLoginCntData(p);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("triggerCountFailTotal", jobData.getJob_fail_count());
+        map.put("triggerCountSucTotal", jobData.getJob_suc_count());
+        List<String>  days = getDays(startDate,endDate);
+        map.put("triggerDayList", JsonUtil.serialize(days));
+        map.put("triggerDayCountSucList", JsonUtil.serialize(loginCnt));
+        restList.add(map);
+        dr.setData(restList);
+        dr.setCode(1);
+        return dr;
+
+    }
+
+
+
+
+    public static void main(String[] args) throws Exception {
+        String beginDate = "2019-10-21";//开始时间
+        String endDate = "2019-11-02";//结束时间
+
+        List<String>  days = getDays(beginDate,endDate);
+        for(String a :days){
+            System.out.println(a);
+        }
+
+
+
+    }
+
+    public static String  getPastDate( String endDate ,int day)throws Exception {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = df.parse(endDate);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+        cal.add(Calendar.DATE, -day);  //减1天
+        System.out.println(df.format(cal.getTime()));
+        return df.format(cal.getTime());
+    }
+
+    public static List<String> getDays( String beginDate, String endDate)throws Exception{
+        List<String> days = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sdf.parse(beginDate));
+        for (long d = cal.getTimeInMillis(); d <= sdf.parse(endDate).getTime(); d = get_D_Plaus_1(cal)) {
+            days.add(sdf.format(d));
+        }
+        return days;
+
+    }
+
+    public static long get_D_Plaus_1(Calendar c) {
+        c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 1);
+        return c.getTimeInMillis();
+    }
+
+
+    public final static int WEEK_DAY = 7;
 
 }

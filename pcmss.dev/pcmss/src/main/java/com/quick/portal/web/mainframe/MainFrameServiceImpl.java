@@ -19,6 +19,7 @@
 package com.quick.portal.web.mainframe;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,46 @@ public class MainFrameServiceImpl extends SysBaseService<MainFrameBean> implemen
 	public Map<String, Object> searchSysIndex(int role_type_id) {
 
 		return dao.searchSysIndex(role_type_id);
+	}
+
+	@Override
+	public AcessData2MainBean getAcessData2Main(Map<String, Object> mp) {
+		AcessData2MainBean ad = new AcessData2MainBean ();
+		List<Map<String, Object>>  retList = dao.getAcessData2Main(mp);
+		if(!retList.isEmpty() && retList.size()>0){
+			Map<String, Object> mm = retList.get(0);
+			ad.setApp_count(Integer.parseInt(mm.get("app_count").toString()));
+			ad.setUser_count(Integer.parseInt(mm.get("user_count").toString()));
+			ad.setIndex_count(Integer.parseInt(mm.get("index_count").toString()));
+			ad.setJob_count(Integer.parseInt(mm.get("job_count").toString()));
+		}
+		return ad;
+	}
+
+	@Override
+	public JobDataBean getJobData(Map<String, Object> mp) {
+		JobDataBean job = new JobDataBean();
+		List<Map<String, Object>>  retList = dao.getJobData(mp);
+		if(!retList.isEmpty() && retList.size()>0){
+			Map<String, Object> mm = retList.get(0);
+			job.setJob_fail_count(Integer.parseInt(mm.get("JOB_FAIL_COUNT").toString()));
+			job.setJob_suc_count(Integer.parseInt(mm.get("JOB_SUC_COUNT").toString()));
+
+		}
+		return job;
+	}
+
+	@Override
+	public List<Integer> getLoginCntData(Map<String, Object> mp) {
+		List<Integer> logCnt = new ArrayList<>();
+		List<Map<String, Object>>  retList = dao.getLoginCntData(mp);
+		if(!retList.isEmpty() && retList.size()>0){
+			for(Map<String, Object> mm:retList){
+				logCnt.add(Integer.parseInt(mm.get("LOGIN_COUNT").toString()));
+			}
+
+		}
+		return logCnt;
 	}
 
 }

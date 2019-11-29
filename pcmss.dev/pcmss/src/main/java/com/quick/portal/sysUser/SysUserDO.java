@@ -58,6 +58,7 @@ public class SysUserDO  implements java.io.Serializable {
         setDep_level(u.getDep_level());
         setDep_name(u.dep_name);
         setRole_name(u.role_name);
+        setUser_cert_type(u.getUser_cert_type());
 
     }
     // <editor-fold defaultstate="collapsed" desc="私有成员">

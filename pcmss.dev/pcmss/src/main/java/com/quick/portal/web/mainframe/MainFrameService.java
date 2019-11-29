@@ -34,4 +34,14 @@ public interface MainFrameService extends ISysBaseService<MainFrameBean>{
     public List<MainFrameBean> searchMainFrame(String userId);
 
     public Map<String, Object> searchSysIndex(int role_type_id);
+
+
+
+    public AcessData2MainBean getAcessData2Main(Map<String,Object> mp);
+
+
+    public JobDataBean getJobData(Map<String,Object> mp);
+
+
+    public List<Integer> getLoginCntData(Map<String,Object> mp);
 }

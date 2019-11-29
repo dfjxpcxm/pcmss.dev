@@ -52,7 +52,7 @@
                 <div class="info-box bg-aqua">
                     <span class="info-box-icon"><i class="fa fa-desktop"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">应用数量</span> <span class="info-box-number" id="app_count">0</span>
+                        <span class="info-box-text">应用数量</span> <span class="info-box-number" id="app_count">32</span>
                         <div class="progress">
                             <div class="progress-bar" style="width: 100%"></div>
                         </div>
@@ -64,7 +64,7 @@
                 <div class="info-box bg-yellow">
                     <span class="info-box-icon"><i class="fa fa-user"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">用户数量</span> <span class="info-box-number" id="user_count">0</span>
+                        <span class="info-box-text">用户数量</span> <span class="info-box-number" id="user_count">20</span>
                         <div class="progress">
                             <div class="progress-bar" style="width: 100%"></div>
                         </div>
@@ -76,7 +76,7 @@
                 <div class="info-box bg-green">
                     <span class="info-box-icon"><i class="fa fa-file-text-o"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">指标数量</span> <span class="info-box-number" id="index_count">0</span>
+                        <span class="info-box-text">指标数量</span> <span class="info-box-number" id="index_count">160</span>
                         <div class="progress">
                             <div class="progress-bar" style="width: 100%"></div>
                         </div>
@@ -88,7 +88,7 @@
                 <div class="info-box bg-purple">
                     <span class="info-box-icon"><i class="fa fa-sliders"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">任务数量</span> <span class="info-box-number" id="job_count">0</span>
+                        <span class="info-box-text">作业数量</span> <span class="info-box-number" id="job_count">40</span>
                         <div class="progress">
                             <div class="progress-bar" style="width: 100%"></div>
                         </div>
@@ -191,40 +191,54 @@
                     "triggerCountFailTotal": 418,
                     "triggerDayList": ["2019-09-24","2019-09-25","2019-09-26","2019-09-27","2019-09-28","2019-09-29","2019-09-30", "2019-10-01"],
                     "triggerCountSucTotal": 701,
-                    "triggerDayCountFailList": [248, 230, 288, 311, 266, 308, 150, 170],
+//                    "triggerDayCountFailList": [248, 230, 288, 311, 266, 308, 150, 170],
                     "triggerDayCountSucList": [248, 230, 288, 311, 266, 308, 150, 170],
                 }
             }
-            lineChartInit(data)
-            pieChartInit(data);
+//            lineChartInit(data)
+//            pieChartInit(data);
             getData(startDate, endDate);
-            /*          $.ajax({
-                         type : 'POST',
-                         url : base_url + '/triggerChartDate',
-                         data : {
-                             'startDate':startDate.format('YYYY-MM-DD HH:mm:ss'),
-                             'endDate':endDate.format('YYYY-MM-DD HH:mm:ss')
-                         },
-                         dataType : "json",
-                         success : function(data){
-                             if (data.code == 200) {
-                                 lineChartInit(data)
-                                 pieChartInit(data);
-                             } else {
-                                 layer.open({
-                                     title: '系统提示',
-                                     content: (data.msg || '调度报表数据加载异常'),
-                                     icon: '2'
-                                 });
-                             }
-                         }
-                     }); */
+
+            getMainData(startDate, endDate);
+
+        }
+
+        function getMainData (startDate, endDate) {
+            $.ajax({
+                type : 'POST',
+                url : '${G.host}' + '/getMainData',
+                data : {
+                    'startDate':startDate.format('YYYY-MM-DD HH:mm:ss'),
+                    'endDate':endDate.format('YYYY-MM-DD HH:mm:ss')
+                },
+                dataType : "json",
+                success : function(r){
+                    if (r.code == 1) {
+                        lineChartInit(r.data[0]);
+                        pieChartInit(r.data[0]);
+
+                    } else {
+                        layer.open({
+                            title: '系统提示',
+                            content: (data.msg || '调度报表数据加载异常'),
+                            icon: '2'
+                        });
+                    }
+                }
+            });
+
         }
 
         /**
          * 折线图
          */
         function lineChartInit(data) {
+
+           var dt = data.triggerDayList;
+            var ss = JSON.parse(dt);
+            var ds = data.triggerDayCountSucList;
+            var s1 = JSON.parse(ds);
+
             var option = {
                 title: {
                     text: '日访问量分布图'
@@ -256,7 +270,9 @@
                     {
                         type : 'category',
                         boundaryGap : false,
-                        data : data.content.triggerDayList
+//                        data : data.content.triggerDayList
+//                        data : data.triggerDayList
+                        data : ss
                     }
                 ],
                 yAxis : [
@@ -269,7 +285,9 @@
                         name:'访问次数',
                         type:'line',
                         stack: '总量',
-                        data: data.content.triggerDayCountSucList
+//                        data: data.content.triggerDayCountSucList
+//                        data: data.triggerDayCountSucList
+                        data: s1
                     },
                 ],
                 color:['#216fff', '#F39C12']
@@ -306,11 +324,13 @@
                         center: ['50%', '60%'],
                         data:[
                             {
-                                value:data.content.triggerCountSucTotal,
+ //                               value:data.content.triggerCountSucTotal,
+                                value:data.triggerCountSucTotal,
                                 name:'成功调度次数'
                             },
                             {
-                                value:data.content.triggerCountFailTotal,
+//                                value:data.content.triggerCountFailTotal,
+                                value:data.triggerCountFailTotal,
                                 name:'失败调度次数'
                             }
                         ],
@@ -334,27 +354,31 @@
     });
     function getData (startDate, endDate) {
 
-        $('#app_count').text('32');
+        /*$('#app_count').text('32');
         $('#user_count').text('10');
         $('#index_count').text('130');
         $('#job_count').text('42');
+*/
 
-        // var url = "../../sys/user/home/data";
-        // $.ajax({
-        //     type: "POST",
-        //     url: url,
-        //     dataType: 'json',
-        //     data: {startDate:startDate.format('YYYY-MM-DD'), endDate:endDate.format('YYYY-MM-DD')},
-        //     success: function (r) {
-        //         if (r.code === 0) {
-        //             $('#col_count').text(r.data.colCount);
-        //             $('#app_count').text(r.data.appCount);
-        //             $('#res_count').text(r.data.resCount);
-        //             $('#warning_count').text(r.data.warningCount);
-        //         }
-        //     }
-        // });
+        $.ajax({
+            type: "POST",
+            url: "${G.host}/getAcessData2Main",
+            dataType: 'json',
+            data: {startDate:startDate.format('YYYY-MM-DD'), endDate:endDate.format('YYYY-MM-DD')},
+            success: function (r) {
+                if (r.code === 1) {
+                    $('#app_count').text(r.data.app_count);
+                    $('#user_count').text(r.data.user_count);
+                    $('#index_count').text(r.data.index_count);
+                    $('#job_count').text(r.data.job_count);
+                }
+            }
+        });
     }
+
+
+
+
 </script>
 </body>
 </html>
