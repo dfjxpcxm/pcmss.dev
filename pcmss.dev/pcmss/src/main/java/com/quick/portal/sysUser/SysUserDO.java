@@ -109,10 +109,10 @@ public class SysUserDO  implements java.io.Serializable {
      *upd_time
      */
     private Date  upd_time;
-
+    private String user_cert_type;//加密类型
     private String user_email;
 
-    private String user_global_id;
+    private String user_global_id;//来源系统
   
     private String[] role_ids;
     private String[] dep_ids;
@@ -446,5 +446,13 @@ public class SysUserDO  implements java.io.Serializable {
 
     public void setRole_name(String role_name) {
         this.role_name = role_name;
+    }
+
+    public String getUser_cert_type() {
+        return user_cert_type;
+    }
+
+    public void setUser_cert_type(String user_cert_type) {
+        this.user_cert_type = user_cert_type;
     }
 }

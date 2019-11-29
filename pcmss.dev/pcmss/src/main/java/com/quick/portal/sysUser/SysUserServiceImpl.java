@@ -158,6 +158,15 @@ public class SysUserServiceImpl extends SysBaseService<SysUserDO> implements ISy
             return ActionMsg.setError("密码修改失败");
     }
 
+    @Override
+    public int updateUserPassword(SysUserDO sysUserDO) {
+        int c = dao.updateUserPassword(sysUserDO);
+//        if (c == 1)
+//            return ActionMsg.setOk("密码修改成功");
+//        else
+//            return ActionMsg.setError("密码修改失败");
+        return c;
+    }
 
 
     public DataStore syncUserLdap(String userid){

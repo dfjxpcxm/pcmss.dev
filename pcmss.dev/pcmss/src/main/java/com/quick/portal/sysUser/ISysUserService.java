@@ -50,6 +50,7 @@ public interface ISysUserService extends ISysBaseService<SysUserDO> {
 	List<SysUserDO> getUserInfo(Map<String, Object> m);
 
     DataStore updatePassword(SysUserDO sysUserDO);
+	int updateUserPassword(SysUserDO sysUserDO);
 
 
 	DataStore syncUserLdap(String userIds);

@@ -156,6 +156,16 @@
 		user_password=#{user_password}
 		where user_id = #{user_id}
 	</update>
+
+	<update id="updateUserPassword" parameterType="com.quick.portal.sysUser.SysUserDO">
+		update sys_user
+		set
+		user_password=#{user_password},
+		user_cert_type=#{user_cert_type},
+		user_global_id=#{user_global_id},
+		upd_time=now()
+		where user_id = #{user_id}
+	</update>
 	
 	
 	<update id="modifyPwdByApp" parameterType="com.quick.portal.sysUser.SysUserDO">
@@ -375,5 +385,4 @@
 			<result property="sup_dep_global_id" column="sup_dep_global_id"/>
 		</collection>
 	</resultMap>
-
 </mapper>

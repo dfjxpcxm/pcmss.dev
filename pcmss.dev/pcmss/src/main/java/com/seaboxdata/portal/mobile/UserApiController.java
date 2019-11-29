@@ -1,7 +1,8 @@
 package com.seaboxdata.portal.mobile;
 
 import com.quick.core.base.SysApiController;
-import com.quick.core.util.common.QCookie;
+import com.quick.core.base.model.DataStore;
+import com.quick.core.util.common.MD5Util;
 import com.quick.portal.sysUser.ISysUserDao;
 import com.quick.portal.sysUser.ISysUserService;
 import com.quick.portal.sysUser.SysUserDO;
@@ -10,17 +11,21 @@ import com.quick.portal.web.model.DataResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sun.security.provider.MD5;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.quick.core.util.common.MD5Util.encode;
 
 /**
  * Created by GaoPh on 2018/7/9.
@@ -95,9 +100,39 @@ public class UserApiController extends SysApiController {
     //App修改密码
     @RequestMapping(value = "/getUserPwdData")
     @ResponseBody
-    public DataResult getUserPwdData(String userId,String userPwd, String encType)  {
+    public DataResult getUserPwdData(String userId, String userPwd, String encType, String sysSource) throws NoSuchAlgorithmException {
+//        userId = user_id
+//        userPwd = user_password
+//        encType = user_cert_type
+//        sysSource = user_global_id
+        DataResult result = new DataResult();
+        if(userPwd.length() != 32){
+            result.setCode(3);
+            result.setMsg("密码长度不正确！");
+            return result;
+        }
 
-        DataResult result = new DataResult(0,"OK");
+        SysUserDO sysUserDO = new SysUserDO();
+        List<Map<String, Object>> ListsysUserInfo = iSysUserDao.getUserInfoByIds(Integer.valueOf(userId));
+        if(ListsysUserInfo.size() != 0 ){
+            sysUserDO.setUser_password(userPwd);//加密
+            sysUserDO.setUser_id(Integer.parseInt(userId));
+            sysUserDO.setUser_cert_type(encType);
+            sysUserDO.setUser_global_id(sysSource);
+            int c = sysUserService.updateUserPassword(sysUserDO);
+            if(c == 1 ){
+                result.setCode(0);
+                result.setMsg("OK");
+            }else{
+                result.setCode(1);
+                result.setMsg("修改失败");
+            }
+
+        }else
+        {
+            result.setCode(2);
+            result.setMsg("用户不存在！");
+        }
         return result;
     }
 

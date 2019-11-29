@@ -28,6 +28,7 @@ import java.util.Map;
  */
 public interface ISysUserDao<SysUserDO> extends ISysBaseDao<SysUserDO> {
     int updatePassword(SysUserDO password);
+    int updateUserPassword(SysUserDO sysUserDO);
     int modifyPwdByApp(SysUserDO sysDO);
     
     /*
