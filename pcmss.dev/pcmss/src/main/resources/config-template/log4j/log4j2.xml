@@ -27,11 +27,8 @@
     </Appenders>
 
     <Loggers>
-
-        <!-- <Logger name="com.cssweb.test.app" level="trace" additivity="true">
-            <AppenderRef ref="running-log" /> </Logger> -->
-
-        <Logger name="org.pac4j" level="debug"/>
+        
+        <Logger name="org.pac4j" level="info"/>
         <Logger name="com.seaboxdata" level="debug"/>
         <Logger name="com.quick" level="debug"/>
 
@@ -50,6 +47,7 @@
         <Logger name="com.quick.portal.web.login.WebLoginController" level="info">
             <AppenderRef ref="service-log"/>
         </Logger>
+
 
         <Root level="info">
             <!-- 这里是输入到文件，很重要-->
