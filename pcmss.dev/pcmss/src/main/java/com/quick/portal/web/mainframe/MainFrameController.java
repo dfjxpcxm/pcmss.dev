@@ -163,7 +163,7 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
 
     @RequestMapping(value = "/getAcessData2Main")
     @ResponseBody
-    public Object getAcessData2Main(String startDate,String endDate){
+    public Object getAcessData2Main(String startDate,String endDate)throws Exception {
         DataResult dr = new DataResult();
         if(StringUtils.isEmpty(startDate)){
             dr.setError("系统统计不准确，开始时间异常：startDate="+startDate);
@@ -173,6 +173,8 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
             dr.setError("系统统计不准确，开始时间异常：startDate="+endDate);
             return dr;
         }
+        //T+1
+        endDate = getPastDate(endDate,ONE_DAY);
         Map<String, Object> p = new HashMap<>();
         p.put("startDate", startDate);
         p.put("endDate", endDate);
@@ -208,7 +210,11 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
             dr.setError("系统统计不准确，开始时间异常：startDate="+endDate);
             return dr;
         }
+        //T+7
         startDate = getPastDate(endDate,WEEK_DAY);
+        //T+1
+        endDate = getPastDate(endDate,ONE_DAY);
+        startDate = startDate.substring(0,10);
         endDate = endDate.substring(0,10);
         Map<String, Object> p = new HashMap<>();
         p.put("startDate", startDate);
@@ -236,19 +242,6 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
 
 
 
-
-    public static void main(String[] args) throws Exception {
-        String beginDate = "2019-10-21";//开始时间
-        String endDate = "2019-11-02";//结束时间
-
-        List<String>  days = getDays(beginDate,endDate);
-        for(String a :days){
-            System.out.println(a);
-        }
-
-
-
-    }
 
     public static String  getPastDate( String endDate ,int day)throws Exception {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -279,5 +272,6 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
 
 
     public final static int WEEK_DAY = 7;
+    public final static int ONE_DAY = 1;
 
 }

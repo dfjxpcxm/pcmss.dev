@@ -262,4 +262,74 @@ public class SmsSendApiController extends SysApiController {
     }
 
 
+    @RequestMapping(value = "/sendDataForLog")
+    @ResponseBody
+    public Object sendDataForLog( String sign,String mobile,int tplId,String params)throws Exception{
+    /*
+请求包体
+{
+    "ext": "",
+    "extend": "",
+    "params": [
+        "验证码",
+        "1234",
+        "4"
+    ],
+    "sig": "ecab4881ee80ad3d76bb1da68387428ca752eb885e52621a3129dcf4d9bc4fd4",
+    "sign": "腾讯云",
+    "tel": {
+        "mobile": "13788888888",
+        "nationcode": "86"
+    },
+    "time": 1457336869,
+    "tpl_id": 19
+
+}
+应答包体
+{
+  "result": 0,
+    "errmsg": "OK",
+    "ext": "",
+    "fee": 1,
+    "sid": "xxxxxxx"
+}
+*/
+/*        if(null == params || "".equals(params)){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "模板参数列表为空";
+            return signReplyResult;
+        }*/
+        if(tplId <1){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "模板编号为空";
+            return signReplyResult;
+        }
+        if(null == mobile || "".equals(mobile)){
+            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "手机号为空";
+            return signReplyResult;
+        }
+        ArrayList<String>  parmStr = new ArrayList<>();
+        if(null != params && !"".equals(params)){
+            params =java.net.URLDecoder.decode(params,"UTF-8");
+            String [] parms = params.split("#");
+            for(String str:parms) {
+                parmStr.add(str);
+            }
+        }
+
+        SmsSingleSender smsSingleSender = new SmsSingleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+        String url = SmsConstants.SENDSMS_URL;
+        String nationCode = SmsConstants.NATION_CODE;
+        smsLogMngService.saveSmsLogInfo(12456,"外部系统调用单发短信接口；签名："+sign+"，模板编号："+tplId+"，参数："+params+",发送到手机号"+mobile);
+        SmsSingleSenderResult smsSenderResult = smsSingleSender.sendWithParam(nationCode, mobile, tplId, parmStr,sign, "","",url);
+
+        return smsSenderResult;
+    }
+
+
+
 }
