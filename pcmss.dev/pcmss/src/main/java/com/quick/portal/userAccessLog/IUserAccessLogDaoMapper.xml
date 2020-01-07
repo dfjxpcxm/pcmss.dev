@@ -126,7 +126,7 @@
 	       and date(log_time) <= #{end_time}
 	    ]]></if>
         GROUP BY user_id ORDER BY count DESC limit 10) a
-        LEFT JOIN sys_user b
+        INNER JOIN sys_user b
         on a.user_id =b.user_id
         ORDER BY a.count ;
 	</select>
