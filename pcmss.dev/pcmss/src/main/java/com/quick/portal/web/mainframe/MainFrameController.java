@@ -3,17 +3,22 @@ package com.quick.portal.web.mainframe;
 import com.quick.core.base.ISysBaseService;
 import com.quick.core.base.SysBaseController;
 import com.quick.core.base.exception.ExceptionEnumServiceImpl;
+import com.quick.core.util.common.CommonUtils;
 import com.quick.core.util.common.JsonUtil;
 import com.quick.core.util.common.QCookie;
 import com.quick.portal.sysMenu.ISysMenuService;
 import com.quick.portal.userAccessLog.IUserAccessLogService;
 import com.quick.portal.userAccessLog.UserAccessLogConstants;
+import com.quick.portal.userAccessLog.UserAccessLogServiceUtils;
 import com.quick.portal.userRole.UserRoleDO;
 import com.quick.portal.web.login.WebLoginConstants;
+import com.quick.portal.web.login.WebLoginUser;
 import com.quick.portal.web.model.DataResult;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +42,8 @@ import static com.quick.portal.web.login.WebLoginUitls.isAdminRoleType;
 @Scope("prototype")
 
 public class MainFrameController extends SysBaseController<MainFrameBean> {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
 
     @Resource(name = "mainFrameService")
@@ -137,6 +144,9 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
         //记录日志
         res.setContentType("application/json; charset=utf-8");
         res.setCharacterEncoding("UTF-8");
+        if(null != menuNm && !"".equals(menuNm)) {
+            menuNm = java.net.URLDecoder.decode(menuNm, "UTF-8");
+        }
         try {
             userAccessLogService.saveLog(request,
                     UserAccessLogConstants.SYS_LOG_TYPE_ID,
@@ -148,7 +158,17 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
         } catch (Exception e) {
             throw new Exception("记录日志异常：" + e.getMessage());
         }
+
+        //统一日志系统记录登录日志
+        String flag = sysMenuService.getIsAppMenuByID(menuId);
+        if(APP_FLAG.equals(flag)){
+            loggerInfoLoginSystemLogInfo(request,loginer,menuNm);
+        }
+
     }
+
+
+
 
     //APP:1;MENU:0
     @RequestMapping(value = "/getIsAppMenuByID")
@@ -205,7 +225,6 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
             dr.setError("系统统计不准确，开始时间异常：startDate="+startDate);
             return dr;
         }
-        startDate = startDate.substring(0,10);
         if(StringUtils.isEmpty(endDate)){
             dr.setError("系统统计不准确，开始时间异常：startDate="+endDate);
             return dr;
@@ -271,7 +290,27 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
     }
 
 
+    /**
+     *  在系统中记录门户系统用户登录的情况包括如下字段：
+     *  （1）用户名称；（2）用户IP；（3）服务名称；（4）开始处理时间；（5）处理结果；
+     *  （6）请求服务的URL。这些字段有（4）开始处理时间；（5）处理结果；（6）请求服务的URL不支持
+     */
+    public void loggerInfoLoginSystemLogInfo(HttpServletRequest request, WebLoginUser loginer,String menuNm){
+        String ip = CommonUtils.getIpAddrAdvanced(request);
+        String userName = loginer.getUser_name();
+        String requestResult = "系统操作员:"+userName+"登录,".concat(menuNm);
+        String operateType = menuNm+"->登录日志";
+        String operatedUser = "系统操作员编号:"+loginer.getUser_id()+",系统操作员名称:"+loginer.getUser_name();
+        String operLog = requestResult+",服务日志->登录日志";
+        String serviceName = "服务名称:登录日志;服务方法名:";
+        UserAccessLogServiceUtils.loggerLogInfo(logger,
+                userName,operatedUser,operateType,requestResult,operLog,serviceName,ip);
+    }
+
+
     public final static int WEEK_DAY = 7;
     public final static int ONE_DAY = 1;
+
+    public final static String APP_FLAG = "1";
 
 }

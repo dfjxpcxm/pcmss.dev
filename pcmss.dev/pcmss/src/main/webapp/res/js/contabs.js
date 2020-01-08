@@ -193,6 +193,7 @@ $(function () {
     }
 
     function sendLog(id,mn){
+        mn = encodeURIComponent(mn);
         $.ajax({
             type: "post",
             url:  'sendLog',

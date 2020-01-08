@@ -364,7 +364,7 @@
             type: "POST",
             url: "${G.host}/getAcessData2Main",
             dataType: 'json',
-            data: {startDate:startDate.format('YYYY-MM-DD'), endDate:endDate.format('YYYY-MM-DD')},
+            data: {startDate:startDate.format('YYYY-MM-DD HH:mm:ss'), endDate:endDate.format('YYYY-MM-DD HH:mm:ss')},
             success: function (r) {
                 if (r.code === 1) {
                     $('#app_count').text(r.data.app_count);

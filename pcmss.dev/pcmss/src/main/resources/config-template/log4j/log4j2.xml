@@ -27,7 +27,7 @@
     </Appenders>
 
     <Loggers>
-        
+
         <!-- <Logger name="com.cssweb.test.app" level="trace" additivity="true">
             <AppenderRef ref="running-log" /> </Logger> -->
 
