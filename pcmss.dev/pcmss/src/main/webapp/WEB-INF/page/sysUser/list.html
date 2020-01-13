@@ -120,7 +120,14 @@
                 {field: 'user_real_name', title: '真实名称', width: 90, align: 'center'},
                 {field: 'dep_name', title: '部门名称', width: 110, align: 'center'},
                 {field: 'job_name', title: '岗位名称', width: 100, align: 'center'},
-                {field: 'user_state', title: '激活状态', width: 80, align: 'center'},
+                {field: 'user_state', title: '激活状态', width: 80, align: 'center',
+                    formatter: function (value, row, index) {
+                        var inter_state = '<span style="color:#CFCFCF">禁用</span>';
+                        if (row.user_state == 1) {
+                            inter_state = '<span style="color:#9ACD32">激活</span>';
+                        }
+                        return inter_state;
+                    }},
                 {field: 'file_state', title: '归档状态', width: 80, align: 'center',
                     formatter: function (value, row, index) {
                         if (value == '1') {
@@ -133,7 +140,7 @@
                         }
                     }
                 },
-                {field: 'cre_time', title: '创建时间', width: 110, align: 'center'},
+               /* {field: 'cre_time', title: '创建时间', width: 110, align: 'center'},*/
                 {field: 'user_tel', visible: false},
                 {field: 'user_addr', visible: false},
                 {field: 'rela_id', visible: false},
@@ -156,7 +163,7 @@
                     $(".no-records-found td").html('您还没有添加相关信息，请点击<a onclick="add();" href="javascript:void(0);">添加</a>');
                 }
             }, onClickCell: function (field, value, row, e) {
-                if (value.length > 6) {
+                if (value.length >5) {
                     var data = "<div align='center' style='margin-top:15px;'>" + "<p style='font-size:16px;color:#0d509a'>" + value + "</p>" + "</div>";
                     layer.open({
                         type: 1//此处以iframe举例

@@ -28,9 +28,9 @@
 			   toolbar:"#formSearch",
 			   columns: [
 				   {  checkbox: true },
-				   { field: 'sms_title', title: '短信标题', width: 100  },
-				   { field: 'sign_name', title: '签名名称', width: 100  },
-				   { field: 'mould_name', title: '模板名称', width: 100  },
+				   { field: 'sms_title', title: '短信标题', width: 80  },
+				   { field: 'sign_name', title: '签名名称', width: 70  },
+				   { field: 'mould_name', title: '模板名称', width: 90  },
 				   { field: 'mould_content', title: '模板内容', width: 100  },
 				   { field: 'CZ',  title: '操作',width: 100, formatter:function(value,row,index){
 
@@ -48,6 +48,22 @@
 				   if(queryParm=='' &&　(data == null || data.length == 0)){
 					   $(".no-records-found td").html('您还没有添加相关信息，请点击<a onclick="add();" href="javascript:void(0);">添加</a>');
                    }
+			   },onClickCell: function (field, value, row, e) {
+				   if (value.length >5) {
+					   var data = "<div align='center' style='margin-top:15px;'>" + "<p style='font-size:16px;color:#0d509a'>" + value + "</p>" + "</div>";
+					   layer.open({
+						   type: 1//此处以iframe举例
+						   , title: '详细信息'
+						   , area: ['500px', '150px']
+						   , shade: 0
+						   , maxmin: true
+						   , content: data
+						   , btn: ['关闭']
+						   , btn2: function () {
+							   layer.closeAll();
+						   }
+					   });
+				   }
 			   }
 		   });
 
