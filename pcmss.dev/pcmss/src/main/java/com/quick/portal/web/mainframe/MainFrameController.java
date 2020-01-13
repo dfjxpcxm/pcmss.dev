@@ -195,6 +195,7 @@ public class MainFrameController extends SysBaseController<MainFrameBean> {
         }
         //T+1
         endDate = getPastDate(endDate,ONE_DAY);
+        endDate = endDate.substring(0,10);
         Map<String, Object> p = new HashMap<>();
         p.put("startDate", startDate);
         p.put("endDate", endDate);
