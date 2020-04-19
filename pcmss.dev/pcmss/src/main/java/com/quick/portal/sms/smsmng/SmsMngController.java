@@ -202,7 +202,7 @@ public class SmsMngController extends SysBaseController<SmsMngDO> {
         }
         return array;
     }*/
-    private final static String TMPL_DOWNLOAD_PATH = "/upload/contentRule/a62e330f32ee66d0d68a9b77583bb765.xlsx";
+    private final static String TMPL_DOWNLOAD_PATH = "/upload/contentRule/smstpl20190720.csv";
 
 
 }

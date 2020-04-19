@@ -6,6 +6,7 @@
     <link href="${G.host}/res/css/font-awesome.min.css?v=4.4.0"
           rel="stylesheet">
     <link href="${G.host}/res/css/animate.css" rel="stylesheet">
+    <link href="${G.host}/res/css/loading.css" rel="stylesheet">
     <link href="${G.host}/res/css/style.css?v=4.1.0" rel="stylesheet">
 
   <!--  <link href="${G.host}/res/css/summernote/summernote.css" rel="stylesheet">
@@ -105,7 +106,7 @@
                                             <label for="mould_ty1"></label><span>文件导入</span></label>-->
                                         <div class="col-xs-9" style="margin-bottom: 5px;position: relative;font-size: 10px;width: 500px;left: -50px;">
                                             <ul>
-                                                <li>· 请上传xlsx格式，“变量模版”号码文件<button id ="bt" class="btn btn-default" style="padding: 2px 2px;" type="button"><a id ="dt" style="font-size: 12px;">模板下载</a></button>，什么是变量模板</li>
+                                                <li>· 请上传csv格式，“变量模版”号码文件<button id ="bt" class="btn btn-default" style="padding: 2px 2px;" type="button"><a id ="dt" style="font-size: 12px;">模板下载</a></button>，什么是变量模板</li>
                                                 <li>· 请保持导入文件的变量顺序与模版内容的变量顺序一致，请严格遵守范例样式</li>
                                                 <li>· 文件大小不可超过3M，建议单次导入号码50万个以内</li>
                                             </ul>
@@ -218,9 +219,16 @@
                 isdone = true;
                 return false;
             }
+            var strRegex = "(.csv)$";
+            var re= new RegExp(strRegex);
             var p = $("#file_path").val();
             if(p ==null ||p.length ==0){
                 layer.msg('上传文件不能空',{icon:1,time: 1500,skin: 'layer-ext-moon'})
+                isdone = true;
+                return false;
+            }
+            if(!re.test(p.toLowerCase())){
+                layer.msg('上传文件格式不正确',{icon:1,time: 1500,skin: 'layer-ext-moon'})
                 isdone = true;
                 return false;
             }
@@ -228,7 +236,7 @@
             clearPlaceHodler();
 
             var str =
-                '<div class="form-group" style="margin-top: 20px">'+
+                '<div class="form-group" style="margin-top: 20px;position: absolute;z-index: 10;">'+
                 '<label class="col-xs-3" style="font-size:12px;color:#888;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;" >模板内容</label>'+
                 '<div class="col-xs-9">'+
                 '<textarea style="height:99px;font-size:13px;width:100%;resize:none;"  readonly="readonly" class="form-control">'+$("#mould_content").val()+'</textarea>'+
@@ -243,7 +251,27 @@
                 '<span style="font-size:12px;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;color:#f00;">'+phFiltNum+'</span></div>'+
                 '<div class="col-xs-9">' +
                 '<span style="font-size:12px;font-weight:normal;font-family:Verdana,Arial;line-height:1.5;white-space: nowrap;color:#f00;margin-left: 78px;">（若出现重复号码时将会重复发送多条短信）</span></div>'+
-                '</div><br/>';
+                '</div><br/>'+
+                '<div id="backlayer" style="\n' +
+                '            display: none;background-color: #B3B3B3;\n' +
+                '            position: absolute;\n' +
+                '            top: 0;\n' +
+                '            right: 0;\n' +
+                '            bottom: 0;\n' +
+                '            left: 0;\n' +
+                '            z-index: 10;\n' +
+                '            -moz-opacity: 0.8;\n' +
+                '            opacity:.80;\n' +
+                '            filter: alpha(opacity=80);"></div>'+
+                '<div id="load_ani" class="container text-center" style="display: none;position:fixed;z-index: 11;left: 44%;\n' +
+                '    top: 235px;">\n' +
+                '    <div class="row">\n' +
+                '        <div class="col-sm-2" style="text-align: center">\n' +
+                '            <div class="sp sp-circle"></div>\n' +
+                '        </div>\n' +
+                '    </div>\n' +
+                '</div>';
+
             layer.open({
                 type: 1,
                 title: "<label>短信发送</label>",
@@ -255,11 +283,15 @@
                 content:str,
                 btn:['确定发送','取消发送'],
                 yes:function(){
+                    $("#backlayer").show();
+                    $("#load_ani").show();
                    $('#form').ajaxSubmit(function() {
                         layer.msg('保存成功',{icon:1,time: 1500,skin: 'layer-ext-moon'}, function(){
                             cancel();
                         });
                         isdone = true;
+                       $("#backlayer").hide();
+                       $("#load_ani").hide();
                     });
                 }
             })

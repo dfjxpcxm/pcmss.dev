@@ -600,18 +600,18 @@
             <id>pro</id>
             <properties>
                 <profiles.active>pro</profiles.active>
-                <pcmss.server.ip>106.52.132.19</pcmss.server.ip>
-                <pcmss.ws.ip>172.16.0.9</pcmss.ws.ip>
-                <index.service.ip>106.52.132.19</index.service.ip>
-                <solr.service.ip>106.52.132.19</solr.service.ip>
-                <log.server.ip>106.52.132.19</log.server.ip>
+                <pcmss.server.ip>10.10.16.28</pcmss.server.ip>
+                <pcmss.ws.ip>0.0.0.0</pcmss.ws.ip>
+                <index.service.ip>10.10.16.28</index.service.ip>
+                <solr.service.ip>10.10.16.28</solr.service.ip>
+                <log.server.ip>10.10.16.28</log.server.ip>
                 <service.log.port>6698</service.log.port>
                 <audit.log.port>6699</audit.log.port>
                 <pcmss.file.dir>/home/pcmss/files</pcmss.file.dir>
                 <pcmss.log.dir>/home/files/pcmss/logs</pcmss.log.dir>
-                <cas.server.ip>118.126.103.216</cas.server.ip>
-                <ca.server.ip>118.126.103.216</ca.server.ip>
-                <pcmss.mysql.ip>106.52.134.132</pcmss.mysql.ip>
+                <cas.server.ip>10.10.16.29</cas.server.ip>
+                <ca.server.ip>10.10.16.29</ca.server.ip>
+                <pcmss.mysql.ip>10.10.16.34</pcmss.mysql.ip>
                 <pcmss.db.password>root@123456</pcmss.db.password>
                 <cas.server.protocol>http</cas.server.protocol>
                 <cas.server.port>17001</cas.server.port>
