@@ -20,18 +20,19 @@ package com.seaboxdata.portal.mobile;
 
 import com.quick.core.base.SysApiController;
 import com.quick.portal.sms.smsServices.SmsConstants;
-import com.quick.portal.sms.smsServices.SmsRemoveReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignReplyResult;
 import com.quick.portal.sms.smsServices.SmsTemplePullerReplyResult;
-import com.quick.portal.sms.smsServices.SmsTempleReplyResult;
 import com.quick.portal.sms.smsServices.SmsTempleSender;
 import com.quick.portal.sms.smslogmng.ISmsLogMngService;
+import com.quick.portal.sms.smssystem.SmsConstantsMicro;
+import com.quick.portal.sms.smssystem.SmsTemplateHttpClient;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
@@ -46,10 +47,6 @@ public class TempleApiController extends SysApiController {
 
     @Resource(name = "smsLogMngService")
     private ISmsLogMngService smsLogMngService;
-
-
-
-
 
     /**
      *   https://cloud.tencent.com/document/product/382/5817
@@ -107,13 +104,16 @@ public class TempleApiController extends SysApiController {
             return signReplyResult;
         }
 
-        SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+        /*SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.ADD_TEMPLATE_URL;
         SmsTempleReplyResult templeReplyResult = templeMng.sendTempleInfo(remark, 0, text, title,0, type,url);
 
         SmsTempleReplyResult.data dt = (SmsTempleReplyResult.data)templeReplyResult.getData();
         smsLogMngService.saveSmsLogInfo(dt.id,"外部系统调用新增短信模板："+"["+text+"]" );
-        return templeReplyResult;
+        return templeReplyResult;*/
+        SmsTemplateHttpClient smsTemplateHttpClient = new SmsTemplateHttpClient();
+        String url = SmsConstantsMicro.ADD_TEMPLATE_URL;
+        return smsTemplateHttpClient.addTemplate(remark, text, title, type, url);
     }
 
     /**
@@ -161,11 +161,14 @@ public class TempleApiController extends SysApiController {
             signReplyResult.errmsg = "模板ID为空";
             return signReplyResult;
         }
-        SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+       /* SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.MOD_TEMPLATE_URL;
         SmsTempleReplyResult templeReplyResult = templeMng.sendTempleInfo(remark, 0, text, title,tplId, type,url);
         smsLogMngService.saveSmsLogInfo(tplId,"外部系统调用修改短信模板："+"["+text+"]" );
-        return templeReplyResult;
+        return templeReplyResult;*/
+        SmsTemplateHttpClient smsTemplateHttpClient = new SmsTemplateHttpClient();
+        String url = SmsConstantsMicro.MOD_TEMPLATE_URL;
+        return smsTemplateHttpClient.modTemplate(remark,tplId,text, title, type, url);
 
     }
     
@@ -199,23 +202,27 @@ public class TempleApiController extends SysApiController {
             signReplyResult.errmsg = "模板ID为空";
             return signReplyResult;
         }
-        String [] ids = tplIds.split(",");
+       /* String [] ids = tplIds.split(",");
         ArrayList<Integer> tplId = new ArrayList<>();
         for(int i=0; i< ids.length;i++){
             tplId.add(Integer.valueOf(ids[i]));
-        }
-        smsLogMngService.saveSmsLogInfo(Integer.valueOf(ids[0]),"外部系统调用删除短信模板："+"模板编号：" +tplIds);
+        }*/
+       /* smsLogMngService.saveSmsLogInfo(Integer.valueOf(ids[0]),"外部系统调用删除短信模板："+"模板编号：" +tplIds);
         String url = SmsConstants.DEL_TEMPLATE_URL;
         SmsTempleSender templeMng =  new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsRemoveReplyResult smsTplRemoveReplyResult = templeMng.removeTempleInfo(tplId,url);
-        return smsTplRemoveReplyResult;
+        return smsTplRemoveReplyResult;*/
+        SmsTemplateHttpClient smsTemplateHttpClient = new SmsTemplateHttpClient();
+        String url = SmsConstantsMicro.DEL_TEMPLATE_URL;
+        return smsTemplateHttpClient.delTemplate(tplIds,url);
+
     }
     
     
 
     /**
      * 查询申请的短信模板状态
-     * @param tplIds  待删除的模板 ID 123,124
+     * @param tplIds  模板 ID 123,124
      * @return
      */
     @RequestMapping(value = "/getTemplateInfoById")
@@ -255,15 +262,18 @@ public class TempleApiController extends SysApiController {
             signReplyResult.errmsg = "模板ID为空";
             return signReplyResult;
         }
-        String [] ids = tplIds.split(",");
+       /* String [] ids = tplIds.split(",");
         ArrayList<Integer> tplId = new ArrayList<>();
         for(int i=0; i< ids.length;i++){
             tplId.add(Integer.valueOf(ids[i]));
-        }
-        String url = SmsConstants.GET_TEMPLATE_URL;
+        }*/
+       /* String url = SmsConstants.GET_TEMPLATE_URL;
         SmsTempleSender templeMng = new SmsTempleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsTemplePullerReplyResult templePullerReplyResult = templeMng.getTempleStatusPullerInfoByTplId(tplId,url);
-        return templePullerReplyResult;
+        return templePullerReplyResult;*/
+        SmsTemplateHttpClient smsTemplateHttpClient = new SmsTemplateHttpClient();
+        String url = SmsConstantsMicro.GET_TEMPLATE_URL;
+        return smsTemplateHttpClient.getTemplateInfoById(tplIds,url);
     }
 
 

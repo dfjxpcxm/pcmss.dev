@@ -29,11 +29,14 @@ import com.quick.portal.sms.smsServices.SmsSignReplyResult;
 import com.quick.portal.sms.smsServices.SmsSignSender;
 import com.quick.portal.sms.smsServices.SmsTempleReplyResult;
 import com.quick.portal.sms.smslogmng.ISmsLogMngService;
+import com.quick.portal.sms.smssystem.SmsConstantsMicro;
+import com.quick.portal.sms.smssystem.SmsSignHttpClient;
 import com.quick.portal.web.home.IHomeService;
 import com.quick.portal.web.model.DataResult;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -82,7 +85,7 @@ public class SignApiController extends SysApiController {
      */
     @RequestMapping(value = "/addSign")
     @ResponseBody
-    public Object addSign(String pic,String text,String remark)throws Exception{
+    public Object addSign(@RequestParam(defaultValue = "",value = "pic",required = false) String pic, String text, String remark)throws Exception{
     /*
 请求包体
 {
@@ -106,12 +109,12 @@ public class SignApiController extends SysApiController {
     }
 }
 */
-        if(null == pic || "".equals(pic)){
+     /*   if(null == pic || "".equals(pic)){
             SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 1001;
             signReplyResult.errmsg = "sig 校验失败";
             return signReplyResult;
-        }
+        }*/
         if(null == text || "".equals(text)){
             SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
@@ -119,14 +122,17 @@ public class SignApiController extends SysApiController {
             return signReplyResult;
         }
 
-        SmsSignSender signMng = new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+        /*SmsSignSender signMng = new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.ADD_SIGN_URL;
         SmsSignReplyResult signReplyResult = signMng.sendSignInfo(pic, 0, remark, text,0, url);
         if(signReplyResult.result == 0){
             SmsSignReplyResult.data dt = (SmsSignReplyResult.data)signReplyResult.getData();
             smsLogMngService.saveSmsLogInfo(dt.id,"外部系统调用新增短信签名："+"["+text+"]" );
         }
-        return signReplyResult;
+        return signReplyResult;*/
+        SmsSignHttpClient smsSignHttpClient = new SmsSignHttpClient();
+        String url = SmsConstantsMicro.ADD_SIGN_URL;
+        return smsSignHttpClient.addSign(pic,text,remark,url);
     }
 
     /**
@@ -171,17 +177,20 @@ public class SignApiController extends SysApiController {
             return signReplyResult;
         }
 
-        if(signId>0){
+        if(signId < 0){
             SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
             signReplyResult.errmsg = "签名ID为空";
             return signReplyResult;
         }
-        SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+      /*  SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         String url = SmsConstants.MOD_SIGN_URL;
         SmsSignReplyResult signReplyResult = signMng.sendSignInfo(pic, 0, remark, text, signId,url);
         smsLogMngService.saveSmsLogInfo(signId,"外部系统调用修改短信签名："+"["+text+"]" );
-        return signReplyResult;
+        return signReplyResult;*/
+        SmsSignHttpClient smsSignHttpClient = new SmsSignHttpClient();
+        String url = SmsConstantsMicro.MOD_SIGN_URL;
+        return smsSignHttpClient.modSign(pic,signId,text,remark,url);
     }
     
     
@@ -214,7 +223,7 @@ public class SignApiController extends SysApiController {
             signReplyResult.errmsg = "签名ID为空";
             return signReplyResult;
         }
-        String [] ids = signIds.split(",");
+       /* String [] ids = signIds.split(",");
         ArrayList<Integer> sIds = new ArrayList<>();
         for(int i= 0; i< ids.length;i++){
             sIds.add(Integer.valueOf(ids[i]));
@@ -223,7 +232,10 @@ public class SignApiController extends SysApiController {
         SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsRemoveReplyResult signReplyResult = signMng.removeSignInfo(sIds,url);
         smsLogMngService.saveSmsLogInfo(Integer.valueOf(ids[0]),"外部系统调用删除短信签名："+"签名编号：" +signIds);
-        return signReplyResult;
+        return signReplyResult;*/
+        SmsSignHttpClient smsSignHttpClient = new SmsSignHttpClient();
+        String url = SmsConstantsMicro.DEL_SIGN_URL;
+        return smsSignHttpClient.getSign(signIds, url);
     }
     
     
@@ -268,14 +280,17 @@ public class SignApiController extends SysApiController {
             signReplyResult.errmsg = "签名ID为空";
             return signReplyResult;
         }
-        String [] ids = signIds.split(",");
+       /* String [] ids = signIds.split(",");
         ArrayList<Integer> sIds = new ArrayList<>();
         for(int i= 0; i< ids.length;i++){
             sIds.add(Integer.valueOf(ids[i]));
-        }
-        String url = SmsConstants.GET_SIGN_URL;
+        }*/
+       /* String url = SmsConstants.GET_SIGN_URL;
         SmsSignSender signMng =  new SmsSignSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
         SmsSignPullerReplyResult signReplyResult = signMng.getSignStatusPullerInfo(sIds,url);
-        return signReplyResult;
+        return signReplyResult;*/
+        SmsSignHttpClient smsSignHttpClient = new SmsSignHttpClient();
+        String url = SmsConstantsMicro.GET_SIGN_URL;
+        return smsSignHttpClient.getSign(signIds, url);
     }
 }

@@ -30,6 +30,7 @@ import com.quick.portal.sms.smsServices.SmsTemplePullerReplyResult;
 import com.quick.portal.sms.smsServices.SmsTempleReplyResult;
 import com.quick.portal.sms.smsServices.SmsTempleSender;
 import com.quick.portal.sms.smslogmng.ISmsLogMngService;
+import com.quick.portal.sms.smssystem.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -126,18 +127,18 @@ public class SmsSendApiController extends SysApiController {
             signReplyResult.errmsg = "模板参数列表为空";
             return signReplyResult;
         }*/
+        SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
         if(tplId <1){
-            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
             signReplyResult.errmsg = "模板编号为空";
             return signReplyResult;
         }
         if(null == mobile || "".equals(mobile)){
-            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
             signReplyResult.errmsg = "手机号为空";
             return signReplyResult;
         }
+
         ArrayList<String>  parmStr = new ArrayList<>();
         if(null != params && !"".equals(params)){
             String [] parms = params.split(",");
@@ -151,6 +152,13 @@ public class SmsSendApiController extends SysApiController {
         String nationCode = SmsConstants.NATION_CODE;
         smsLogMngService.saveSmsLogInfo(12456,"外部系统调用单发短信接口；签名："+sign+"，模板编号："+tplId+"，参数："+params+",发送到手机号"+mobile);
         SmsSingleSenderResult smsSenderResult = smsSingleSender.sendWithParam(nationCode, mobile, tplId, parmStr,sign, "","",url);
+
+        //微服务调用
+//        SmsSingleSenderMicro smsSingleSender = new SmsSingleSenderMicro();
+//        String url = SmsConstantsMicro.SENDSMS_URL;
+//        String nationCode = SmsConstantsMicro.NATION_CODE;
+////        smsLogMngService.saveSmsLogInfo(12456,"外部系统调用单发短信接口；签名："+sign+"，模板编号："+tplId+"，参数："+params+",发送到手机号"+mobile);
+//        SmsSingleSenderResultMicro smsSenderResult = smsSingleSender.sendWithParam(nationCode, mobile, tplId, params,sign, "","",url);
 
         return smsSenderResult;
     }
@@ -228,37 +236,64 @@ public class SmsSendApiController extends SysApiController {
 //            signReplyResult.errmsg = "模板参数列表为空";
 //            return signReplyResult;
 //        }
+        SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
         if(tplId <1){
-            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
+
             signReplyResult.result = 9999;
             signReplyResult.errmsg = "模板编号为空";
             return signReplyResult;
         }
+        if(params == null){
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "参数为空";
+            return signReplyResult;
+        }
         if(null == mobiles || "".equals(mobiles)){
-            SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
             signReplyResult.errmsg = "手机号为空";
             return signReplyResult;
         }
-        ArrayList<String>  paramStr = new ArrayList<>();
-        if(null != params && !"".equals(params)){
-            String [] parms = params.split(",");
-            for(String str:parms) {
-                paramStr.add(str);
-            }
+//        ArrayList<String>  paramStr = new ArrayList<>();
+//        if(null != params && !"".equals(params)){
+//            String [] parms = params.split(",");
+//            for(String str:parms) {
+//                paramStr.add(str);
+//            }
+//        }
+//
+//        String [] tels = mobiles.split(",");
+//        ArrayList<String>  telStr = new ArrayList<>();
+//        for(String tel:tels) {
+//            telStr.add(tel);
+//        }
+//        SmsMultiSender smsMultiSender = new SmsMultiSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+//        String url = SmsConstants.SENDMULTISMS_URL;
+//        String nationCode = SmsConstants.NATION_CODE;
+//        smsLogMngService.saveSmsLogInfo(99456,"外部系统调用群发短信接口；签名："+sign+"，模板编号："+tplId+"，参数："+params+",发送到手机号"+mobiles);
+//        SmsMultiSenderResult smsSenderResult = smsMultiSender.sendWithParam(nationCode, telStr, tplId, paramStr, sign, "", "", url);
+//
+//        //微服务调用
+        String[] mobilesstr = {};
+        if(null != mobilesstr && !"".equals(mobilesstr)){
+            mobilesstr = mobiles.split(",");
         }
 
-        String [] tels = mobiles.split(",");
-        ArrayList<String>  telStr = new ArrayList<>();
-        for(String tel:tels) {
-            telStr.add(tel);
+        SmsSendHttpClient smsSendHttpClient = new SmsSendHttpClient();
+        String url = SmsConstantsMicro.SENDMULTISMS_URL;
+        if(mobilesstr.length > 200){
+            signReplyResult.result = 9999;
+            signReplyResult.errmsg = "手机号超过200个，建议用户使用分批次访问！";
+            return signReplyResult;
+            //手机号大于200转成数组传输,适用于文件方式发送，这里就不做判断了，告知用户不用超过200个手机号
+            //return smsSendHttpClient.smsMutSend(params, sign, mobilesstr, tplId, url);
+        }else{
+            //手机号小于200直接以字符串的当时传输
+            return smsSendHttpClient.smsMutSend(params,sign,mobiles,tplId,url);
         }
-        SmsMultiSender smsMultiSender = new SmsMultiSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
-        String url = SmsConstants.SENDMULTISMS_URL;
-        String nationCode = SmsConstants.NATION_CODE;
-        smsLogMngService.saveSmsLogInfo(99456,"外部系统调用群发短信接口；签名："+sign+"，模板编号："+tplId+"，参数："+params+",发送到手机号"+mobiles);
-        SmsMultiSenderResult smsSenderResult = smsMultiSender.sendWithParam(nationCode, telStr, tplId, paramStr, sign, "", "", url);
-        return smsSenderResult;
+//        SmsMultiSenderMicro smsMultiSenderMicro = new SmsMultiSenderMicro();
+//        String nationCode = SmsConstantsMicro.NATION_CODE;
+//        //smsLogMngService.saveSmsLogInfo(99456,"外部系统调用群发短信接口；签名："+sign+"，模板编号："+tplId+"，参数："+params+",发送到手机号"+mobiles);
+//        SmsMultiSenderResultMicro smsSenderResult = smsMultiSenderMicro.sendWithParam(nationCode, telStr, tplId, paramStr, sign, "", "", url);
     }
 
 
@@ -326,6 +361,13 @@ public class SmsSendApiController extends SysApiController {
         String nationCode = SmsConstants.NATION_CODE;
         smsLogMngService.saveSmsLogInfo(12456,"外部系统调用单发短信接口；签名："+sign+"，模板编号："+tplId+"，参数："+params+",发送到手机号"+mobile);
         SmsSingleSenderResult smsSenderResult = smsSingleSender.sendWithParam(nationCode, mobile, tplId, parmStr,sign, "","",url);
+
+        //微服务
+//        SmsSingleSenderMicro smsSingleSender = new SmsSingleSenderMicro();
+//        String url = SmsConstantsMicro.SENDSMS_URL;
+//        String nationCode = SmsConstantsMicro.NATION_CODE;
+//        //smsLogMngService.saveSmsLogInfo(12456,"外部系统调用单发短信接口；签名："+sign+"，模板编号："+tplId+"，参数："+params+",发送到手机号"+mobile);
+//        SmsSingleSenderResultMicro smsSenderResult = smsSingleSender.sendWithParam(nationCode, mobile, tplId, params,sign, "","",url);
 
         return smsSenderResult;
     }

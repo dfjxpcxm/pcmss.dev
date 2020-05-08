@@ -6,29 +6,29 @@
 	<sql id="where">
 		1=1
 		<if test="send_id != null "><![CDATA[
-	       and send_id = #{send_id}
+	       and g.send_id = #{send_id}
 	    ]]></if>
 		<if test="sms_log_id != null "><![CDATA[
-	       and sms_log_id = #{sms_log_id}
+	       and g.sms_log_id = #{sms_log_id}
 	    ]]></if>
 		<if test="sms_log_title != null and sms_log_title != '' and !'null'.equals(sms_log_title)"><![CDATA[
-	       and sms_log_title = #{sms_log_title}
+	       and g.sms_log_title = #{sms_log_title}
 	    ]]></if>
 
 
 		<if test="sms_author != null "><![CDATA[
-	       and sms_author = #{sms_author}
+	       and g.sms_author = #{sms_author}
 	    ]]></if>
 
 		<if test="sms_state != null "><![CDATA[
-	       and sms_state = #{sms_state}
+	       and g.sms_state = #{sms_state}
 	    ]]></if>
 
 		<if test="start_time != null and start_time != '' and start_time != 'null'"><![CDATA[
-	       and cre_time >= DATE_FORMAT(#{start_time},'%Y%m%d')
+	       and g.cre_time >= DATE_FORMAT(#{start_time},'%Y%m%d')
 	    ]]></if>
 		<if test="end_time != null and end_time != '' and end_time != 'null'"><![CDATA[
-	       and cre_time <= DATE_ADD(DATE_FORMAT(#{end_time},'%Y%m%d'), INTERVAL 1 DAY)
+	       and g.cre_time <= DATE_ADD(DATE_FORMAT(#{end_time},'%Y%m%d'), INTERVAL 1 DAY)
 	    ]]></if>
 
 		<if test="_sql_where != null and _sql_where != ''"> <![CDATA[
@@ -64,7 +64,7 @@
 
 	<!-- 查询总记录数 -->
 	<select id="count" parameterType="map" resultType="int">
-		select count(*) from sys_sms_log
+		select count(*) from sys_sms_log g
 		<where>
 			<include refid="where" />
 		</where>

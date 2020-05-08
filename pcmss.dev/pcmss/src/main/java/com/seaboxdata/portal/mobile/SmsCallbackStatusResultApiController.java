@@ -5,6 +5,7 @@
  * <h3>版权 : Copyright (C) 北京东方金信科技有限公司</h3>
  *
  * <p>
+ *
  * @author admin mazong@seaboxdata.com
  * @version <b>v1.0.0</b>
  *
@@ -19,24 +20,16 @@
 package com.seaboxdata.portal.mobile;
 
 import com.quick.core.base.SysApiController;
-import com.quick.portal.sms.smsServices.SearchSmsPullCallbackStatusResult;
-import com.quick.portal.sms.smsServices.SmsConstants;
-import com.quick.portal.sms.smsServices.SmsMultiSender;
-import com.quick.portal.sms.smsServices.SmsMultiSenderResult;
-import com.quick.portal.sms.smsServices.SmsPullCallbackStatusReplyResult;
-import com.quick.portal.sms.smsServices.SmsPullSendStatus;
-import com.quick.portal.sms.smsServices.SmsPullSendStatusResult;
 import com.quick.portal.sms.smsServices.SmsSignReplyResult;
-import com.quick.portal.sms.smsServices.SmsStatusPullerResult;
 import com.quick.portal.sms.smslogmng.ISmsLogMngService;
+import com.quick.portal.sms.smssystem.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * 回执数据统计接口类
@@ -51,10 +44,6 @@ public class SmsCallbackStatusResultApiController extends SysApiController {
     @Resource(name = "smsLogMngService")
     private ISmsLogMngService smsLogMngService;
 
-
-
-
-
     /**
      *  https://cloud.tencent.com/document/product/382/5977
      *  回执数据统计
@@ -65,7 +54,7 @@ public class SmsCallbackStatusResultApiController extends SysApiController {
      */
     @RequestMapping(value = "/getSmsCallbackStatusInfo")
     @ResponseBody
-    public Object getSmsCallbackStatusInfo(int stdate,int eddate)throws Exception{
+    public Object getSmsCallbackStatusInfo(@RequestParam(value = "stdate", defaultValue = "0") int stdate, @RequestParam(value = "eddate", defaultValue = "0") int eddate) throws Exception {
     /*
 请求包体
     {
@@ -91,25 +80,29 @@ public class SmsCallbackStatusResultApiController extends SysApiController {
     "errmsg": "OK",
     "result": 0
 }
-*/      if(stdate <1){
+*/
+        if (stdate < 1) {
             SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
             signReplyResult.errmsg = "开始时间为空,开始时间，yyyymmddhh 需要拉取的起始时间,精确到小时";
             return signReplyResult;
         }
 
-        if(eddate <1){
+        if (eddate < 1) {
             SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
             signReplyResult.errmsg = "结束时间为空,开始时间，yyyymmddhh 需要拉取的起始时间,精确到小时";
             return signReplyResult;
         }
-        SearchSmsPullCallbackStatusResult smsCallbackRest = new SearchSmsPullCallbackStatusResult(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
-        String url = SmsConstants.PULLCALLBACKSTATUS_URL;
-        SmsPullCallbackStatusReplyResult smsCallbackResult = smsCallbackRest.getCallbackStatusResult(stdate, eddate, url);
-        return smsCallbackResult;
-    }
+//        SearchSmsPullCallbackStatusResult smsCallbackRest = new SearchSmsPullCallbackStatusResult(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+//        String url = SmsConstants.PULLCALLBACKSTATUS_URL;
+//        SmsPullCallbackStatusReplyResult smsCallbackResult = smsCallbackRest.getCallbackStatusResult(stdate, eddate, url);
 
+        //微服务调用
+        SmsCallbackStatusHttpClient smsCallbackStatusHttpClient = new SmsCallbackStatusHttpClient();
+        String url = SmsConstantsMicro.PULLCALLBACKSTATUS_URL;
+        return smsCallbackStatusHttpClient.getSmsPullSendStatus(stdate, eddate, url);
+    }
 
 
     /**
@@ -122,7 +115,8 @@ public class SmsCallbackStatusResultApiController extends SysApiController {
      */
     @RequestMapping(value = "/getSmsPullSendStatus")
     @ResponseBody
-    public Object getSmsPullSendStatus(int stdate,int eddate)throws Exception{
+    public Object getSmsPullSendStatus(@RequestParam(value = "stdate", defaultValue = "0") int stdate,
+                                       @RequestParam(value = "eddate", defaultValue = "0") int eddate) throws Exception {
     /*
 请求包体
     {
@@ -143,22 +137,27 @@ public class SmsCallbackStatusResultApiController extends SysApiController {
     }
 }
 */
-        if(stdate <1){
+        if (stdate < 1) {
             SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
             signReplyResult.errmsg = "开始时间为空,开始时间，yyyymmddhh 需要拉取的起始时间,精确到小时";
             return signReplyResult;
         }
 
-        if(eddate <1){
+        if (eddate < 1) {
             SmsSignReplyResult signReplyResult = new SmsSignReplyResult();
             signReplyResult.result = 9999;
             signReplyResult.errmsg = "结束时间为空,开始时间，yyyymmddhh 需要拉取的起始时间,精确到小时";
             return signReplyResult;
         }
-        SmsPullSendStatus smsCallbackRest = new SmsPullSendStatus(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
-        SmsPullSendStatusResult smsCallbackResult = smsCallbackRest.pullSendStatus(stdate, eddate);
-        return smsCallbackResult;
+//        SmsPullSendStatus smsCallbackRest = new SmsPullSendStatus(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+//        String url =SmsConstants.PULL_SEND_STATUS_URL;
+//        SmsPullSendStatusResult smsCallbackResult = smsCallbackRest.pullSendStatus(stdate, eddate);
+
+        //使用微服务的调用
+        SmsCallbackStatusHttpClient smsCallbackStatusHttpClient = new SmsCallbackStatusHttpClient();
+        String url = SmsConstantsMicro.PULL_SEND_STATUS_URL;
+        return smsCallbackStatusHttpClient.getSmsPullSendStatus(stdate, eddate, url);
     }
 
 }

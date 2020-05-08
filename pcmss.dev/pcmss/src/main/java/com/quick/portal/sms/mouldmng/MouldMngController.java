@@ -102,6 +102,7 @@ public class MouldMngController extends SysBaseController<MouldMngDO> {
 
 
 
+    @Override
     @RequestMapping(value = "/save")
     @ResponseBody
     public DataStore saveAction(MouldMngDO model) {

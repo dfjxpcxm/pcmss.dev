@@ -9,10 +9,13 @@ import java.util.List;
 import java.util.Random;
 
 
+import com.quick.portal.sms.mouldmng.IMouldMngDao;
+import com.quick.portal.sms.mouldmng.MouldMngDO;
+import com.quick.portal.sms.mouldmng.MouldMngServiceImpl;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-class SmsSenderUtil {
+public class SmsSenderUtil {
 
     protected Random random = new Random();
     
@@ -157,11 +160,13 @@ class SmsSenderUtil {
     	SmsSingleSenderResult result = new SmsSingleSenderResult();
     	result.result = json.getInt("result");
     	result.errmsg = json.getString("errmsg");
-    	if (0 == result.result) {
-	    	result.ext = json.getString("ext");
-	    	result.sid = json.getString("sid");
-	    	result.fee = json.getInt("fee");
-    	}
+		if("send success".equals(result.errmsg)){
+			if (0 == result.result) {
+				result.ext = json.getString("ext");
+				result.sid = json.getString("sid");
+				result.fee = json.getInt("fee");
+			}
+		}
     	return result;
     }
     
@@ -296,11 +301,11 @@ class SmsSenderUtil {
 			return result;
 		}
 		result.errmsg = json.getString("errmsg");
-		if (true == json.isNull("data")) {
+		if (true == json.isNull("datas")) {
 			return result;
 		}
 		result.datas = new ArrayList<>();
-		JSONArray datas  = json.getJSONArray("data");
+		JSONArray datas  = json.getJSONArray("datas");
 		result.count = datas.length();
 		for(int index = 0 ; index< datas.length(); index++){
 			JSONObject reply_json = datas.getJSONObject(index);
@@ -311,7 +316,8 @@ class SmsSenderUtil {
 			reply.status = reply_json.getInt("status");
 			reply.text = reply_json.getString("text");
 			reply.apply_time = reply_json.getString("apply_time");
-			reply.reply_time = reply_json.getString("reply_time");
+			//reply.reply_time = reply_json.getString("reply_time");
+			reply.reply_time = reply.apply_time;
 			result.datas.add(reply);
 		}
 		return result;
@@ -327,24 +333,26 @@ class SmsSenderUtil {
 		}
 		result.errmsg = json.getString("errmsg");
 
-		if (true == json.isNull("data")) {
+		if (true == json.isNull("datas")) {
 			return result;
 		}
 		result.datas = new ArrayList<>();
-		JSONArray datas  = json.getJSONArray("data");
+		JSONArray datas  = json.getJSONArray("datas");
 		result.count = datas.length();
 		for(int index = 0 ; index< datas.length(); index++){
 			JSONObject reply_json = datas.getJSONObject(index);
 			SmsTemplePullerReplyResult.data reply = result.new data();
 			reply.id = reply_json.getInt("id");
-			reply.type = reply_json.getInt("type");
+			//获取短信类型属性
+			//reply.type = service.getSmsType(reply_json.getInt("id"));
+
 			reply.international = reply_json.getInt("international");
 			reply.reply  = reply_json.getString("reply");
 			reply.status = reply_json.getInt("status");
-			reply.text = reply_json.getString("text");
+			//reply.text = reply_json.getString("text");
 			reply.title  = reply_json.getString("title");
 			reply.apply_time = reply_json.getString("apply_time");
-			reply.reply_time = reply_json.getString("reply_time");
+			reply.reply_time = reply.apply_time;
 			result.datas.add(reply);
 		}
 		return result;

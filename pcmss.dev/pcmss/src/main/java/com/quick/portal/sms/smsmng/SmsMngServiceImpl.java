@@ -25,12 +25,12 @@ import com.quick.core.base.model.DataStore;
 import com.quick.portal.sms.mouldmng.IMouldMngService;
 import com.quick.portal.sms.mouldmng.MouldMngDO;
 import com.quick.portal.sms.signmng.ISignMngService;
-import com.quick.portal.sms.smsServices.SmsConstants;
-import com.quick.portal.sms.smsServices.SmsMultiSender;
-import com.quick.portal.sms.smsServices.SmsMultiSenderResult;
-import com.quick.portal.sms.smsServices.SmsSingleSender;
-import com.quick.portal.sms.smsServices.SmsSingleSenderResult;
+import com.quick.portal.sms.smsServices.*;
 import com.quick.portal.sms.smslogmng.ISmsLogMngService;
+import com.quick.portal.sms.smssystem.SmsConstantsMicro;
+import com.quick.portal.sms.smssystem.SmsSendHttpClient;
+import com.quick.portal.sms.smssystem.SmsSignHttpClient;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +57,10 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
     public SmsSingleSender smsSender;
 
     public SmsMultiSender  smsMultiSender;
-
+    //创建json解析工具类
+    SmsSenderUtil util = new SmsSenderUtil();
+    //创建调用短信签名添加httpclient
+    SmsSendHttpClient smsSendHttpClient = new SmsSendHttpClient();
 
     @Resource(name = "signMngService")
     private ISignMngService signMngService;
@@ -230,15 +233,24 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         return smsId;
     }
 
-    public ArrayList<String>  parseParamList(String params){
-        ArrayList<String> pms = new ArrayList<>();
-        if(params != null && !"".equals(params)){
+    //返回短信内容参数
+    public String  parseParamList(String params){
+        //ArrayList<String> pms = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+        /*if(params != null && !"".equals(params)){
             String [] parms = params.split("#");
             for(String pm : parms){
                 pms.add(pm);
             }
+        }*/
+        String [] parms = params.split("#");
+        for(String pm : parms){
+            stringBuilder.append(pm + ",");
         }
-        return pms;
+
+        String paramssub = stringBuilder.toString();
+
+        return paramssub.substring(0,paramssub.length()-1);
     }
 
 
@@ -253,13 +265,19 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
         String sname = this.getSignName(entity.getSign_id());
         try{
               String smsRes = "";
-              List<String> pms = new ArrayList<>();
-              smsSender = new SmsSingleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
+//              List<String> pms = new ArrayList<>();
+            String pms = "";
+              //smsSender = new SmsSingleSender(SmsConstants.SMS_APPID,SmsConstants.SMS_APPKEY);
               for(SmsMngDO m :phoneNUmList){
                   smsRes = m.getSms_rec_obj();
                   pms = parseParamList(m.getParams());
-                  SmsSingleSenderResult singleReplyResult = smsSender.sendWithParam("", smsRes, entity.getMould_num(),
-                          pms, sname,"","", SmsConstants.SENDSMS_URL);
+
+                  //短信3.0api发送接口
+                  Object o = smsSendHttpClient.sendData(pms, sname, smsRes, entity.getMould_num(), SmsConstantsMicro.SENDSMS_URL);
+                  JSONObject json = new JSONObject(String.valueOf(o));
+                  SmsSingleSenderResult singleReplyResult = util.jsonToSmsSingleSenderResult(json);
+                  /*SmsSingleSenderResult singleReplyResult = smsSender.sendWithParam("", smsRes, entity.getMould_num(),
+                          pms, sname,"","", SmsConstants.SENDSMS_URL);*/
                   parseSingleReplyResult(singleReplyResult,keyVal);
                   bool = true;
               }
@@ -296,7 +314,7 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
     public void parseSingleReplyResult (SmsSingleSenderResult singleReplyResult,int id){
         int result = singleReplyResult.result;
         SmsMngDO entity = new SmsMngDO();
-        if(result == 0){
+        if("send success".equals(singleReplyResult.errmsg) && result == 0){
                 entity.setSid(singleReplyResult.sid);
                 entity.setSms_state(0);
                 entity.setSms_id(id);
@@ -308,6 +326,7 @@ public class SmsMngServiceImpl extends SysBaseService<SmsMngDO> implements ISmsM
             entity.setSms_id(id);
             dao.update(entity);
         }
+
     }
     /**
      * {

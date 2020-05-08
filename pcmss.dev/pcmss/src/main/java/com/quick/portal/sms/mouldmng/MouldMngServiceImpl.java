@@ -21,13 +21,13 @@ package com.quick.portal.sms.mouldmng;
 
 import com.quick.core.base.SysBaseService;
 import com.quick.core.base.model.DataStore;
-import com.quick.portal.sms.smsServices.SmsConstants;
-import com.quick.portal.sms.smsServices.SmsRemoveReplyResult;
-import com.quick.portal.sms.smsServices.SmsTemplePullerReplyResult;
-import com.quick.portal.sms.smsServices.SmsTempleReplyResult;
-import com.quick.portal.sms.smsServices.SmsTempleSender;
+import com.quick.portal.sms.smsServices.*;
 import com.quick.portal.sms.smslogmng.ISmsLogMngService;
 import com.quick.portal.sms.smsmng.SmsMngDO;
+import com.quick.portal.sms.smssystem.SmsConstantsMicro;
+import com.quick.portal.sms.smssystem.SmsSignHttpClient;
+import com.quick.portal.sms.smssystem.SmsTemplateHttpClient;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +50,15 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     private ISmsLogMngService smsLogMngService;
 
     public  SmsTempleSender smsTemple;
+
+    //创建json解析工具类
+    SmsSenderUtil util = new SmsSenderUtil();
+
+    //创建调用短信签名添加httpclient
+    SmsTemplateHttpClient smsTemplateHttpClient = new SmsTemplateHttpClient();
+
+
+
     /**
      * 构造函数
      */
@@ -126,7 +135,13 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     public boolean sendAddTplInfo(MouldMngDO entity,Integer id){
         boolean bool = false;
         try{
-            SmsTempleReplyResult tplReplyResult = smsTemple.sendTempleInfo("", SmsConstants.INTERNAL_CODE, entity.getMould_content(), entity.getMould_name(),0, entity.getMould_type(),SmsConstants.ADD_TEMPLATE_URL);
+            //3.0短信api接口
+            Object o = smsTemplateHttpClient.addTemplate(entity.getMould_name(),entity.getMould_content(),entity.getMould_name(),entity.getMould_type(), SmsConstantsMicro.ADD_TEMPLATE_URL);
+            JSONObject json = new JSONObject(String.valueOf(o));
+            SmsTempleReplyResult tplReplyResult = util.jsonToSmsTmplReplyResult(json);
+
+           // SmsTempleReplyResult tplReplyResult = smsTemple.sendTempleInfo("", SmsConstants.INTERNAL_CODE, entity.getMould_content(), entity.getMould_name(),0, entity.getMould_type(),SmsConstants.ADD_TEMPLATE_URL);
+
             parseSmsTempleReplyResult(tplReplyResult,id);
             bool = true;
         }catch (Exception e){
@@ -145,7 +160,13 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     public boolean sendModTplInfo(MouldMngDO entity,Integer id){
         boolean bool = false;
         try{
-            SmsTempleReplyResult tplReplyResult = smsTemple.sendTempleInfo("", SmsConstants.INTERNAL_CODE, entity.getMould_content(), entity.getMould_name(),entity.getMould_num(), entity.getMould_type(),SmsConstants.MOD_TEMPLATE_URL);
+
+            //3.0短信api接口
+            Object o = smsTemplateHttpClient.modTemplate(entity.getMould_name(),entity.getMould_num(),entity.getMould_content(),entity.getMould_name(),entity.getMould_type(), SmsConstantsMicro.ADD_TEMPLATE_URL);
+            JSONObject json = new JSONObject(String.valueOf(o));
+            SmsTempleReplyResult tplReplyResult = util.jsonToSmsTmplReplyResult(json);
+
+            //SmsTempleReplyResult tplReplyResult = smsTemple.sendTempleInfo("", SmsConstants.INTERNAL_CODE, entity.getMould_content(), entity.getMould_name(),entity.getMould_num(), entity.getMould_type(),SmsConstants.MOD_TEMPLATE_URL);
             parseSmsTempleReplyResult(tplReplyResult,id);
             bool = true;
         }catch (Exception e){
@@ -221,11 +242,12 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
         Integer snum = getTplInfoByID(sysid);
         dao.delete(sysid);
         smsLogMngService.saveSmsLogInfo(Integer.valueOf(sysid),"删除短信模板："+"模板编号：" +sysid);
-        ArrayList<Integer> tplNums = new ArrayList<>();
-        tplNums.add(snum);
+       /* ArrayList<Integer> tplNums = new ArrayList<>();
+        tplNums.add(snum);*/
         //调用删除签名接口
         try{
-            SmsRemoveReplyResult tplReplyResult = smsTemple.removeTempleInfo(tplNums, SmsConstants.DEL_TEMPLATE_URL);
+            smsTemplateHttpClient.delTemplate(String.valueOf(snum), SmsConstantsMicro.DEL_TEMPLATE_URL);
+            //SmsRemoveReplyResult tplReplyResult = smsTemple.removeTempleInfo(tplNums, SmsConstants.DEL_TEMPLATE_URL);
         }catch (Exception e){
             System.out.println("调用删除模板接口失败！"+e.getLocalizedMessage());
             return null;
@@ -251,6 +273,7 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
     /**
      * 获取模板编号
      */
+    @Override
     public MouldMngDO getTplInfo(Integer id){
         Map<String, Object> map = new HashMap<>();
         map.put("mould_id",id);
@@ -271,16 +294,34 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
 
     @Override
     public DataStore syncMouldInfo(Integer id) {
+
+        StringBuilder stringBuilder = new StringBuilder();
         ArrayList<Integer>  tplIds = new ArrayList<>();
         if(null != id && id >0){
-            tplIds.add(id);
+            //tplIds.add(id);
+            stringBuilder.append(id+",");
         }else{
             tplIds = getMouldIds();
+            stringBuilder =  new StringBuilder();
+            for (Integer tplId:tplIds){
+                stringBuilder.append(tplId+",");
+            }
         }
-        if(!tplIds.isEmpty() && tplIds.size()>0){
+
+        //将拼接的字符串转为string类型
+        String signIdsAll = stringBuilder.toString();
+        //删除最后一个字符  ,号
+        String substring = signIdsAll.substring(0, signIdsAll.length() - 1);
+
+        if(substring != null && substring.length() > 0){
             //短信模板状态查询
             try{
-                SmsTemplePullerReplyResult replyRest = smsTemple.getTempleStatusPullerInfoByTplId(tplIds,SmsConstants.GET_TEMPLATE_URL);
+                //短信3.0api
+                Object o = smsTemplateHttpClient.getTemplateInfoById(substring, SmsConstantsMicro.GET_TEMPLATE_URL);
+                JSONObject json = new JSONObject(String.valueOf(o));
+                SmsTemplePullerReplyResult replyRest = util.jsonToTemplePullerReplyResult(json);
+
+                //SmsTemplePullerReplyResult replyRest = smsTemple.getTempleStatusPullerInfoByTplId(tplIds,SmsConstants.GET_TEMPLATE_URL);
                 parseReplyResult(replyRest,id);
             }catch (Exception e){
                 System.out.println("短信模板状态查询！"+e.getLocalizedMessage());
@@ -341,8 +382,9 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
                 entity.setMould_num(dt.id);
                 entity.setRemarks(dt.reply);
                 entity.setMould_state(dt.status);
-                entity.setMould_content(dt.text);
-                entity.setMould_type(dt.type);
+                entity.setMould_content(dao.getSmsContent(dt.id));
+                //通过id查询短信类型并赋值
+                entity.setMould_type(dao.getSmsType(dt.id));//dt.type
                 entity.setMould_name(dt.title);
                 mnum = getTplInfoByNum(dt.id);
                 if(null == mnum || mnum == 0){
@@ -367,5 +409,9 @@ public class MouldMngServiceImpl extends SysBaseService<MouldMngDO> implements I
             snum = Integer.valueOf(mp.get("mould_num").toString());
         }
         return snum;
+    }
+
+    public int getSmsType(int moudle_num){
+        return dao.getSmsType(moudle_num);
     }
 }

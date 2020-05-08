@@ -23,12 +23,11 @@ import com.quick.core.base.SysBaseService;
 import com.quick.core.base.model.DataStore;
 import com.quick.core.util.common.DateTime;
 import com.quick.portal.appClass.AppClassDO;
-import com.quick.portal.sms.smsServices.SmsConstants;
-import com.quick.portal.sms.smsServices.SmsRemoveReplyResult;
-import com.quick.portal.sms.smsServices.SmsSignPullerReplyResult;
-import com.quick.portal.sms.smsServices.SmsSignReplyResult;
-import com.quick.portal.sms.smsServices.SmsSignSender;
+import com.quick.portal.sms.smsServices.*;
 import com.quick.portal.sms.smslogmng.ISmsLogMngService;
+import com.quick.portal.sms.smssystem.SmsConstantsMicro;
+import com.quick.portal.sms.smssystem.SmsSignHttpClient;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +51,10 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
     private ISmsLogMngService smsLogMngService;
 
     public  SmsSignSender smsSign;
+    //创建json解析工具类
+    SmsSenderUtil util = new SmsSenderUtil();
+    //创建调用短信签名添加httpclient
+    SmsSignHttpClient smsSignHttpClient = new SmsSignHttpClient();
     /**
      * 构造函数
      */
@@ -121,8 +124,14 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
     public boolean sendAddSignInfo(SignMngDO entity,Integer id){
         boolean bool = false;
         try{
-            SmsSignReplyResult signReplyResult = smsSign.sendSignInfo("", SmsConstants.INTERNAL_CODE, entity.getApply_causes(), entity.getSign_name(),0, SmsConstants.ADD_SIGN_URL);
-            ParseSignReplyResult(signReplyResult,id);
+
+            //新的3.0api接口
+            Object o = smsSignHttpClient.addSign("", entity.getSign_name(), entity.getApply_causes(), SmsConstantsMicro.ADD_SIGN_URL);
+            JSONObject json = new JSONObject(String.valueOf(o));
+            SmsSignReplyResult smsSignReplyResult = util.jsonToSmsSignReplyResult(json);
+            //2.0api接口
+            //SmsSignReplyResult signReplyResult = smsSign.sendSignInfo("", SmsConstants.INTERNAL_CODE, entity.getApply_causes(), entity.getSign_name(),0, SmsConstants.ADD_SIGN_URL);
+            ParseSignReplyResult(smsSignReplyResult,id);
             bool = true;
         }catch (Exception e){
             System.out.println("调用创建签名接口失败！"+e.getLocalizedMessage());
@@ -142,7 +151,14 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
     public boolean sendModSignInfo(SignMngDO entity,Integer id){
         boolean bool = false;
         try{
-            SmsSignReplyResult signReplyResult = smsSign.sendSignInfo("", SmsConstants.INTERNAL_CODE, entity.getApply_causes(), entity.getSign_name(),entity.getSign_num(), SmsConstants.MOD_SIGN_URL);
+            //短信3.0api
+            Object o = smsSignHttpClient.modSign("", entity.getSign_num(),entity.getSign_name(), entity.getApply_causes(), SmsConstantsMicro.MOD_SIGN_URL);
+            JSONObject json = new JSONObject(String.valueOf(o));
+            SmsSignReplyResult signReplyResult = util.jsonToSmsSignReplyResult(json);
+
+            //短信2.0api
+            //SmsSignReplyResult signReplyResult = smsSign.sendSignInfo("", SmsConstants.INTERNAL_CODE, entity.getApply_causes(), entity.getSign_name(),entity.getSign_num(), SmsConstants.MOD_SIGN_URL);
+
             ParseSignReplyResult(signReplyResult,id);
             bool = true;
         }catch (Exception e){
@@ -206,14 +222,16 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
      */
     @Override
     public DataStore delete(String sysid) {
+        //根据id去查询数据库中对应签名的编号
         Integer snum = getSignInfoByID(sysid);
         dao.delete(sysid);
         smsLogMngService.saveSmsLogInfo(Integer.valueOf(sysid),"删除短信签名："+"签名编号：" +sysid);
-        ArrayList<Integer> signNums = new ArrayList<>();
-        signNums.add(snum);
+        /*ArrayList<Integer> signNums = new ArrayList<>();
+        signNums.add(snum);*/
         //调用删除签名接口
         try{
-            SmsRemoveReplyResult signReplyResult = smsSign.removeSignInfo(signNums, SmsConstants.DEL_SIGN_URL);
+            smsSignHttpClient.delSign(String.valueOf(snum),SmsConstantsMicro.DEL_SIGN_URL);
+            //SmsRemoveReplyResult signReplyResult = smsSign.removeSignInfo(signNums, SmsConstants.DEL_SIGN_URL);
         }catch (Exception e){
             System.out.println("调用删除签名接口失败！"+e.getLocalizedMessage());
             e.printStackTrace();
@@ -241,6 +259,7 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
     /**
      * 通过签名ID查询签名名称
      */
+    @Override
     public String getSignInfoById(Integer sid){
         String sname = "";
         Map<String, Object> map = new HashMap<>();
@@ -259,15 +278,33 @@ public class SignMngServiceImpl extends SysBaseService<SignMngDO> implements ISi
      */
     @Override
     public DataStore syncSignInfo(Integer id) {
+
         ArrayList<Integer>  signIds = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
         if(null != id && id >0){
-            signIds.add(id);
+            //signIds.add(id);
+            stringBuilder.append(id+",");
         }else{
             signIds = getSignIds();
+            stringBuilder =  new StringBuilder();
+            for (Integer sign:signIds){
+                stringBuilder.append(sign+",");
+            }
+
         }
-        if(!signIds.isEmpty() && signIds.size()>0){
+        //将拼接的字符串转为string类型
+        String signIdsAll = stringBuilder.toString();
+        //删除最后一个字符  ,号
+        String substring = signIdsAll.substring(0, signIdsAll.length() - 1);
+
+        if(substring != null && substring.length() > 0){
             try{
-                SmsSignPullerReplyResult replyRest = smsSign.getSignStatusPullerInfo(signIds,SmsConstants.GET_SIGN_URL);
+                //3.0短信api接口
+                Object o = smsSignHttpClient.getSign(substring,SmsConstantsMicro.GET_SIGN_URL);
+                JSONObject json = new JSONObject(String.valueOf(o));
+                SmsSignPullerReplyResult replyRest = util.jsonToSmsSignPullerReplyResult(json);
+                //旧的2.0短信api接口
+                //SmsSignPullerReplyResult replyRest = smsSign.getSignStatusPullerInfo(signIds,SmsConstants.GET_SIGN_URL);
                 parseReplyResult(replyRest,id);
             }catch (Exception e){
                 System.out.println("短信签名状态查询！"+e.getLocalizedMessage());

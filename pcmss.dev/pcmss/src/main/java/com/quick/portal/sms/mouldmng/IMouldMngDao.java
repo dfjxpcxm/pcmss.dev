@@ -39,5 +39,9 @@ public interface IMouldMngDao<MouldMngDO> extends ISysBaseDao<MouldMngDO> {
 
     public void updateReplyResult(MouldMngDO mngDO);
 
+    public int getSmsType(int mould_num);
+
+    public String getSmsContent(int mould_num);
+
 
 }

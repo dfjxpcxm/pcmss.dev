@@ -121,7 +121,7 @@
 
 
 	<select id="getSignStauteInfo"  resultType="map">
-		select sign_num from sys_sign_info where sign_state in (1,2,4)
+		select sign_num from sys_sign_info where sign_state in (-1,1,2,4)
 	</select>
 
 	<update id="updateReplyResult" parameterType="com.quick.portal.sms.signmng.SignMngDO">

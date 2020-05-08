@@ -29,9 +29,9 @@
 			   columns: [
 				   {  checkbox: true },
 				   { field: 'sms_log_title', title: '短信标题', width: 100  },
-				   { field: 'sms_log_content', title: '短信内容', width: 100,
+				   { field: 'sms_log_content', title: '短信内容', width: 400,
 					   formatter: function (value, row, index) {
-						   var ct = value.length>10?(value.substring(0, 10)+" ....."):value;
+						   var ct = value.length>10?(value.substring(0, 24)+" ....."):value;
 						   return ct;
 					   }
 				   },
@@ -50,7 +50,7 @@
 					   }
 				   },
 
-				   { field: 'CZ',  title: '操作',width: '15%', formatter:function(value,row,index){
+				   { field: 'CZ',  title: '操作',width: 100, formatter:function(value,row,index){
 					   return "<button type='button' class='btn_el' onclick='edit(\""+row.sms_log_id+"\",\""+row.sms_log_title+"\")'>明细</button> ";
 				   }}
 			   ],onPageChange:function(number, size){
